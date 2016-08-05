@@ -5,7 +5,7 @@ development:
   username: changeme
   password: changeme
   host: 127.0.0.1
-  database: splunkassist
+  database: dotconfassist
 
 test:
   adapter: mysql2
@@ -14,7 +14,7 @@ test:
   username: changeme
   password: changeme
   host: 127.0.0.1
-  database: splunkassist_test
+  database: dotconfassist_test
 
 production:
   adapter: mysql2
@@ -23,4 +23,4 @@ production:
   username: changeme
   password: changeme
   host: example.com
-  database: splunkassist
+  database: dotconfassist
