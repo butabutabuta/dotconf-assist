@@ -1,0 +1,13 @@
+<script>
+   $(document).ready(function() {
+      ajaxCall("useraccounts");
+   });
+</script>
+<div class="page-header">
+  <h1>List of Available Accounts</h1>
+</div>
+  <div class="accounts-table"  style="height: 100%;">
+       <table class="table table-bordered table-hover" id="user-accounts-table" style="width: 80%;">
+       </table>
+  </div> <!-- close class accounts table-->
+<button type="button" onclick="history.go(-1);return false;" class="btn btn-primary">Back</button>

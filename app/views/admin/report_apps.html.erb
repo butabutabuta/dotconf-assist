@@ -1,0 +1,313 @@
+<script>
+   function openModalCreateServerClass()
+   {
+     $("#server-class-create-label").html("Create Server Class ("+$("#label-report-apps-user-name").html()+", "+ $("#input-report-apps-app-env").val() +")");
+     removeThisElementChildren("#select-server-class-deploy-host");
+     removeThisElementChildren("#select-server-class-search-tags");
+     removeThisElementChildren("#select-server-class-search-host");
+     $("#input-server-class-create-name").val("");
+     $("#input-server-class-create-ssh-server-password").val("");
+     $("#input-server-class-create-ssh-server-username").val("");
+
+     $("#input-server-class-create-app-details").html("");
+     $("#input-server-class-create-app-inputids-details").html("");
+     listOfServerClass = $(".server-class").map(function(){return this.innerHTML;}).get();
+
+     serverClassNames = "";
+     tagHostValues = "";
+     jQuery.each(listOfServerClass, function(index, value) {
+       className = value.substr(0,value.indexOf(" "));
+       tempTagHost = value.substr(value.indexOf("(")+2)
+       tagHostValues = tagHostValues + tempTagHost.substr(0,tempTagHost.indexOf(" ")) + ","
+       serverClassNames = serverClassNames+className+"\n";
+     });
+     serverClassNames = serverClassNames.slice(0,-1);
+     $("#input-server-class-create-name").val(serverClassNames);
+     //$("#input-server-class-create-search-tag-hosts").val(tagHostValues);//tagHostValues is always NULL
+     $("#input-server-class-create-search-tag-hosts").val("");
+
+     appName = $("#label-report-apps-app-name").text();
+     $("#input-server-class-create-app-details").html(appName);
+     $("#label-server-class-create-step-2").html("Class Name(s)- to be linked with <b>"+ appName +"</b>");
+     $("#i-server-class-create-step-2-inform").html("<b>"+appName +"</b> will be deployed to above Server Class(es)");
+     deploy_hosts = $("#input-report-apps-deployer-names").val();
+     deploy_hosts = deploy_hosts.slice(0,-1);
+     deploy_hosts = deploy_hosts.split("|");
+     $("#select-server-class-deploy-host").append("<option disabled selected>Select Deploy Host</option>");
+     jQuery.each(deploy_hosts, function(index, value) {
+       $("#select-server-class-deploy-host").append("<option>"+value+"</option>");
+     });
+
+     search_hosts = $("#input-report-apps-searcher-names").val();
+     search_hosts = search_hosts.slice(0,-1);
+     search_hosts = search_hosts.split("|");
+     user_host = $("#input-report-apps-user-searchhead").val();
+     $("#select-server-class-search-host").append("<option disabled>Select Search Head Host</option>");
+     jQuery.each(search_hosts, function(index, value) {
+       if(value == user_host){
+        $("#select-server-class-search-host").append("<option selected>"+value+"</option>");
+       }
+       else{
+        $("#select-server-class-search-host").append("<option>"+value+"</option>");
+       }
+     });
+     reloadTagsFromSearchHead();
+
+     $("#input-server-class-create-app").val($("#hidden-text-app").val());
+
+     removeThisElementChildren("#server-class-forwaders");
+     $("#create-tag-result-div").html("");
+     $("#input-server-class-create-search-tag").val("");
+     //$("#forwarder-list-div").hide();
+
+     listOfForwarderClass = $(".forwarder-class").map(function(){return this.innerHTML;}).get();
+     listOfWhiteList = "";
+     forwarders = "";
+     jQuery.each(listOfForwarderClass, function(index, value) {
+       if ( value != "|") {
+         forwarders += value + "\n";
+         $("#server-class-forwaders").append($("<li>").text(value));
+         digit = value.match(/\d/);
+         digitIndex = value.indexOf(digit);
+         if(digitIndex > 0){ //digit found and value doesn't start with digit
+            value = value.substr(0,digitIndex); //trim characters after digit
+         }
+         listOfWhiteList+=value+",";
+        }
+     });
+     listOfWhiteList = listOfWhiteList.slice(0,-1);
+     listOfWhitelist = listOfWhiteList.split(",");
+
+     sortForwarderWhiteListByLength(listOfWhitelist);
+     newWhiteList = getNewForwarderWhiteList(listOfWhitelist); //newWhiteList will be used in splunk_users.js
+
+     $("#input-server-class-create-forwarders").val($("#input-report-apps-white-list").val());
+     $('#modal-server-class-create').modal('toggle');     
+   }
+
+   function sortForwarderWhiteListByLength(list){ //short...long
+      var len = Object.keys(list).length;
+      for (var i = 0; i < len; i++){
+        for (var j = 0; j < (len - i - 1); j++){
+          if (list[j].length > list[j+1].length ) {
+            var tmp = list[j];
+            list[j] = list[j+1];
+            list[j+1] = tmp; 
+          }
+        }
+      }
+   }
+
+   function getNewForwarderWhiteList(list){
+      var result = [];
+      var len = Object.keys(list).length;
+      for (var i = len - 1; i >= 0; i--){
+        var found = false;
+        for (var j = 0; j < i; j++){
+          if (list[i].startsWith(list[j])) 
+          {
+            found = true;
+            break;
+          } 
+        }
+        if (!found){
+          result.splice(0, 0, list[i]+"*");
+        }
+      }
+      return result;
+   }
+
+   function getFinalForwarderWhiteList(newList, existingList){
+      var result = [];
+      var newLen = Object.keys(newList).length;
+      var existingLen = Object.keys(existingList).length;
+      for (var i = 0; i < newLen; i++){
+        var found = false;
+        for (var j = 0; j < existingLen; j++){
+          if(existingList[j] == "")
+            break;
+
+          if (existingList[j].includes("*")) {
+             if (newList[i].startsWith( existingList[j].substring(0, existingList[j].length - 1))) 
+              found = true;
+          }else{
+            if (newList[i].startsWith(existingList[j]))  
+             found = true;
+          }
+
+        }
+        if (!found){
+          result.splice(0, 0, newList[i]);
+        }
+      }
+      return result;
+   }
+
+   function openModalApproveDeployApp()
+   {
+     $('#modal-apps-deploy-approve').modal('toggle');     
+   }
+   function openModalCancelDeployApp()
+   {
+     $('#modal-apps-deploy-cancel').modal('toggle');     
+   }
+   function approveDeployApp()
+   {
+     ajaxCall('admin_approve_user_app_deploy_request');
+     // $('#modal-server-class-create').modal('toggle');
+     $('#modal-server-class-create').modal('hide');
+   }
+   function cancelDeployApp()
+   {
+     ajaxCall('admin_cancel_user_app_deploy_request');
+   }
+
+   $("#select-server-class-deploy-host").change( function () {
+     $("#input-server-class-create-app-details").html("");
+     //ajaxCall("admin_populate_tags_server_class_modal");
+     deploy_host = $("#select-server-class-deploy-host option:selected").val();
+     app_label = $("#label-report-apps-user-name").html();
+     appName = "dsapp_"+app_label+"_"+$("#label-report-apps-app-name").text();
+
+     var $txt = $("#textarea-report-apps-inputs-conf-data").val();
+     //console.log ($txt);
+     $("#input-server-class-create-app-details").html("ssh "+ deploy_host + "<br>mkdir -p /opt/splunk/etc/deployment-apps/" + appName+"/local<br>vi /opt/splunk/etc/deployment-apps/" + appName+"/local/inputs.conf<br>"+  $("#textarea-report-apps-inputs-conf-data").val());
+
+     $("#input-server-class-create-app-inputids-details").html($("#textarea-report-apps-inputs-inputids-data").val());
+
+   });
+
+   function reloadTagsFromSearchHead(){
+    $("#input-server-class-create-search-tag").val("")
+    $("#input-server-class-create-search-tag-hosts").val("");
+    // removeThisElementChildren("#input-server-class-create-search-tag");
+    // removeThisElementChildren("#input-server-class-create-search-tag-hosts");
+    removeThisElementChildren("#select-server-class-search-tags");
+    ajaxCall("admin_populate_tags_server_class_modal");
+    searchHost = "http://"+$("#select-server-class-search-host").val();
+    searchHost += "/en-US/manager/search/admin/tags";
+    $("#a-server-class-create-tag-permission-change").attr("href",searchHost);
+   }
+   $("#select-server-class-search-host").change( function () {
+     reloadTagsFromSearchHead();
+   });
+
+   function createServerClass()
+   {
+     $("#button-server-class-create").attr("disabled","true");
+     ajaxCall("admin_server_class_create");
+   }
+   function createDeploymentApp ()
+   {
+     //$("#button-server-class-create-deployment-app").attr("disabled","true");
+     ajaxCall("admin_deployment_app_create");
+   }
+   function createTag()
+   {
+     $("#button-server-class-create-tag").attr("disabled","true");
+     ajaxCall("admin_tag_create");
+   }
+</script>
+<br>
+   <div class="alert alert-info" id="notice-admin-report-apps" style="display:none"></div>
+  <br>
+  <div class="class-inputs-table">
+  <b id = "label-report-apps-user-name"><%= @user_name %></b> has made the Following request for <b><%= @env %> Environment</b>:<br>
+  <label id = "label-report-apps-app-name"><%= @app_name %></label><br>
+<b>Input Log(s): </b><br>
+      <ul>
+      <% @input_logs.each do |input| %>
+        <li><a href="/admin/report_inputs/<%= input %>" target="_blank"><%= @dotconf_assist_domain %>/admin/report_inputs/<%= input %></a></li>
+      <% end %><br><br>
+      </ul>
+<b>Server Class(es):</b><br>
+      <ul>
+      <% list_flag = 2 %>
+      <% regex_flag = 1 %>
+      <% regex_count = 0 %>
+      <% local_white_list_regex = Array.new %>
+      <% local_white_list_temp = "" %>
+      <% create_white_list_regex_flag = 0 %>
+      <% list_class = "server-class" %>
+      <% @server_forwarder_email.each do |server_class| %>
+        <% if server_class == "starts" %>
+          <% list_flag = 1 %>
+        <% elsif server_class == "ends" %>
+          <% list_flag = 0 %>
+        <% end %>
+        <% if list_flag == 2 %>
+          <% if regex_flag == 1 %>
+
+            <% if @white_list[regex_count] != ""%>
+              <li class="<%= list_class %>"><%= server_class %>   ( <%= @white_list[regex_count]%> )</li>
+              <% local_white_list_regex.push(@white_list[regex_count])%>
+              <% regex_count += 1 %>
+              <% regex_flag = 0 %>
+
+            <% else  %> <!--white_list is always NULL -->
+              <li class="<%= list_class %>"><%= server_class %>   ( NULL )</li>
+              <% regex_flag = 0 %>
+              <% create_white_list_regex_flag = 1 %>
+            <% end %>
+            
+          <% else %>
+            <% if create_white_list_regex_flag == 1 %>
+              <% local_white_list_temp = local_white_list_temp + server_class + ", " %>
+            <% end %>
+            <li class="<%= list_class %>"><%= server_class %></li>  <!-- forwarders -->
+              <script>
+              </script>
+          <% end %>
+          <!-- <li class="<= list_class %>"><= server_class %></li> -->
+        <% end %>
+        <% if list_flag == 1 %>
+          <ul>
+          <% list_flag = 2 %>
+          <% list_class = "forwarder-class" %>
+        <% elsif list_flag == 0 %>
+          <li class="<%= list_class %>" style = "display: none;">|</li>
+          </ul>
+          <% if create_white_list_regex_flag == 1 %>
+              <% local_white_list_temp = local_white_list_temp.chop.chop %>
+              <% local_white_list_regex.push(local_white_list_temp) %>
+              <% regex_count += 1 %>
+              <% local_white_list_temp = ""  %>
+          <% end %>
+          <% create_white_list_regex_flag = 0 %>
+          <% regex_flag = 1 %>
+          <% list_flag = 2 %>
+          <% list_class = "server-class" %>
+        <% end %>
+      <% end %><br><br>
+      </ul>
+      </div>
+      <input type="hidden" id = "hidden-text-app" name = "app" value="<%= @app%>"/>
+      <% deploy_hosts = "" %>
+      <% @deploy_hosts.each do |deploy_host| %>
+        <% deploy_hosts = deploy_hosts + deploy_host + "|" %>
+      <% end %>
+      <% search_hosts = "" %>
+      <% @search_hosts.each do |search_host| %>
+        <% search_hosts = search_hosts + search_host + "|" %>
+      <% end %>
+      <% user_searchhead = @user_searchhead.name %>
+        <input type="hidden" name="deployer-names" id="input-report-apps-deployer-names" value="<%= deploy_hosts %>"></input>
+        <input type="hidden" name="searcher-names" id="input-report-apps-searcher-names" value="<%= search_hosts %>"></input>
+        <input type="hidden" name="user-searchhead" id="input-report-apps-user-searchhead" value="<%= user_searchhead %>"></input>
+      <br>
+      <br>
+      <% class_white_list = ""%>
+      <% local_white_list_regex.each do |whitelist| %>
+          <% class_white_list = class_white_list + whitelist + "|" %>
+      <% end %>
+      <input type="hidden" id="input-report-apps-white-list" value= "<%= class_white_list %>" />
+      <input type="hidden" id="input-report-apps-app-env" value="<%= @env%>"/>
+      <textarea id ="textarea-report-apps-inputs-conf-data" style="display: none;"><%= @inputs_conf_data %> </textarea>
+      <textarea id ="textarea-report-apps-inputs-inputids-data" style="display: none;"><%= @inputids %> </textarea>
+
+<button class="btn btn-primary" onclick="location.href='/admin/show_user_apps'">Back</button>
+<!-- <button class="btn btn-primary" onclick="ajaxCall('admin_approve_user_app_deploy_request')">Approve</button> -->
+<!-- <button class="btn btn-primary" onclick="openModalApproveDeployApp()">Approve</button> -->
+<button class="btn btn-danger" onclick="openModalCancelDeployApp()">Cancel</button>
+<button class="btn btn-primary" onclick="openModalCreateServerClass()">Create Server Class</button>
+<!-- <button class="btn btn-danger" onclick="ajaxCall('admin_cancel_user_app_deploy_request')">Cancel</button> -->

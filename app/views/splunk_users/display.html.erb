@@ -1,0 +1,89 @@
+<% if @display=="inputs" %>
+   <div class="page-header">
+     <h1>Hello <%= @account_name %>,</h1>
+   </div>
+<%= form_tag '', :class => 'form-horizontal', :role => "form"  do -%>
+ <!-- <label for="source-hostname" class="col-sm-2 control-label" style="text-align:left;">Source HostName</label>
+ <div class="form-group">
+  <= text_field_tag 'source_hostname', @source_hostname,  disabled: true , :class => "form-control" %>*
+  </div>
+  <br>
+  <br> -->
+  <label  for="source-hostname" class="col-sm-2 control-label" style="text-align:left;">Log File Path</label>
+ <div class="form-group">
+<%= text_field_tag 'log_file_path', @log_file_path ,  disabled: true  %>*
+  </div>
+  <br>
+  <br>
+  <label  for="source-hostname" class="col-sm-2 control-label" style="text-align:left;">Source Type</label>
+ <div class="form-group">
+  <%= text_field_tag 'sourcetype', @sourcetype,   disabled: true %>*
+  </div>
+  <br>
+  <br>
+  <label  for="source-hostname" class="col-sm-2 control-label" style="text-align:left;">Log File Size Per Day</label>
+ <div class="form-group">
+   <%= text_field_tag 'log_file_size', @log_file_size, disabled: true%>
+  </div>
+  <br>
+  <br>
+  <label  for="source-hostname" class="col-sm-2 control-label" style="text-align:left;">Data Retention Period</label>
+ <div class="form-group">
+   <%= text_field_tag 'data_retention_period', @data_retention_period, disabled: true %>
+  </div>
+  <br>
+  <br>
+  <label  for="source-hostname" class="col-sm-2 control-label" style="text-align:left;">Memo</label>
+ <div class="form-group">
+  <%= text_area_tag 'memo', @memo ,disabled: true %>
+  </div>
+  <br>
+  <br>
+<% end %>
+
+<button  value="<%= @input.splunk_users_id%>" class="btn btn-primary" id="adminusersinputsback" onclick="history.go(-1);return false;window.reload();">Back</button>
+<% elsif @display=="accounts" %>
+   <div class="page-header">
+     <h1>Hello <%= @testuser.user_name %>,</h1>
+   </div>
+<%= form_tag '', :class => 'form-horizontal', :role => "form"  do -%>
+    <label  for="user-hostname" class="col-sm-2 control-label" style="text-align:left;">User Name</label>
+    <div class="form-group">
+     <%= text_field_tag 'user_name', @testuser.user_name, disabled: true%>
+     </div>
+  <br>
+  <br>
+    <label   for="source-hostname" class="col-sm-2 control-label" style="text-align:left;">Group Name</label> 
+    <div class="form-group">
+    <%= text_field_tag 'group_name', @testuser.group_name, disabled: true%>
+    </div>
+  <br>
+  <br>
+    <label  for="source-hostname" class="col-sm-2 control-label" style="text-align:left;">App Team Name </label> 
+    <div class="form-group">
+    <%= text_field_tag 'app_team_name', @testuser.app_team_name, disabled: true%>
+     </div>
+  <br>
+  <br>
+    <label  for="source-hostname" class="col-sm-2 control-label" style="text-align:left;"> Service Id </label>
+     <div class="form-group">
+     <%= text_field_tag 'serviceid', @testuser.serviceid, disabled: true%>
+     </div>
+  <br>
+  <br>
+    <label  for="source-hostname" class="col-sm-2 control-label" style="text-align:left;">RPaaS <label>
+     <div class="form-group">
+     <%= text_field_tag 'rpaas_user_name', @testuser.rpaas_user_name,disabled: true %>
+      </div>
+  <br>
+  <br>
+     <label  for="source-hostname" class="col-sm-2 control-label" style="text-align:left;"> Memo </label>
+     <div class="form-group">
+      <%= text_field_tag 'memo', @testuser.memo, disabled: true%>
+      </div>
+  <br>
+  <br>
+<button  value="<%= @testuser.id%>" class="btn btn-primary" id="adminusersaccountsback" onclick="history.go(-1);return false;window.reload();">Back</button>
+<% end %>
+<% else %>
+<% end %>

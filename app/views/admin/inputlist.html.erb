@@ -1,0 +1,89 @@
+<script>
+	var list_name =[];
+	var list_status = [];
+	var list_account = [];
+	var list_id = [];
+	var listNotMatchingNames = [];
+	var targetTableRow="admin-inputs-table-row-";
+	var searchTermLengthPrevious=0;
+	function getAllInputsList()
+	{
+		list_name = [];
+		var records=$("#admin-inputs-table td[id$='user-name']");
+		jQuery.each(records, function(index, value) {
+			list_name.push($(value).html());
+		});
+		list_status = [];
+		var records=$("#admin-inputs-table td[id$='status']");
+		jQuery.each(records, function(index, value) {
+			list_status.push($(value).html());
+		});
+		list_account = [];
+		var records=$("#admin-inputs-table td[id$='log-file-path']");
+		jQuery.each(records, function(index, value) {
+			list_account.push($(value).html());
+		});
+	}
+
+	function adminShowInputSwitchButton()
+	{
+		log = $("#admin-show-input-log-radio").is(":checked");
+		script = $("#admin-show-input-script-radio").is(":checked");
+		unixapp = $("#admin-show-input-unixapp-radio").is(":checked");
+		all = $("#admin-show-input-all-radio").is(":checked");
+		if (log == true) {
+		$("#admin-inputs-table").show();
+		$("#admin-inputs-script-table").hide();
+		$("#admin-inputs-unixapp-table").hide();
+		}
+		else if (script == true){
+		$("#admin-inputs-table").hide();
+		$("#admin-inputs-script-table").show();
+		$("#admin-inputs-unixapp-table").hide();
+		}
+		else if(unixapp){
+		$("#admin-inputs-table").hide();
+		$("#admin-inputs-script-table").hide();
+		$("#admin-inputs-unixapp-table").show();
+		}
+		else if (all == true){
+		$("#admin-inputs-table").show();
+		$("#admin-inputs-script-table").show();
+		$("#admin-inputs-unixapp-table").show();
+		}
+	}
+
+	$(document).ready(function() {
+		adminShowInputSwitchButton();
+		$("#admin-show-input-all-radio").prop("checked",true);
+		ajaxCall("input_logs_statistics_get");
+		ajaxCall("adminuserinputs");
+		pageSpecificSearchBox = "admin-inputs-search";
+	});
+</script>
+
+<div class="page-header">
+	<h1>List of Available Input.conf requests</h1>
+</div>
+<div class="inner-addon left-addon">
+	<form name="radioform"  action="">
+	<label class="btn" ><input type="radio" name="InputRadio" id = "admin-show-input-log-radio" onchange="adminShowInputSwitchButton()" > Show Log File Input</label>
+	<label class="btn" ><input type="radio" name="InputRadio" id = "admin-show-input-script-radio" onchange="adminShowInputSwitchButton()" > Show Script Input</label>
+	<label class="btn"><input type="radio" name="InputRadio" id = "admin-show-input-unixapp-radio" onchange="adminShowInputSwitchButton()" > Show Unix App Input</label> 
+	<label class="btn" ><input type="radio" name="InputRadio" id = "admin-show-input-all-radio"  onchange="adminShowInputSwitchButton()" > Show All Inputs</label> 
+	</form>
+	<input type="text" class="textbox pull-right" id="admin-inputs-search" role="search" placeholder = "Search Filter" onkeyup="doSearch(this,'admin-inputs-table','admin-inputs-script-table', 'admin-inputs-unixapp-table')"/>
+</div>
+<br>
+
+<div class="inputs-table">
+	<table class="table table-bordered table-hover" id="admin-inputs-table">
+	</table>
+	<br>
+	<table class="table table-bordered table-hover" id="admin-inputs-script-table">
+	</table>
+	<br>
+	<table class="table table-bordered table-hover" id="admin-inputs-unixapp-table">
+	</table>
+</div>
+<button type="button" onclick="location.href='/admin/home'" class="btn btn-primary">Back</button>

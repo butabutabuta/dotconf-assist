@@ -1,0 +1,347 @@
+<script>
+	var list_name =[];
+	var list_status = [];
+	var list_account= [];
+	var clients_list_name =[];
+	var forwarders_list_name =[];
+	var listId = [];
+	var listNotMatchingNames = [];
+	var targetTableRow="user-server-class-table-row-";
+	var searchTermLengthPrevious=0;
+	var rightAfterModalOpened = false;
+
+	function scrollTop0(modalID, modalBodyID){
+		$('#'+modalID).on('shown.bs.modal', function () {
+			if (rightAfterModalOpened) {
+				$('#'+modalBodyID).scrollTop(0);
+				rightAfterModalOpened = false;
+			}
+		});
+	}
+
+	function openModalForwarderAdd()
+	{
+		$("#modal-forwarder-add").modal('toggle');
+		$("#modal-body-forwarder-add #input-forwarder-add-forwarder-env").val($("#hidden-text-env").val());
+		$("#input-forwarder-add-name").popover({trigger: 'focus'});
+	}
+
+	function openModalForwarderEdit(forwarderNumber,forwarder)
+	{
+		rightAfterModalOpened = true;
+		forwarderName=$("#user-forwarders-"+forwarderNumber+"-name").html();
+		$("#modal-body-forwarder-edit #input-forwarder-edit-name").val(forwarderName);
+		$("#modal-forwarder-edit").modal('toggle');
+		$("#input-forwarder-edit-name").popover({trigger: 'focus'});
+		$("#modal-body-forwarder-edit #input-forwarder-edit-forwarder").val(forwarder);
+		$("#modal-body-forwarder-edit #input-forwarder-edit-forwarder-number").val(forwarderNumber);
+	}
+
+	function openModalForwarderDelete(forwarderNumber,forwarder)
+	{
+		forwarderName=$("#user-forwarders-"+forwarderNumber+"-name").html();
+		$("#modal-body-forwarder-delete #input-forwarder-delete-name").val(forwarderName);
+		$("#modal-forwarder-delete").modal('toggle');
+		$("#modal-body-forwarder-delete #input-forwarder-delete-forwarder").val(forwarder);
+		$("#modal-body-forwarder-delete #input-forwarder-delete-forwarder-number").val(forwarderNumber);
+	}
+
+	function openModalServerClassAdd()
+	{
+		rightAfterModalOpened = true;
+		removeThisElementChildren("#modal-user-server-class-table");
+		$("#input-server-class-add-forwarder-names").val('');
+		$("#input-server-class-add-name").val('');
+		$("#input-server-class-add-regex").val("");
+		$("#input-server-class-add-filter").val('');
+		$("#modal-server-class-add").modal('toggle');
+		$("#input-server-class-add-name").popover({trigger: 'focus'});
+		ajaxCall("user_server_class_filter_get");
+	}
+
+	function openModalServerClassShow(serverClassNumber,serverClass)
+	{
+		rightAfterModalOpened = true;
+		removeThisElementChildren("#modal-user-server-class-show-table");
+		$("#modal-server-class-show").modal('toggle');
+		$("#modal-body-server-class-show #input-server-class-show").val(serverClass);
+		serverClassName = $("#user-server-class-"+serverClassNumber+"-name").html();
+		$("#input-server-class-show-name").val(serverClassName);
+		ajaxCall("user_server_class_forwarders_get");     
+	}
+
+	function openModalServerClassEdit(serverClassNumber, serverClass)
+	{
+		rightAfterModalOpened = true;
+		$("#input-server-class-edit-client-names").val("");
+		removeThisElementChildren("#modal-user-server-class-edit-table");
+		serverClassName=$("#user-server-class-"+serverClassNumber+"-name").html();
+		$("#modal-server-class-edit").modal('toggle');
+		$("#modal-body-server-class-edit #input-server-class-edit-class-name").val(serverClassName);
+		$("#modal-body-server-class-edit #input-server-class-edit").val(serverClass);
+		ajaxCall("user_server_class_edit_clients_get");     
+	}
+
+	function openModalServerClassDelete(serverClassNumber, serverClass)
+	{
+		serverClassName=$("#user-server-class-"+serverClassNumber+"-name").html();
+		$("#modal-server-class-delete").modal('toggle');
+		$("#modal-body-server-class-delete #input-server-class-delete-name").val(serverClassName);
+		$("#modal-body-server-class-delete #input-server-class-delete-server-class").val(serverClass);
+		$("#modal-body-server-class-delete #input-server-class-delete-server-class-number").val(serverClassNumber);
+	}
+
+	function getAllClientsList()
+	{
+		list_name = [];
+		var records=$("#modal-user-server-class-table td[id$='-server-class-name']");
+		jQuery.each(records, function(index, value) {
+			list_name.push($(value).html());
+		});
+		list_status = [];
+		list_account = [];
+	}
+
+	function getAllForwardersList()
+	{
+		list_name = [];
+		var records=$("#modal-forwarder-add-from-deployment-server-table td[id$='-forwarder-name']");
+		jQuery.each(records, function(index, value) {
+			 list_name.push($(value).html());
+		});
+		list_status = [];
+		list_account = [];
+	}
+
+	function getAllEditForwardersList()
+	{
+		list_name = [];
+		var records=$("#modal-user-server-class-edit-table td[id$='-forwarder-name']");
+		jQuery.each(records, function(index, value) {
+			list_name.push($(value).html());
+		});
+		list_status = [];
+		list_account = [];
+	}
+
+	function getAllUserForwardersList()
+	{
+		list_name = [];
+		var records=$("#user-forwarders-table td[id$='-name']");
+		jQuery.each(records, function(index, value) {
+			list_name.push($(value).html());
+		});
+		list_status = [];
+		list_account = [];
+	}
+
+	function getAllServerClassesList()
+	{
+		list_name = [];
+		var records=$("#user-server-class-table td[id$='-name']");
+		jQuery.each(records, function(index, value) {
+			list_name.push($(value).html());
+		});
+		list_status = [];
+		list_account = [];
+	}
+
+	function restoreRecordsDisplay()
+	{
+		$.each(listNotMatchingNames, function(index,value){
+			$("#"+targetTableRow+value).css("display","block");
+		});
+	}
+
+	function openModalForwarderAddFromList()
+	{
+		removeThisElementChildren("#modal-forwarder-add-from-deployment-server-table");
+		$("#modal-forwarder-add-from-deployment-server").modal('toggle');
+		$("#input-forwarder-add-from-deployment-server-forwarder-names").val('');
+		$("#input-forwarder-add-from-deployment-server-filter").val('');
+		$("#modal-body-forwarder-add-from-deployment-server #input-forwarder-add-from-deployment-server-forwarder-env").val($("#hidden-text-env").val());
+		$("#input-forwarder-add-from-deployment-server-name").popover({trigger: 'focus'});
+		ajaxCall("user_forwarders_from_deployment_server_get");
+	}
+	function addForwardersFromDeploymentServerList()
+	{
+		serverForwarderNames = "";
+		$("#modal-forwarder-add-from-deployment-server-table").find(':checkbox:checked').each(function(index,elem){
+			serverForwarderNames = serverForwarderNames + $(elem).attr('value')+ "|";
+		});
+		if (serverForwarderNames.length > 0 ) {
+			serverForwarderNames = serverForwarderNames.slice(0,-1);
+			if($("#modal-fafds-table-check-all").prop("checked") == true) {
+				 serverForwarderNames = serverForwarderNames.substr(serverForwarderNames.indexOf("|")+1);
+			}
+			$("#input-forwarder-add-from-deployment-server-forwarder-names").val(serverForwarderNames);
+			ajaxCall("user_forwarders_from_deployment_server_add");
+			highlightAddedRow = true;
+		}
+		else {
+			updateElementHtmlData("notice-forwarder-add-from-deployment-server","Please Select At Least 1 Forwarder to Add.");
+			$("#notice-forwarder-add-from-deployment-server").css("display","block");
+			alertNoticesTimeoutVar = clearAlertNotices();
+		}
+	}
+	function addServerClass()
+	{
+		 result=validate($('#input-server-class-add-name').val(),'string','serverclassname');
+		 if(result==1) {
+			 serverClassForwarderNames = "";
+			 $("#modal-user-server-class-table").find(':checkbox:checked').each(function(index,elem){
+				 serverClassForwarderNames = serverClassForwarderNames + $(elem).attr('value')+ "|";
+			 });
+			 if( serverClassForwarderNames.length > 0) {
+				 $("#input-server-class-add-forwarder-names").val(serverClassForwarderNames);
+				 if($("#modal-usc-table-check-all").prop('checked')==true) {
+					 value = $("#input-server-class-add-forwarder-names").val();
+					 $("#input-server-class-add-forwarder-names").val(value.substr(value.indexOf("|")+1));
+				 }
+				 ajaxCall('user_server_class_add');
+				 highlightAddedRow = true;
+			 }
+			 else {
+				 updateElementHtmlData("notice-server-class-add","Please Select At Least 1 Forwarder to Add.");
+				 $("#notice-server-class-add").css("display","block");
+				 alertNoticesTimeoutVar = clearAlertNotices();
+			 }
+		 }
+		 else {
+			 displayMessages("serverclassname","input-server-class-add-name","data-content",result);
+			 $("#input-server-class-add-filter").focus();
+			 $('#input-server-class-add-name').focus();
+		 }
+	}
+	function editServerClass()
+	{
+		serverClassForwarderNames = "";
+		result=validate($('#input-server-class-edit-class-name').val(),'string','serverclassname');
+		if (result == 1) {
+			$("#modal-user-server-class-edit-table").find(':checkbox:checked').each(function(index,elem){
+				serverClassForwarderNames = serverClassForwarderNames + $(elem).attr('value')+ "|";
+			});
+			if ( serverClassForwarderNames.length > 0 ) {
+				if($("#modal-usce-table-check-all").prop('checked')==true) {
+					 serverClassForwarderNames = serverClassForwarderNames.substr(serverClassForwarderNames.indexOf("|")+1);
+				}
+				$("#input-server-class-edit-client-names").val(serverClassForwarderNames);
+				ajaxCall('user_server_class_edit');
+				highlightEditedRow = true;
+			}
+			else {
+				updateElementHtmlData("notice-server-class-edit","Please Select At Least 1 Forwarder to Add.");
+				$("#notice-server-class-edit").css("display","block");
+				alertNoticesTimeoutVar = clearAlertNotices();
+			}
+		}
+		else {
+			displayMessages("serverclassname","input-server-class-edit-name","data-content",result);
+			$("#input-server-class-edit-filter").focus();
+			$('#input-server-class-edit-name').focus();
+		}
+	}
+	$(document).ready(function() {
+	 	scrollTop0("modal-server-class-add", "modal-body-server-class-add");
+	 	scrollTop0("modal-server-class-edit", "modal-body-server-class-edit");
+	 	scrollTop0("modal-server-class-show", "modal-body-server-class-show");
+
+		$($("#a-tab-toggle-"+$("#hidden-text-env").val()).parent()).addClass("active");
+		$('#modal-forwarder-delete').on('hide.bs.modal', function () {
+			$('#input-forwarder-delete-name').val('');
+		});
+		$('#a-tab-toggle-forwarders').click(function () {
+			removeThisElementChildren("#user-forwarders-table");
+			ajaxCall("user_forwarders_get");
+			localStorage.setItem("lastTab","forwarders");
+			pageSpecificSearchBox = "user-forwarders-search";
+		});
+		$('#a-tab-toggle-classes').click(function () {
+			removeThisElementChildren("#user-server-class-table");
+			ajaxCall("user_server_class_get");
+			localStorage.setItem("lastTab","classes");
+			pageSpecificSearchBox = "user-server-classes-search";
+		});
+		restoreTab = localStorage.getItem("lastTab");
+		if (restoreTab) {
+			if ( restoreTab == "classes") {
+				$($("#a-tab-toggle-forwarders").parent()).removeClass("active");
+				$("#tab-forwarders").removeClass("active");
+				$("#tab-classes").addClass("active");
+				$($("#a-tab-toggle-classes").parent()).addClass("active");
+				removeThisElementChildren("#user-server-class-table");
+				ajaxCall("user_server_class_get");
+				localStorage.setItem("lastTab","classes");
+				pageSpecificSearchBox = "user-server-classes-search";
+			}
+			else if ( restoreTab == "forwarders") {
+				$($("#a-tab-toggle-classes").parent()).removeClass("active");
+				$("#tab-classes").removeClass("active");
+				$($("#a-tab-toggle-forwarders").parent()).addClass("active");
+				$("#tab-forwarders").addClass("active");
+				removeThisElementChildren("#user-forwarders-table");
+				ajaxCall("user_forwarders_get");
+				localStorage.setItem("lastTab","forwarders");
+				pageSpecificSearchBox = "user-forwarders-search";
+			}
+			else {
+				removeThisElementChildren("#user-forwarders-table");
+				ajaxCall("user_forwarders_get");
+				localStorage.setItem("lastTab","forwarders");
+				pageSpecificSearchBox = "user-forwarders-search";
+			}
+		}
+		else {
+			removeThisElementChildren("#user-forwarders-table");
+			ajaxCall("user_forwarders_get");
+			localStorage.setItem("lastTab","forwarders");
+			pageSpecificSearchBox = "user-forwarders-search";
+		}
+	});
+</script>
+
+
+<% provide(:img_title, 'Server Class?') %>
+<% provide(:img_body, "A Server Class is the collection of Forwarders. A Forwarder is the source host where the logs are generated. Example:") %>
+<% provide(:img, 'serverclass.png') %>
+<% provide(:step_title, 'Steps') %>
+<% provide(:step_1, "1. Add Fowarder") %>
+<% provide(:step_2, "2. Add Server Class") %>
+
+<div class="content-div">
+	<ul class="nav nav-tabs nav-justified" role="tablist">
+		<li class="active"><a href="#tab-forwarders" data-toggle="tab" id="a-tab-toggle-forwarders"><i class="fa fa-laptop" aria-hidden="true"></i>Forwarders</a></li>
+		<li><a href="#tab-classes" data-toggle="tab" id="a-tab-toggle-classes"><i class="fa fa-th" aria-hidden="true"></i>Server Classes</a></li>
+	</ul>
+
+	<div class="content-container container">
+		<div class="tab-content" id="tab-content-manage-forwarders">
+			<div class="tab-pane active" id="tab-forwarders">
+				<div class="page-header">
+					<button type="button" onclick="openModalForwarderAddFromList()" class="btn btn-primary" ><i class="fa fa-plus" aria-hidden="true"></i>Add Forwarder</button>
+					<input type="text" class="search-field textbox" id="user-forwarders-search" role="search" placeholder="Search Filter" onkeyup="doSearch(this, 'user-forwarders-table', '')"/>
+				</div>
+
+				<div class="alert alert-info" id="notice-manage-forwarders" style="display:none"></div>
+				<div class="content-table forwarders-table" id="div-users-forwarders-table">
+					<table class="table table-bordered table-hover" id="user-forwarders-table">
+					</table>
+				</div>
+			</div>
+
+			<div class="tab-pane" id="tab-classes">
+				<div class="page-header">
+					<button type="button" onclick="openModalServerClassAdd()" class="btn btn-primary" ><i class="fa fa-plus" aria-hidden="true"></i>Add Server Class</button>
+					<input type="text" class="search-field textbox" id="user-server-classes-search" role="search" placeholder="Search Filter" onkeyup="doSearch(this, 'user-server-class-table', '')"></input>
+				 </div>
+
+				 <div class="alert alert-info" id="notice-manage-forwarders-server-class" style="display:none"></div>
+				 <div class="content-table server-class-table" id="div-users-server-class-table">
+					<table class="table table-bordered table-hover" id="user-server-class-table">
+					</table>
+				 </div>
+			</div>
+		</div>
+	</div>
+</div>
+<input type="hidden" name="env" id="hidden-text-env" value=<%= @env%>> </input>

@@ -1,0 +1,25 @@
+<!-- Modal to Take Feedback -->
+<div class="modal fade" id="modal-feedback" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display:none;">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="feedbacklabel">Provide Feedback</h4>
+            </div><!-- close modal-header -->
+            <div class="modal-body">
+                <div class="textbox">
+                  <p >Username</p>
+                  <input type="text" name="feedbackusername"  id="feedback-username" class="form-control" readonly="readonly" value=<%= current_authentication.splunk_user_name %>></input><br><br>
+
+                  <input type="text" name="feedbacksubject"  class="form-control" placeholder="Please write subject for feedback" id="feedback-subject" data-toggle="popover" data-placement="bottom" data-content="The content of this box will appear as subject for email"></input><br><br>
+
+                  <textarea name="feedbackcontent" rows="10"  class="form-control" placeholder="Please write your feedback here" id="feedback-content" data-toggle="popover" data-placement="bottom" data-content="This will be the Feedback Email body"></textarea>
+                </div> <!-- close textbox class-->
+            </div> <!-- close modal-body -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal" >Cancel</button>
+                <button id="feedback-send" onclick="ajaxCall('send_feedback')" class="btn btn-primary pull-right">Submit</button>
+            </div><!-- close modal-footer-->
+        </div>  <!-- close modal-content-->
+    </div>  <!-- close modal-dialog-->
+</div> <!-- close modal-->
+<!-- Modal to change password -->

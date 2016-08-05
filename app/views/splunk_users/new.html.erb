@@ -1,0 +1,131 @@
+<script>
+  var resultcount=3;
+  var text1=0;
+  var text2=1;
+  var text3=1;
+  var text4=1;
+  function validates(result,text)
+  {
+     if (result==1)
+     {
+       if(text==1)
+       {
+       }
+       else
+       {
+         text=1;
+         resultcount+=1;
+       }
+       if(resultcount==4)
+       {
+         $('#saveform').attr("disabled", false);
+       }
+     }
+     else
+     {
+       if(text==1)
+       {
+         text=0;
+         if(resultcount==4)
+         {
+           $('#saveform').attr("disabled", true);
+         }
+         resultcount-=1;
+       }
+     }
+     return(text);
+  }
+  $(document).ready(function() {
+      $('#rpaas-user-name').popover({trigger: 'focus'});
+      $('#memo').popover({trigger: 'focus'});
+      $('#email').popover({trigger: 'focus'});
+      $('#select-splunk-host').popover({trigger: 'focus'});
+      $('#password').popover({trigger: 'focus'});
+      $('#password').focus();
+      displayMessages("rpaasusername","rpaas-user-name","data-content",0);
+      displayMessages("memo","memo","data-content",0);
+      displayMessages("email","email","data-content",0);
+      displayMessages("passwordsplunkaccount","password","data-content",0);
+      $('#saveform').attr("disabled", true);
+      $( "#password" ).keyup(function() {
+           $('#password').popover({
+                trigger: 'manual',
+                placement: 'right',
+           });
+           result=validate($('#password').val(),'string','passwordsplunkaccount');
+           text1=validates(result,text1);
+           displayMessages('passwordsplunkaccount','password','data-content',result);
+           $('#password').popover("show");
+      });
+      $( "#rpaas-user-name" ).keyup(function() {
+           $('#rpaas-user-name').popover({
+                trigger: 'manual',
+                placement: 'right',
+           });
+           result=validate($('#rpaas-user-name').val(),'string','rpaasusername');
+           text2=validates(result,text2);
+           displayMessages('rpaasusername','rpaas-user-name','data-content',result);
+           $('#rpaas-user-name').popover("show");
+      });
+      $( "#memo" ).keyup(function() {
+           $('#memo').popover({
+                trigger: 'manual',
+                placement: 'right',
+           });
+           result=validate($('#memo').val(),'string','memo');
+           text3=validates(result,text3);
+           displayMessages('memo','memo','data-content',result);
+           $('#memo').popover("show");
+      });
+      $( "#email" ).keyup(function() {
+           $('#email').popover({
+                trigger: 'manual',
+                placement: 'right',
+           });
+           result=validate($('#email').val(),'string','email');
+           text4=validates(result,text4);
+           displayMessages('email','email','data-content',result);
+           $('#email').popover("show");
+      });
+  });
+</script>
+<%- model_class = SplunkUser -%>
+<div class="page-header">
+<h1>Create account for <%= @env %> environment</h1>
+</div>
+  <% if flash[:notice] %>
+      <div class="alert alert-info" id="notice-home"><%= flash[:notice] %></div>
+  <% end %>
+<div id="test">
+ <%= form_tag '/splunk_users', :class => 'form-horizontal', :role => "form" do -%>
+ <label  for="user-name" class="col-sm-2 control-label" style="text-align:left;">User Name</label>
+  <div class="form-group">
+     <%= text_field_tag 'user_name', @user_name ,id: 'user-name',:style => '', :disabled => true%>
+  </div>
+<br>
+ <label  for="password" class="col-sm-2 control-label" style="text-align:left;">Password</label>
+  <div class="form-group">
+    <%= password_field_tag 'password', '',id: 'password', placeholder: "Password" ,data: { toggle: 'popover', trigger: 'hover', content: '' } , :autocomplete => :off, :style => ''%>*
+  </div>
+<br>
+  <label  for="splunk-host" class="col-sm-2 control-label" style="text-align:left;">Splunk Host</label>
+  <div class="form-group">
+     <%= select_tag(:splunk_host, options_for_select(@hosts, selected: :option ), :style => '', id: 'select-splunk-host',data: { toggle: 'popover', trigger: 'hover', content: 'It\'s your Splunk Web (SH) hostname. Please ask admin if you have dedicated SH.' }) %>*
+  </div>
+<br>
+ <label  for="rpaas-user-name" class="col-sm-2 control-label" style="text-align:left;">RPaaS User Name</label>
+  <div class="form-group">
+      <%= text_field_tag 'rpaas_user_name','', id: "rpaas-user-name", placeholder: "RPaas User Name" ,data: { toggle: 'popover', trigger: 'hover', content: '' } , :autocomplete => :off, :style => ''%>
+  </div>
+<br>
+ <label  for="memo" class="col-sm-2 control-label" style="text-align:left;">Memo</label>
+  <div class="form-group">
+      <%= text_area_tag 'memo','', id: "memo", placeholder: "Memo" ,data: { toggle: 'popover', trigger: 'hover', content: '' } , :autocomplete => :off, :style => ''%>
+  </div>
+<br>
+<input type="hidden" name="env" id="hidden-text-account-env" value=<%= @env%>> </input>
+  <div>
+    <%= link_to "Cancel", {:controller => "splunk_users", :action => "index", :env => @env }, {:class=>"btn btn-default", :style=>'margin-left: 5.5em'} %>
+    <%= submit_tag 'Create Account On Splunk', :class => "btn btn-primary", :id => "saveform" , :style => 'margin-left: 1em;'%></div>
+  </div>
+<% end -%>

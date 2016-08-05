@@ -1,0 +1,536 @@
+<!-- Modal to Add Splunk Price -->
+<div class="modal fade" id="modal-price-add" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display:none;">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="price-add-label">Add Price</h4>
+            </div><!-- close modal-header -->
+            <div class="modal-body">
+                <div class="textbox">
+                  <label>Service Unit Price</label>
+                  <input type="text" style="width:98%" class="form-control" placeholder="Service Unit Price" id="input-price-add-service_unit_price" data-toggle="popover" data-placement="bottom" data-content="Service Unit Price"></input>
+
+                  <label>Storage Unit Price</label>
+                  <input type="text" style="width:98%" class="form-control" placeholder="Storage Unit Price" id="input-price-add-storage_unit_price" data-toggle="popover" data-placement="bottom" data-content="Storage Unit Price"></input>
+                </div> <!-- close textbox class-->
+            </div> <!-- close modal-body -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal" >Cancel</button>
+                <button onclick="ajaxCall('price_add')" class="btn btn-primary pull-right">Submit</button>
+            </div><!-- close modal-footer-->
+        </div>  <!-- close modal-content-->
+    </div>  <!-- close modal-dialog-->
+</div> <!-- close modal-->
+
+<div class="modal fade" id="modal-price-edit" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display:none;">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="price-edit-label">Edit Price</h4>
+            </div><!-- close modal-header -->
+            <div class="modal-body">
+                <div class="textbox">
+                  <input type="hidden" style="width:98%" class="form-control" placeholder="" id="input-price-edit-price_id" data-toggle="popover" data-placement="bottom" data-content="Price ID"></input>
+                  
+                  <label>Service Unit Price</label>
+                  <input type="text" style="width:98%" class="form-control" placeholder="Service Unit Price" id="input-price-edit-service_unit_price" data-toggle="popover" data-placement="bottom" data-content="Service Unit Price"></input>
+
+                  <label>Storage Unit Price</label>
+                  <input type="text" style="width:98%" class="form-control" placeholder="Storage Unit Price" id="input-price-edit-storage_unit_price" data-toggle="popover" data-placement="bottom" data-content="Storage Unit Price"></input>
+                </div> <!-- close textbox class-->
+            </div> <!-- close modal-body -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal" >Cancel</button>
+                <button onclick="ajaxCall('price_edit')" class="btn btn-primary pull-right">Submit</button>
+            </div><!-- close modal-footer-->
+        </div>  <!-- close modal-content-->
+    </div>  <!-- close modal-dialog-->
+</div> <!-- close modal-->
+
+<div class="modal fade" id="modal-price-delete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display:none;">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="price-delete-label">Delete Price</h4>
+            </div><!-- close modal-header -->
+            <div class="modal-body">
+                <div class="textbox">
+                  <input type="hidden" style="width:98%" class="form-control" placeholder="" id="input-price-delete-price_id" data-toggle="popover" data-placement="bottom" data-content="Price ID"></input>
+
+                  <label>Service Unit Price</label>
+                  <input type="text" style="width:98%" class="form-control" placeholder="Service Unit Price" id="input-price-delete-service_unit_price" data-toggle="popover" data-placement="bottom" data-content="Service Unit Price" disabled></input>
+
+                  <label>Storage Unit Price</label>
+                  <input type="text" style="width:98%" class="form-control" placeholder="Storage Unit Price" id="input-price-delete-storage_unit_price" data-toggle="popover" data-placement="bottom" data-content="Storage Unit Price" disabled></input>
+                </div> <!-- close textbox class-->
+            </div> <!-- close modal-body -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal" >Cancel</button>
+                <button onclick="ajaxCall('price_delete')" class="btn btn-primary pull-right">Submit</button>
+            </div><!-- close modal-footer-->
+        </div>  <!-- close modal-content-->
+    </div>  <!-- close modal-dialog-->
+</div> <!-- close modal-->
+
+<!-- Modal to Add Splunk Host -->
+<div class="modal fade" id="modal-splunk-host-add" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display:none;">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="splunk-host-add-label">Add Splunk Host</h4>
+            </div><!-- close modal-header -->
+            <div class="modal-body">
+                <div class="textbox">
+                  <label>Splunk Host Name</label>
+                  <input type="text" style="width:98%"name="splunkhostname" class="form-control" placeholder="Splunk Host Name" id="input-splunk-host-add-name" data-toggle="popover" data-placement="bottom" data-content="Host Name of the Splunk Host"></input><br><br>
+                  <label>Select Role For Host</label>
+                  <select id="select-splunk-host-add-role" class="form-control">
+                        <option>SH</option>
+                        <option>IDX</option>
+                        <option>FW</option>
+                        <option>DPLY</option>
+                        <option>MASTER</option>
+                  </select>
+                  <label>Select ENV Of Host</label>
+                  <select id="select-splunk-host-add-env" class="form-control">
+                        <option>dev</option>
+                        <option>stg</option>
+                        <option>prod</option>
+                  </select>
+                </div> <!-- close textbox class-->
+            </div> <!-- close modal-body -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal" >Cancel</button>
+                <button id="feedback-send" onclick="ajaxCall('splunk_host_add')" class="btn btn-primary pull-right">Add Host</button>
+            </div><!-- close modal-footer-->
+        </div>  <!-- close modal-content-->
+    </div>  <!-- close modal-dialog-->
+</div> <!-- close modal-->
+
+
+<!-- Modal to Edit Splunk Host -->
+
+<div class="modal fade" id="modal-splunk-host-edit" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display:none;">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="splunk-host-edit-label">Edit Splunk Host</h4>
+            </div><!-- close modal-header -->
+            <div class="modal-body" id="modal-body-splunk-host-edit">
+                <div class="textbox">
+                  <label>Splunk Host Name</label>
+                  <input type="text" name="splunkhostname" class="form-control" style='width:98%' placeholder="Splunk Host Name" id="input-splunk-host-edit-name" data-toggle="popover" data-placement="bottom" data-content="Host Name of the Splunk Host"></input><br><br>
+                  <label>Select Role For Host</label>
+                  <select id="select-splunk-host-edit-role" class="form-control">
+                        <option>SH</option>
+                        <option>IDX</option>
+                        <option>FW</option>
+                        <option>DPLY</option>
+                        <option>MASTER</option>
+                  </select>
+                  <label>Select ENV Of Host</label>
+                  <select id="select-splunk-host-edit-env" class="form-control">
+                        <option>dev</option>
+                        <option>stg</option>
+                        <option>prod</option>
+                  </select>
+                  <input type="hidden" name="splunkhost" id="input-splunk-host-edit-host"></input>
+                  <input type="hidden" name="splunkhost" id="input-splunk-host-edit-host-number"></input>
+                </div> <!-- close textbox class-->
+            </div> <!-- close modal-body -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal" >Cancel</button>
+                <button id="feedback-send" onclick="ajaxCall('splunk_host_edit')" class="btn btn-primary pull-right">Update Host</button>
+            </div><!-- close modal-footer-->
+        </div>  <!-- close modal-content-->
+    </div>  <!-- close modal-dialog-->
+</div> <!-- close modal-->
+
+
+<!-- Modal to Delete Splunk Host -->
+
+<div class="modal fade" id="modal-splunk-host-delete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display:none;">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="splunk-host-delete-label">Delete Splunk Host</h4>
+            </div><!-- close modal-header -->
+            <div class="modal-body" id="modal-body-splunk-host-delete">
+                <div class="textbox">
+                  <label>Splunk Host Name</label>
+                  <input type="text" name="splunkhostname" style="width:98%"class="form-control" placeholder="Splunk Host Name" id="input-splunk-host-delete-name" data-toggle="popover" data-placement="bottom" data-content="Host Name of the Splunk Host" disabled="true"></input><br><br>
+                  <label>Select Role For Host</label>
+                  <select id="select-splunk-host-delete-role" class="form-control" disabled="true">
+                        <option>SH</option>
+                        <option>IDX</option>
+                        <option>FW</option>
+                        <option>DPLY</option>
+                        <option>MASTER</option>
+                  </select>
+                  <label>Select ENV Of Host</label>
+                  <select id="select-splunk-host-delete-env" class="form-control" disabled="true">
+                        <option>dev</option>
+                        <option>stg</option>
+                        <option>prod</option>
+                  </select>
+                  <input type="hidden" name="splunkhost" id="input-splunk-host-delete-host"></input>
+                  <input type="hidden" name="splunkhost" id="input-splunk-host-delete-host-number"></input>
+                </div> <!-- close textbox class-->
+            </div> <!-- close modal-body -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal" >Cancel</button>
+                <button id="feedback-send" onclick="ajaxCall('splunk_host_delete')" class="btn btn-primary pull-right">Delete Host</button>
+            </div><!-- close modal-footer-->
+        </div>  <!-- close modal-content-->
+    </div>  <!-- close modal-dialog-->
+</div> <!-- close modal-->
+
+<!-- TESTING SECTION TO BE REMOVED IF DOES NOT WORKS -->
+<!-- Modal to Show Announcements -->
+
+<div class="modal fade" id="modal-announcements" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display:none;height:60%;overflow:hidden;">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="announcementslabel">Announcements
+                <button type="button" class="close pull-right" data-dismiss="modal" >&times;</button>
+                </h4>
+                This is beta version of this specific Feature.
+            </div><!-- close modal-header -->
+            <div class="modal-body" id="modal-body-announcements">
+                <div class="textbox">
+                   <div class="alert alert-info" id="notice-announcements" style="display:none;width:25%;"></div>
+                   <div class="announcements-table">
+                      <table class="table table-bordered table-hover" id="splunk-users-announcements-table" style="">
+                      </table> <!-- close announcements table -->
+                   </div> <!-- close announcements table parent div-->
+                </div> <!-- close textbox class-->
+            </div> <!-- close modal-body -->
+        </div>  <!-- close modal-content-->
+    </div>  <!-- close modal-dialog-->
+</div> <!-- close modal-->
+
+
+<!-- Modal to Add Announcement -->
+
+<div class="modal fade" id="modal-announcement-add" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display:none;">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="announcement-add-label">Add Announcement</h4>
+            </div><!-- close modal-header -->
+            <div class="modal-body">
+                <div class="textbox">
+                  <label>Announcement</label>
+                  <textarea name="announce" class="form-control" placeholder="Announcement" id="input-announcement-add-announce" data-toggle="popover" data-placement="bottom" data-content="Add an Announcement"></textarea>
+                  <br>
+                  <br>
+                  <label>Status</label>
+                  <select id="select-announcement-add-status" class="form-control">
+                        <option>Publish</option>
+                        <option>Do Not Publish</option>
+                  </select>
+                </div> <!-- close textbox class-->
+            </div> <!-- close modal-body -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal" >Cancel</button>
+                <button id="button-announcement-add" onclick="ajaxCall('announcement_add')" class="btn btn-primary pull-right">Add Announcement</button>
+            </div><!-- close modal-footer-->
+        </div>  <!-- close modal-content-->
+    </div>  <!-- close modal-dialog-->
+</div> <!-- close modal-->
+
+
+<!-- Modal to Edit Announcement -->
+
+<div class="modal fade" id="modal-announcement-edit" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display:none;">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="announcement-edit-label">Edit Announcement</h4>
+            </div><!-- close modal-header -->
+            <div class="modal-body" id="modal-body-announcement-edit">
+                <div class="textbox">
+                  <label>Announcement</label>
+                  <textarea name="announce" class="form-control" id="input-announcement-edit-announce"></textarea>
+                  <br>
+                  <br>
+                  <label>Status</label>
+                  <select id="select-announcement-edit-status" class="form-control">
+                        <option>Publish</option>
+                        <option>Do Not Publish</option>
+                  </select>
+                  <input type="hidden" name="announcement" id="input-announcement-edit-announcement"></input>
+                  <input type="hidden" name="splunkhost" id="input-announcement-edit-announcement-number"></input>
+                </div> <!-- close textbox class-->
+            </div> <!-- close modal-body -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal" >Cancel</button>
+                <button id="button-announcement-edit" onclick="ajaxCall('announcement_edit')" class="btn btn-primary pull-right">Update Announcement</button>
+            </div><!-- close modal-footer-->
+        </div>  <!-- close modal-content-->
+    </div>  <!-- close modal-dialog-->
+</div> <!-- close modal-->
+
+
+<!-- Modal to Delete Announcement -->
+
+<div class="modal fade" id="modal-announcement-delete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display:none;">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="announcement-delete-label">Delete Announcement</h4>
+            </div><!-- close modal-header -->
+            <div class="modal-body" id="modal-body-announcement-delete">
+                <div class="textbox">
+                  <label>Announcement</label>
+                  <textarea name="announce" class="form-control" id="input-announcement-delete-announce" disabled=true></textarea>
+                  <br>
+                  <br>
+                  <label>Status</label>
+                  <select id="select-announcement-delete-status" class="form-control" disabled=true>
+                        <option>Publish</option>
+                        <option>Do Not Publish</option>
+                  </select>
+                  <input type="hidden" name="announcement" id="input-announcement-delete-announcement"></input>
+                  <input type="hidden" name="announcementnumber" id="input-announcement-delete-announcement-number"></input>
+                </div> <!-- close textbox class-->
+            </div> <!-- close modal-body -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal" >Cancel</button>
+                <button id="button-announcement-delete" onclick="ajaxCall('announcement_delete')" class="btn btn-primary pull-right">Delete Announcement</button>
+            </div><!-- close modal-footer-->
+        </div>  <!-- close modal-content-->
+    </div>  <!-- close modal-dialog-->
+</div> <!-- close modal-->
+
+
+<!-- Modal to Suggest Forwarder Change -->
+
+<div class="modal fade" id="modal-forwarder-suggest-change" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display:none;">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="forwarder-suggest-change-label">Suggest Change For Forwarder</h4>
+            </div><!-- close modal-header -->
+            <div class="modal-body" id="modal-body-forwarder-suggest-change">
+                <div class="textbox">
+                  <label>Old Forwarder Name</label>
+                  <input name="old_forwarder" class="form-control" id="input-forwarder-suggest-change-old-name" style="width:98%" disabled="true"></input>
+                  <label>New Forwarder Name</label>
+                  <input name="forwarder" class="form-control" style="width:98%" placeholder="Forwarder Name" id="input-forwarder-suggest-change-new-name" data-toggle="popover" data-placement="right" data-content="Please input forwarder's hostname which is displayed by 'hostname' command on the Server."></input>
+                  <input type="hidden" name="forwarder" style="width:98%"  id="input-forwarder-suggest-change-forwarder"></input>
+                  <br>
+                  <br>
+                </div> <!-- close textbox class-->
+            </div> <!-- close modal-body -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal" >Cancel</button>
+                <button id="button-forwarder-suggest-change" onclick="userForwardersSuggestChange()" class="btn btn-primary pull-right">Suggest Change</button>
+            </div><!-- close modal-footer-->
+        </div>  <!-- close modal-content-->
+    </div>  <!-- close modal-dialog-->
+</div> <!-- close modal-->
+
+
+
+<!-- TESTING ONLY -->
+
+
+<!-- Modal to Suggest Inputs Change -->
+
+<div class="modal fade" id="modal-inputs-suggest-change" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display:none;">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="inputs-suggest-change">Suggest Change</h4>
+            </div><!-- close modal-header -->
+            <div class="modal-body" id="modal-body-inputs-suggest-change">
+                <div class="textbox">
+                <div class="alert alert-danger" role="alert" style="display:none;" id="alert-modal-setup-inputs-suggest-change-confirm"></div>
+                  <%= form_tag '', :class => 'form-horizontal', :role => "form" do -%>
+                        <br>
+                        <br>
+                        <label class="col-sm-2 control-label" style="text-align:left;">Log File Path</label>
+                        <div class="form-group">
+                           <%= text_field_tag 'log_file_path','' ,id: 'input-setup-inputs-suggest-change-old-log-file-path', placeholder: 'Log File Path', data: { toggle: 'popover', trigger: 'hover', content: '' }, :autocomplete => :off , :style => '', :disabled => true %>*
+                           <%= text_field_tag 'log_file_path','' ,id: 'input-setup-inputs-suggest-change-new-log-file-path', placeholder: 'Log File Path', data: { toggle: 'popover', trigger: 'hover', content: '' }, :autocomplete => :off , :style => '' %>*
+                        </div>
+                        <br>
+                        <br>
+                        <label class="col-sm-2 control-label" style="text-align:left;">Source Type</label>
+                        <div class="form-group">
+                           <%= text_field_tag 'sourcetype','' ,id: 'input-setup-inputs-suggest-change-old-source-type', placeholder: 'Sourcetype', data: { toggle: 'popover', trigger: 'hover', content: '' }, :autocomplete => :off, :style => "", :disabled => true %>*
+                           <%= text_field_tag 'sourcetype','' ,id: 'input-setup-inputs-suggest-change-new-source-type', placeholder: 'Sourcetype', data: { toggle: 'popover', trigger: 'hover', content: '' }, :autocomplete => :off, :style => "" %>*
+                        </div>
+                        <br>
+                        <br>
+                        <label class="col-sm-2 control-label" style="text-align:left;">Log File Size Per Day</label>
+                        <div class="form-group">
+                           <%= select_tag(:log_file_size, options_for_select([['< 100 MB'], ['< 500 MB'], ['< 1000 MB'], ['>1000 MB']], selected: :option ), id: 'select-setup-inputs-suggest-change-old-log-file-size',:style => '', :disabled => true) %>*
+                           <%= select_tag(:log_file_size, options_for_select([['< 100 MB'], ['< 500 MB'], ['< 1000 MB'], ['>1000 MB']], selected: :option ), id: 'select-setup-inputs-suggest-change-new-log-file-size',:style => '') %>*
+                        </div>
+                        <br>
+                        <br>
+                        <label class="col-sm-2 control-label" style="text-align:left;">Data Retention Period</label>
+                        <div class="form-group">
+                           <%= select_tag(:data_retention_period, options_for_select([['1 Day'], ['2 Day'], ['3 Day'], ['1 Week'], ['2 Week'], ['3 Week'], ['1 Month'], ['3 Month'],  ['6 Month'], ['1 Year'], ['3 Year'], ['6 Year']], selected: :option ), id: 'select-setup-inputs-suggest-change-old-log-retention-period', :style => '', :disabled => true) %>*
+                           <%= select_tag(:data_retention_period, options_for_select([['1 Day'], ['2 Day'], ['3 Day'], ['1 Week'], ['2 Week'], ['3 Week'], ['1 Month'], ['3 Month'],  ['6 Month'], ['1 Year'], ['3 Year'], ['6 Year']], selected: :option ), id: 'select-setup-inputs-suggest-change-new-log-retention-period', :style => '') %>*
+                        </div>
+                        <br>
+                        <br>
+                        <label class="col-sm-2 control-label" style="text-align:left;">Memo</label>
+                        <div class="form-group">
+                           <%= text_area_tag 'memo','' ,id: 'input-setup-inputs-suggest-change-old-memo', placeholder: 'Memo', data: { toggle: 'popover', trigger: 'hover', content: '' } , :autocomplete => :off, :style => '', :disabled => true %> 
+                           <%= text_area_tag 'memo','' ,id: 'input-setup-inputs-suggest-change-new-memo', placeholder: 'Memo', data: { toggle: 'popover', trigger: 'hover', content: '' } , :autocomplete => :off, :style => '' %>
+                        </div>
+                        <br>
+                        <br>
+                        <input type="hidden" name="env" id="hidden-text-env" value=<%= @env%>> </input>
+                  <% end -%>
+                </div> <!-- close textbox class-->
+            </div> <!-- close modal-body -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal" >Cancel</button>
+                <button type="button" class = "btn btn-primary" id = "submit-setup-inputs-suggest-change" onclick="suggestChangeValidate()" style = '' >Suggest Changes</button>
+            </div><!-- close modal-footer-->
+        </div>  <!-- close modal-content-->
+    </div>  <!-- close modal-dialog-->
+</div> <!-- close modal-->
+
+<!-- Modal to Create Server Class -->
+
+<div class="modal fade medium-modal-dialog" id="modal-server-class-create" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="width=70%; margin-left=-35%;display:none;">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="server-class-create-label">Create Server Class</h4>
+            </div><!-- close modal-header -->
+            <div class="modal-body" id="modal-body-server-class-create">
+                <div class="textbox">
+                  <div class="alert alert-danger" id="notice-server-class-create">Please Create APP before SERVER CLASS</div>
+                  <label><b>Step 1:</b></label>
+                  <label  for="splunk-host" class="control-label" style="text-align:left;">Splunk Deployment Server</label>
+                  <div class="form-group">
+                  <%= select_tag(:splunk_host, options_for_select('', selected: :option ), style:'width:100%', id: 'select-server-class-deploy-host',data: { toggle: 'popover', trigger: 'hover', content: 'Select The Target Deployment Server' }) %>
+                  </div>
+
+                  <label>SSH Username (Splunk Deployment Server)</label>
+                  <input type="text" id = "input-server-class-create-ssh-server-username"/>*
+
+                  <label>SSH Password (Splunk Deployment Server)</label>
+                  <input type="password" id = "input-server-class-create-ssh-server-password"/>*
+                  
+                  <label>Input IDs </label>
+                  <div class="well" id ="input-server-class-create-app-inputids-details"></div>
+
+                  <label>App Details </label>
+                  <div class="well" id ="input-server-class-create-app-details"></div>
+                  <p class="msg-info"><i class="fa fa-mouse-pointer" aria-hidden="true"></i>Press Create Deployment App button (This will create app in Deployment Server).</p>
+                  <hr class="hr-line">
+                  
+                  <label><b>Step 2:</b></label>
+                  <label id = "label-server-class-create-step-2">Class Name</label>
+                  <textarea class="form-control" id="input-server-class-create-name" disabled="true" ></textarea>
+                  <i id = "i-server-class-create-step-2-inform"></i><br><br>
+                  <p class="msg-info"><i class="fa fa-mouse-pointer" aria-hidden="true"></i>Press Create Server Class button (This will create app in Forwarders).</p>
+                  <hr class="hr-line">
+
+                  <label><b>Step 3:</b></label>
+                  <label  for="splunk-search" class="control-label" style="text-align:left;">Splunk Search Head</label>
+                  <div class="form-group">
+                  <%= select_tag(:splunk_search_head, options_for_select('', selected: :option ), style: "width: 100%;", id: 'select-server-class-search-host',data: { toggle: 'popover', trigger: 'hover', content: 'Select The Target Search Head Server' }) %>
+                  </div>
+                  <label  for="splunk-search-tags" class="control-label" style="text-align:left;">List of Tags</label>
+                  <div class="form-group">
+                  <%= select_tag(:splunk_search_tags, options_for_select('', selected: :option ), style: "width: 100%;", id: 'select-server-class-search-tags',data: { toggle: 'popover', trigger: 'hover', content: 'Select The Tag' }) %>
+                  </div>
+                  <label  for="splunk-search-tag" class="control-label" style="text-align:left;">New Tag Name (Only if tag not found)</label>
+                  <input style = "width: 100%;" type="text" id = "input-server-class-create-search-tag"/>
+                  <label  for="splunk-search-tag" class="control-label" style="text-align:left;">Host Value for Tag (Only if host is not bound to the tag. Refer to the Forwarders listed below)</label>
+                  <input style = "width: 100%;" type="text" id = "input-server-class-create-search-tag-hosts"/><br>
+
+                  <strong class="msg-wrn" id="create-tag-result-div">
+                  </strong>
+
+                  <div id="forwarder-list-div">
+                    <label>List of Forwarders</label>
+                     <ul id="server-class-forwaders">
+                     </ul>
+                  </div>
+                  <p class="msg-info"><i class="fa fa-mouse-pointer" aria-hidden="true"></i>Press Create Tag button (Only if tag not found or new hosts are bound to the tag).</p>
+                  <p class="msg-info"><i class="fa fa-mouse-pointer" aria-hidden="true"></i>Change permissions to GLOBAL for tag from <a id="a-server-class-create-tag-permission-change" target="_blank">HERE</a> (Only if permission change fails when creating tag)</p>
+                  <input type="hidden" name="server-class-forwarders" id="input-server-class-create-forwarders"></input>
+                  <input type="hidden" name="server-class-env" id="input-server-class-create-env"></input>
+                  <input type="hidden" name="server-class-app" id="input-server-class-create-app"></input>
+
+                  <hr class="hr-line">
+                  <label><b>Step 4:</b></label>
+                  This Action will <b>Approve</b> the App and send email to the User and Admin. This action makes changes to <b>Database</b> only and not to the <b>Splunk Cluster</b>.
+                  <textarea id="input-apps-deploy-approve-user-message" placeholder="Message for User (optional)" style="width:100%"></textarea>
+                  <p class="msg-info"><i class="fa fa-mouse-pointer" aria-hidden="true"></i>Press Approve button</p>
+                  <input type="hidden" name="app" id="input-apps-deploy-approve-send-app"></input>
+                  <input type="hidden" name="app-number" id="input-apps-deploy-approve-send-app-number"></input>
+
+                </div> <!-- close textbox class-->
+            </div> <!-- close modal-body -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal" >Cancel</button>
+                <button class="btn btn-primary pull-right" onclick="approveDeployApp()">4.Approve</button>
+                <!-- <button class="btn btn-primary pull-right" onclick="openModalApproveDeployApp()">Approve</button> -->
+                <button id="button-server-class-create-tag" onclick="createTag()" class="btn btn-primary pull-right">3.Create Tag</button>
+                <button id="button-server-class-create" onclick="createServerClass()" class="btn btn-primary pull-right">2.Create Server Class</button>
+                <button id="button-server-class-create-deployment-app" onclick="createDeploymentApp()" class="btn btn-primary pull-right">1.Create DeploymentApp</button>
+            </div><!-- close modal-footer-->
+        </div>  <!-- close modal-content-->
+    </div>  <!-- close modal-dialog-->
+</div> <!-- close modal-->
+
+<!-- Modal to Approve Deploy App -->
+
+<div class="modal fade" id="modal-apps-deploy-approve" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display:none;">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="apps-deploy-approve-label">Approve App</h4>
+            </div><!-- close modal-header -->
+            <div class="modal-body" id="modal-body-apps-deploy-approve">
+                <div class="textbox">
+                  This Action will <b>Approve</b> the App and send email to the User and Admin about the same.<br>This action makes changes to <b>Database</b> only and not to the <b>Splunk Cluster</b>.
+                  <textarea id="input-apps-deploy-approve-user-message" placeholder="Message for User (optional)" style="width:100%" autofocus></textarea>
+                  <input type="hidden" name="app" id="input-apps-deploy-approve-send-app"></input>
+                  <input type="hidden" name="app-number" id="input-apps-deploy-approve-send-app-number"></input>
+                </div> <!-- close textbox class-->
+            </div> <!-- close modal-body -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal" >Cancel</button>
+                <button id="button-apps-deploy-approve" onclick="approveDeployApp()" class="btn btn-primary pull-right">Submit</button>
+            </div><!-- close modal-footer-->
+        </div>  <!-- close modal-content-->
+    </div>  <!-- close modal-dialog-->
+</div> <!-- close modal-->
+
+
+<!-- Modal to Cancel Deploy App -->
+
+<div class="modal fade" id="modal-apps-deploy-cancel" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display:none;">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="apps-deploy-cancel-label">Cancel App</h4>
+            </div><!-- close modal-header -->
+            <div class="modal-body" id="modal-body-apps-deploy-cancel">
+                <div class="textbox">
+                  This Action will <b>Cancel</b> the App and send email to the User and Admin about the same.<br>This action makes changes to <b>Database</b> only and not to the <b>Splunk Cluster</b>.
+                  <textarea id="input-apps-deploy-cancel-user-message" placeholder="Message for User (optional)"></textarea>
+                  <input type="hidden" name="app" id="input-apps-deploy-cancel-send-app"></input>
+                  <input type="hidden" name="app-number" id="input-apps-deploy-cancel-send-app-number"></input>
+                </div> <!-- close textbox class-->
+            </div> <!-- close modal-body -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal" >Later</button>
+                <button id="button-apps-deploy-cancel" onclick="cancelDeployApp()" class="btn btn-primary pull-right">Cancel Application</button>
+            </div><!-- close modal-footer-->
+        </div>  <!-- close modal-content-->
+    </div>  <!-- close modal-dialog-->
+</div> <!-- close modal-->

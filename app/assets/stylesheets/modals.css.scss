@@ -1,0 +1,34 @@
+$color-splunkgreen: rgb(87,177,50);
+
+.modal{
+	position: fixed;
+	bottom: auto;
+}
+
+.modal-header{
+	font-size: 16px;
+	height: 3.5em;
+	padding-top: 1em;
+	color: white;
+	background-color: $color-splunkgreen;
+}
+.large-modal-dialog{
+	width: 80% !important;
+	margin-left: -40%;
+}
+
+.medium-modal-dialog{
+	width: 56% !important;
+	margin-left: -28%;
+}
+
+.modal-content{
+	margin-top: -2.4em;
+	margin-bottom: -2.4em;
+}
+
+.modal-dialog{
+	width:auto;
+	height:auto;
+}
+

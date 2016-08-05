@@ -1,0 +1,1076 @@
+<div class="modal fade large-modal-dialog" id="modal-illustration" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display:none;">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title" id="myModalLabel"><%= yield(:img_title) %></h4>
+			</div>
+			<div class="modal-body">
+        		<p> <%= yield(:img_body) %></p>
+				<%= image_tag(yield(:img), :class=>"illstration", :alt => "illstration") %>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal" >Close</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Modal to change password -->
+<div class="modal fade" id="modal-password-change" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display:none;">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title" id="myModalLabel">Change Password</h4>
+			</div>
+			<div class="modal-body" id="modal-password-change-body">
+				<div class="alert alert-danger" role="alert">If you change password, you will be LOGGED-OUT, you will need to LOG-IN AGAIN for security purpose.
+				</div>
+				<div class="textbox">
+					<label >Old Password</label>
+					<input type="password" id="input-text-password-change-old-password" name="oldpassword" class="form-control" placeholder="Your Old Password" data-toggle="popover" data-placement="top" data-content="Please Enter Your Old Password"> </input>
+					<label >New Password</label>
+					<input type="password" id="input-text-password-change-new-password" name="newpassword" class="form-control" placeholder="Your New Password" data-toggle="popover" data-placement="top" data-content="Please Enter Your New Password"> </input>
+			 	</div>
+			 </div>
+			 <div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal" >Cancel</button>
+				<button type="button" class="btn btn-primary"  title="Will be available in next Update" id="button-modal-password-change-change" onclick="ajaxCall('change_password')">Submit</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Modal to Edit Email Address -->
+<div class="modal fade" id="modal-email-edit" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display:none;">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title" id="myModalLabel">Update Profile</h4>
+			</div>  <!-- closed modal header div  -->
+			<div class="modal-body" id="modal-email-edit-body">
+				<div class="alert alert-danger" role="alert" style="display:none;" id="alert-modal-email-edit-warning"></div>
+				<div class="textbox">
+				 <label >User-Name</label>
+				 <input type="text" id="input-text-email-edit-user-name" class="form-control" data-toggle="popover" data-placement="right"disabled="disabled"> </input>
+				 <label >Group-Name</label>
+				 <input type="text" id="input-text-email-edit-group-name" name="groupname" class="form-control" data-toggle="popover" data-placement="right" data-content=""> </input>
+
+				 <label >App-Team-Name</label>
+				 <input type="text" id="input-text-email-edit-app-team-name" name="appteamname" class="form-control" data-toggle="popover" data-placement="right" data-content=""> </input>
+
+				 <label >Service-Id</label>
+				 <input type="text" id="input-text-email-edit-service-id" name="serviceid" class="form-control" data-toggle="popover" data-placement="right" data-content=""> </input>
+
+				 <label >Email Address</label>
+				 <input type="text" id="input-text-email-edit-email-id" name="newemail" class="form-control" placeholder="Your New Email Address" data-toggle="popover" data-placement="right" data-trigger="focus" data-content=""> </input>
+
+				 <label >Email Address For Emergency</label>
+				 <input type="text" id="input-text-email-edit-email-for-emergency" name="newemailforemergency" class="form-control" placeholder="Your New Email Address for Emergency" data-toggle="popover" data-placement="right" data-trigger="focus" data-content="It will be used for emergency (e.g. down splunk, down forwarders)"> </input>
+					<div class="alert alert-danger" role="alert" style="display:none;" id="alert-modal-email-edit-confirm"></div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+				<button type="button" class="btn btn-primary" onclick="updateEmailAddress()">Submit</button>
+			</div>  <!-- closed modal footer div  -->
+		</div>  <!-- closed modal content div  -->
+	</div>  <!-- closed modal dialog div  -->
+</div>  <!-- closed modal div  -->
+
+<!-- Modal to Show Announcements -->
+<div class="modal fade" id="modal-announcements" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display:none;">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title" id="announcementslabel">Announcements
+				</h4>
+			</div>
+			<div class="modal-body" id="modal-body-announcements">
+				<div class="textbox">
+					<div class="alert alert-info" id="notice-announcements" style="display:none"></div>
+					<div class="announcements-table">
+						<table class="table table-bordered table-hover" id="splunk-users-announcements-table" style="">
+						</table> 
+					</div>
+				</div>
+			</div> 
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+			</div>
+		</div>  
+	</div>
+</div>
+
+<!-- Modal to Add Forwarder unused?-->
+<div class="modal fade" id="modal-forwarder-add" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display:none;">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title" id="forwarder-add-label">Add Forwarder</h4>
+			</div><!-- close modal-header -->
+			<div class="modal-body" id="modal-body-forwarder-add">
+				<div class="textbox">
+					<label>Forwarder Name</label>
+					<input name="forwarder" class="form-control" placeholder="Forwarder Name" id="input-forwarder-add-name" data-toggle="popover" data-placement="right" data-content="Please input your forwarder's hostname which is displayed by 'hostname' command on the Server."></input>
+					<input type="hidden" name="forwarder-env" id="input-forwarder-add-forwarder-env"></input>
+					<br>
+					<br>
+				</div> <!-- close textbox class-->
+			</div> <!-- close modal-body -->
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal" >Cancel</button>
+				<button id="button-forwarder-add" onclick="ajaxCall('user_forwarder_add')" class="btn btn-primary pull-right">Add Forwarder</button>
+			</div><!-- close modal-footer-->
+		</div>  <!-- close modal-content-->
+	</div>  <!-- close modal-dialog-->
+</div> <!-- close modal-->
+
+
+<!-- Modal to Edit Forwarder unused?-->
+<div class="modal fade" id="modal-forwarder-edit" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display:none;">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title" id="forwarder-edit-label">Edit Forwarder</h4>
+			</div><!-- close modal-header -->
+			<div class="modal-body" id="modal-body-forwarder-edit">
+				<div class="textbox">
+					<label>Forwarder</label>
+					<input name="forwarder" class="form-control" id="input-forwarder-edit-name" data-toggle="popover" data-placement="right" data-content="Please input your forwarder's hostname which is displayed by 'hostname' command on the Server."></input>
+					<br>
+					<br>
+					<input type="hidden" name="forwarder" id="input-forwarder-edit-forwarder"></input>
+					<input type="hidden" name="forwarder-number" id="input-forwarder-edit-forwarder-number"></input>
+				</div> <!-- close textbox class-->
+			</div> <!-- close modal-body -->
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal" >Cancel</button>
+				<button id="button-forwarder-edit" onclick="ajaxCall('user_forwarder_edit')" class="btn btn-primary pull-right">Update Forwarder</button>
+			</div><!-- close modal-footer-->
+		</div>  <!-- close modal-content-->
+	</div>  <!-- close modal-dialog-->
+</div> <!-- close modal-->
+
+
+<!-- Modal to Delete Forwarder unused?-->
+<div class="modal fade" id="modal-forwarder-delete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display:none;">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title" id="forwarder-delete-label">Delete Forwarder</h4>
+			</div>
+			<div class="modal-body" id="modal-body-forwarder-delete">
+				<div class="textbox">
+					<label>Forwarder Name</label>
+					<input name="forwarder" class="form-control" id="input-forwarder-delete-name" disabled></input>
+					<input type="hidden" name="forwarder" id="input-forwarder-delete-forwarder"></input>
+					<input type="hidden" name="forwarder-number" id="input-forwarder-delete-forwarder-number"></input>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal" >Cancel</button>
+				<button id="button-forwarder-delete" onclick="ajaxCall('user_forwarder_delete')" class="btn btn-primary pull-right">Submit</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<!-- Modal to Add Inputs -->
+<div class="modal fade medium-modal-dialog" id="modal-inputs-add" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display:none;">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title" id="inputs-add-label">Add Input</h4>
+			</div>
+			<div class="modal-body" id="modal-body-inputs-add">
+			<a target="_blank" tabindex="-1" href=<%= @input_link %> >How to set input?</a>
+				<div class="textbox">
+					<div class="alert alert-danger" role="alert" style="display:none;" id="alert-modal-setup-inputs-add-confirm"></div>
+					<strong class="strong-text">Input Type</strong><br><br>
+					<form class="input-radio-form-inline" name="radioform">
+						<label class="radio-inline">
+							<input type="radio" name="InputRadio" id = "add-input-log-radio" onchange="addInputSwithButton()" > <i class="fa fa-file-o no-margin-icon" aria-hidden="true"></i>Log File Input
+						</label>
+						<label class="radio-inline">
+							<input type="radio" name="InputRadio" id = "add-input-script-radio" onchange="addInputSwithButton()" > <i class="fa fa-code no-margin-icon" aria-hidden="true"></i>Script Input
+						</label>
+						<label class="radio-inline">
+							<input type="radio" name="InputRadio" id = "add-input-unixapp-radio" onchange="addInputSwithButton()" > <i class="fa fa-linux no-margin-icon" aria-hidden="true"></i>Unix App Input
+						</label>
+					</form>
+
+					<br>
+					<%= form_tag '/splunk_users/setupinputconfirm', :id => "add-input-form", :class => 'form-horizontal', :role => "form" do -%>
+					
+                  	<hr class="hr-line">
+					<strong class="strong-text"> Basic Settings</strong><br><br>
+
+					<div id="add-input-log-basic-div">
+					<!--log file path-->
+						<label for="source-hostname" class="modal-label control-label">Log File Path</label>
+						<div class="form-group">
+						 <%= text_area_tag 'log_file_path','' ,id: 'input-setup-inputs-add-log-file-path', placeholder: 'Log File Path', data: { toggle: 'popover', trigger: 'hover', content: '' }, :autocomplete => :off , :rows => '3', :class => 'modal-input' %>*
+						</div>
+					</div>
+
+					<div id="add-input-unix-basic-div">
+						<p class="msg-info"><i class="fa fa-info-circle" aria-hidden="true"></i>Unix App Inputs are prewritten shell scripts, they can only be executed on *nix environments</p>
+						<p class="msg-info"><i class="fa fa-info-circle" aria-hidden="true"></i>The more frequently the script is executed, the larger the input size will be</p>
+						<p class="msg-info"><i class="fa fa-info-circle" aria-hidden="true"></i>The most commonly used scripts are: cpu, df, vmstat, iostat and interfaces</p>
+						Check source code of each script from <a class="fixe-link" target="_blank" tabindex="-1" href=<%= @unixapp_link%> >HERE</a><br><br>
+						<button type="button" class = "btn btn-info" onclick="setRecommendedUnixAppInput()">Recommended Configurations</button>
+						<button type="button" class = "btn btn-info" onclick="resetUnixAppInput()">Reset</button>
+						<input type="text" id="" class="search-field textbox" placeholder = "Search Filter" onkeyup="doSearch(this, 'modal-add-unixapp-input-table')"></input><br><br>
+						<table id="modal-add-unixapp-input-table" class="table table-bordered table-hover">
+						</table>
+					</div>
+
+					<!-- common -->
+					<!--srouce type-->
+					<div id="add-input-non-app-common">
+						<label for="source-hostname" class="modal-label control-label">Source Type</label>
+						<div class="form-group">
+							<%= text_area_tag 'sourcetype','' ,id: 'input-setup-inputs-add-source-type', placeholder: 'Sourcetype', data: { toggle: 'popover', trigger: 'hover', content: '' }, :autocomplete => :off, :rows => '1', :class => 'modal-input' %>*
+						</div>
+
+						 <!--Log File Size Per Day-->
+						<label for="source-hostname" class="modal-label control-label">Log Size Per Day</label>
+						<div class="form-group">
+							<%= select_tag(:log_file_size, options_for_select([['< 100 MB'], ['< 500 MB'], ['< 1000 MB'], ['>1000 MB']], selected: :option ), id: 'select-setup-inputs-add-log-file-size',:class => 'modal-input') %>*
+						</div>
+
+						 <!--Data Retention Period-->
+						<label  for="source-hostname" class="modal-label control-label">Data Retention Period</label>
+						<div class="form-group">
+							<%= select_tag(:data_retention_period, options_for_select([['1 Day'], ['2 Day'], ['3 Day'], ['1 Week'], ['2 Week'], ['3 Week'], ['1 Month'], ['3 Month'],  ['6 Month'], ['1 Year'], ['3 Year'], ['6 Year']], selected: :option ), id: 'select-setup-inputs-add-log-retention-period', :class => 'modal-input') %>*
+						</div>
+					</div>
+
+
+					<div id="add-input-script-basic-div">
+						<label  for="source-hostname" class="modal-label control-label">Script Runs On</label>
+						<div class="form-group">
+							<form name="osform" action="">
+								<input type="radio" name="OSRadio" id = "add-input-nix-radio" style = "margin:-2px 5px 0 0;">*nix
+								<input type="radio" name="OSRadio" id = "add-input-win-radio" style = "margin:-2px 5px 0 20px;" >Windows
+							</form>
+						</div>
+
+						<!--interval-->
+						<p class="msg-info"><i class="fa fa-info-circle" aria-hidden="true"></i>The more frequently the script is executed, the larger the input size will be</p>
+						<label  for="source-hostname" class="modal-label control-label">Interval</label>
+						<div class="form-group">
+							<%= text_area_tag 'interval','' ,id: 'input-setup-inputs-script-add-interval', placeholder: '<number>or<cron schedule>', data: { toggle: 'popover', trigger: 'hover', content: '' }, :autocomplete => :off , :rows => '1', :class => 'modal-input' %>*
+						</div>
+
+						 <!--Script File-->
+						<label  for="source-hostname" class="modal-label control-label">Script File</label>
+						<div class="form-group">
+							<%= file_field_tag 'script', id: 'input-setup-inputs-script-add-script', :class => 'modal-input' %>
+						</div>
+						<p class="msg-info"><i class="fa fa-info-circle" aria-hidden="true"></i>Please DONOT upload script that contains Japanese characters</p>
+
+					</div> <!-- end of <div id="add-input-script-basic-div"> -->
+
+                  	<hr class="hr-line">
+					<strong class="strong-text">Advanced Settings</strong><br><br>
+
+					<div id="add-input-log-advanced-div">
+							<!--crcSalt-->
+						<label for="source-hostname" class="modal-label control-label" >crcSalt</label>
+						<div class="form-group add-input-srcsalt">
+						  <label class="btn add-crcsalt-label"><input id = "select-setup-inputs-add-log-crcsalt" type="checkbox" value="">&lt;SOURCE&gt;</label> 
+						</div>
+
+						<!--BlackList Files-->
+						<label  for="input-blacklist" class="modal-label control-label">BlackList Files</label>
+						<button type="button" class = "btn btn-info" id = "add-input-blacklist-switch-button" onclick="addInputBlacklistSwithButton()">Click to write your blacklist regex</button>
+
+						<div class="form-group">
+							<div class="add-input-blacklist" id="add-input-blacklist-checkbox">
+								<% if @blacklists.present? %>
+									<% @blacklists.each do |bk| %>
+										<label class="btn"><input type="checkbox" value=<%= bk %> ><%= bk %></label> 
+									<% end %>
+								<% end %>
+							</div>
+							<div id="add-input-blacklist-customize">
+								<ol>
+									<li>
+										<p>To ignore and not monitor only files with the .gz extension.</p>
+										<%= text_area_tag 'example','\.(gz)$', :rows => '1', disabled: true %>
+									</li>
+									<li>
+										<p>To igonore multiple files, e.g: ingore .gz and .txt files.</p>
+										<%= text_area_tag 'example','\.(gz|txt)$', :rows => '1', disabled: true %>
+									</li>
+
+									<li>
+										<p>To ignore all files under log file path within the archive or historical directories and all files ending in *.bak.</p>
+										<%= text_area_tag 'example','(archive|historical|\.bak$)', :rows => '1', disabled: true %>
+									</li>
+
+									<li>
+										<p>To ignore files whose names contain a specific string, e.g: ignore the webserver20090228file.txt and webserver20090229file.txt files.</p>
+										<%= text_area_tag 'example','2009022[8|9]file\.txt$', :rows => '1',disabled: true %>
+									</li>
+								</ol>
+
+								<strong class="strong-text">Note: If you write your own regex here, the checkbox will not take effect.</strong>
+								<br><br>
+								<%= text_area_tag 'blacklist_files','' ,id: 'input-setup-inputs-add-blacklist-files', placeholder: 'Blacklist regex', data: { toggle: 'popover', trigger: 'hover', content: '' }, :autocomplete => :off , :class => 'modal-input'%>
+								<br>
+							</div>
+							<br>
+						</div> <!-- end of <div class="form-group"> -->
+					</div> <!--end of <div id="add-input-log-advanced-div"> -->
+
+					<div id="add-input-script-advanced-div">
+						<label  for="source-hostname" class="modal-label control-label">Option</label>
+						<div class="form-group">
+							<%= text_area_tag 'option','' ,id: 'input-setup-inputs-script-add-option', placeholder: 'option', data: { toggle: 'popover', trigger: 'hover', content: '' }, :autocomplete => :off , :rows => '1', :class => 'input-option'%>
+						</div>
+					</div>
+					<!--Other Specifications-->
+					<label  for="source-hostname" class="modal-label control-label">Other Specifications</label>
+					<div class="form-group">
+						<%= text_area_tag 'memo','' ,id: 'input-setup-inputs-add-memo', placeholder: 'If you have other specifications that need admin to do for you, write them here', data: { toggle: 'popover', trigger: 'hover', content: '' } , :autocomplete => :off, :rows => '3', :class => 'input-specification'%>
+					</div>
+
+					<!-- env -->
+					<input type="hidden" name="env" id="hidden-text-env" value=<%= @env%>> </input>
+					<% end -%>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal" >Cancel</button>
+				<button type="button" class = "btn btn-primary" id = "submit-setup-inputs-add" onclick="setupNewInput(this)" style = '' >Submit</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Modal to Edit Inputs -->
+<div class="modal fade medium-modal-dialog" id="modal-inputs-edit" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display:none;">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title" id="inputs-edit-label">Edit Input</h4>
+			</div><!-- close modal-header -->
+			<div class="modal-body" id="modal-body-inputs-edit">
+				<div class="textbox">
+					<a target="_blank" tabindex="-1" href=<%= @input_link %> >How to set input?</a>
+					<div class="alert alert-danger" role="alert" style="display:none;" id="alert-modal-setup-inputs-edit-confirm"></div>
+					<%= form_tag '/splunk_users/setupinputconfirm', :id => "edit-input-form", :class => 'form-horizontal', :role => "form" do -%>
+						<strong class="strong-text">Basic Settings</strong><br><br>
+						<div class="form-group" id = "edit-input-log-basic-div">
+							<label  for="source-hostname" class="modal-label control-label">Log File Path</label>
+							<div class="form-group">
+							 <%= text_area_tag 'log_file_path','' ,id: 'input-setup-inputs-edit-log-file-path', placeholder: 'Log File Path', data: { toggle: 'popover', trigger: 'hover', content: '' }, :autocomplete => :off , :rows => '3', :class => 'modal-input' %>*
+							</div>
+						</div>
+
+						<div id="edit-input-non-unixapp-common-div">
+							<label  for="source-hostname" class="modal-label control-label">Source Type</label>
+							<div class="form-group">
+							 <%= text_field_tag 'sourcetype','' ,id: 'input-setup-inputs-edit-source-type', placeholder: 'Sourcetype', data: { toggle: 'popover', trigger: 'hover', content: '' }, :autocomplete => :off, :class => 'modal-input' %>*
+							</div>
+							<label  for="source-hostname" class="modal-label control-label">Log File Size Per Day</label>
+							<div class="form-group">
+							 <%= select_tag(:log_file_size, options_for_select([['< 100 MB'], ['< 500 MB'], ['< 1000 MB'], ['>1000 MB']], selected: :option ), id: 'select-setup-inputs-edit-log-file-size',:class => 'modal-input') %>*
+							</div>
+						</div>
+
+						<div id="edit-input-unixapp-basic-div">
+							<label  for="source-hostname" class="modal-label control-label">Script File Name</label>
+							 <a id = "input-setup-inputs-edit-unixapp-script-content" href=<%= @unixapp_link %> style="display:inline" target="_blank"><em>Show Script</em></a>
+							<div class="form-group">
+								<%= text_area_tag 'scriptname','' ,id: 'input-setup-inputs-edit-unixapp-scriptname', placeholder: 'Script File Name', data: { toggle: 'popover', trigger: 'hover', content: '' }, :autocomplete => :off , :rows => '1', :class => 'modal-input', disabled: true%>*
+							</div>
+						</div>
+
+						
+						<div id="edit-input-script-unixapp-common-div">
+							<p class="msg-info"><i class="fa fa-info-circle" aria-hidden="true"></i>The more frequently the script is executed, the larger the input size will be</p>
+							<label  for="source-hostname" class="modal-label control-label">Interval</label>
+							<div class="form-group">
+								<%= text_area_tag 'interval','' ,id: 'input-setup-inputs-edit-interval', placeholder: '<number>or<cron schedule>', data: { toggle: 'popover', trigger: 'hover', content: '' }, :autocomplete => :off , :rows => '1', :class => 'modal-input' %>*
+							</div>
+						</div>
+
+						<label  for="source-hostname" class="modal-label control-label">Data Retention Period</label>
+						<div class="form-group">
+						 <%= select_tag(:data_retention_period, options_for_select([['1 Day'], ['2 Day'], ['3 Day'], ['1 Week'], ['2 Week'], ['3 Week'], ['1 Month'], ['3 Month'],  ['6 Month'], ['1 Year'], ['3 Year'], ['6 Year']], selected: :option ), id: 'select-setup-inputs-edit-log-retention-period', :class => 'modal-input') %>*
+						</div>
+
+						<div class="form-group" id = "edit-input-script-basic-div">
+							<label  for="source-hostname" class="modal-label control-label">Script Runs On</label>
+							<div class="form-group">
+								<form name="osform" action="">
+									<input type="radio" name="OSRadio" id = "edit-input-nix-radio" style = "margin:-2px 5px 0 0;" >*nix
+									<input type="radio" name="OSRadio" id = "edit-input-win-radio" style = "margin:-2px 5px 0 20px;" >Windows
+								</form>
+							</div>
+
+							<label  for="source-hostname" class="modal-label control-label">Script File Name</label>
+							 <a id = "input-setup-inputs-edit-script-content" style="display:inline" target="_blank"><em>Show Script</em></a>
+							<div class="form-group">
+								<%= text_area_tag 'scriptname','' ,id: 'input-setup-inputs-edit-scriptname', placeholder: 'Script File Name', data: { toggle: 'popover', trigger: 'hover', content: '' }, :autocomplete => :off , :rows => '1', :class => 'modal-input'%>*
+							</div>
+
+							 <!--Script File-->
+							<label  for="source-hostname" class="modal-label control-label">Script File</label>
+							<div class="form-group">
+								<%= file_field_tag 'script',id: 'input-setup-inputs-edit-script', :class => 'modal-input'%>
+							</div>
+							<p class="msg-info"><i class="fa fa-info-circle" aria-hidden="true"></i>Please upload a script file only if you want to change the contents of the script</p>
+							<p class="msg-info"><i class="fa fa-info-circle" aria-hidden="true"></i>Please DONOT upload script that contains Japanese characters</p>
+						</div>
+
+                  		<hr class="hr-line">
+						<strong class="strong-text">Advanced Settings</strong><br><br>
+						<div class="form-group" id = "edit-input-log-advanced-div">
+							<label  for="source-hostname" class="modal-label control-label">crcSalt</label>
+							<div style="margin-top: -40px; margin-left:50px; width:70%">
+								<ul class="edit-crcsalt" id="edit-inputs-crcsalt" style="margin-left:112px;">
+								</ul> 
+							</div> <br><br><br>
+							<label  for="input-blacklist" class="modal-label control-label">BlackList Files</label>
+							<div class="form-group">
+								<div id="edit-input-blacklist-customize" >
+									<%= text_area_tag 'blacklist','' ,id: 'input-setup-inputs-edit-blacklist-files', placeholder: 'Blacklist regex', data: { toggle: 'popover', trigger: 'hover', content: '' }, :autocomplete => :off, :class => 'modal-input' %>
+									<ol>
+										<li>
+											<p>To ignore and not monitor only files with the .gz extension.</p>
+											<%= text_area_tag 'example','\.(gz)$', :rows => '1', :class => 'modal-input', disabled: true %>
+										</li>
+										<li>
+											<p>To igonore multiple files, e.g: ingore .gz and .txt files.</p>
+											<%= text_area_tag 'example','\.(gz|txt)$', :rows => '1', :class => 'modal-input', disabled: true %>
+										</li>
+
+										<li>
+											<p>To ignore all files under log file path within the archive or historical directories and all files ending in *.bak.</p>
+											<%= text_area_tag 'example','(archive|historical|\.bak$)', :rows => '1', :class => 'modal-input', disabled: true %>
+										</li>
+
+										<li>
+											<p>To ignore files whose names contain a specific string, e.g: ignore the webserver20090228file.txt and webserver20090229file.txt files.</p>
+											<%= text_area_tag 'example','2009022[8|9]file\.txt$', :rows => '1', :class => 'modal-input', disabled: true %>
+										</li>
+									</ol>
+								</div>
+							</div>
+						</div>
+
+						<div class="form-group" id = "edit-input-script-advanced-div">
+							<div class="form-group">
+								<label  for="source-hostname" class="modal-label control-label">Option</label>
+								<%= text_area_tag 'option','' ,id: 'input-setup-inputs-edit-option', placeholder: 'option', data: { toggle: 'popover', trigger: 'hover', content: '' }, :autocomplete => :off , :rows => '1'%>
+							</div>
+						</div>
+						<label  for="source-hostname" class="modal-label control-label">Other Specifications</label>
+						<div class="form-group">
+							<%= text_area_tag 'memo','' ,id: 'input-setup-inputs-edit-memo', placeholder: 'If you have other specifications that need admin to do for you, write them here', data: { toggle: 'popover', trigger: 'hover', content: '' } , :autocomplete => :off,:rows => '3', :class => 'input-specification' %>
+						</div>
+						<input type="hidden" name="env" id="hidden-text-env" value=<%= @env%>> </input>
+						<input type="hidden" id="input-inputs-edit-log-number" name="log_number"></input>
+						<input type="hidden" id="input-inputs-edit-log" name="log"></input>
+					<% end -%>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal" >Cancel</button>
+				<button type="button" class = "btn btn-primary" id = "submit-setup-inputs-edit" onclick="setupEditInput(this)" style = '' >Submit</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<!-- Modal to Delete Inputs -->
+<div class="modal fade" id="modal-inputs-delete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display:none;">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title" id="inputs-delete-label">Delete Input</h4>
+			</div>
+			<div class="modal-body" id="modal-body-inputs-delete">
+				<div class="textbox">
+					Are you sure you want to delete this Input?
+					<input type="hidden" id="input-inputs-delete-log-number" name="log_number"></input>
+					<input type="hidden" id="input-inputs-delete-log" name="log"></input>
+				</div>
+			</div> <!-- close modal-body -->
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal" >Cancel</button>
+				<button id="button-inputs-delete" onclick="submitDeleteInput()" class="btn btn-primary pull-right">Submit</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Modal to Show Inputs Details -->
+<div class="modal fade medium-modal-dialog" id="modal-inputs-details" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display:none;">
+	<div class="modal-dialog" >
+		<div class="modal-content" >
+			<div class="modal-header">
+				<h4 class="modal-title" id="inputs-details-label">Show Input</h4>
+			</div>
+			<div class="modal-body" id="modal-body-inputs-details" >
+				<div class="textbox">
+					<%= form_tag '', :class => 'form-horizontal', :role => "form" do -%>
+						<div class="form-group" id = "show-input-log-basic-div">
+							<label  for="source-hostname" class="modal-label control-label" >Log File Path</label>
+							<div class="form-group">
+							 <%= text_area_tag 'log_file_path','' ,id: 'input-setup-inputs-details-log-file-path', :rows => '3', :class => 'modal-long-input', :style => 'word-break: break-all', disabled: true  %>*
+							</div>
+						</div>
+						
+						<div id="show-input-non-unixapp-common">
+							<label  for="source-hostname" class="modal-label control-label">Source Type</label>
+							<div class="form-group">
+								 <%= text_field_tag 'sourcetype','' ,id: 'input-setup-inputs-details-source-type', :class => 'modal-long-input' , disabled: true %>*
+							</div>
+
+							<label  for="source-hostname" class="modal-label control-label">Log File Size Per Day</label>
+							<div class="form-group">
+								 <%= text_field_tag 'log_file_size','' ,id: 'select-setup-inputs-details-log-file-size',:class => 'modal-long-input', disabled: true %>*
+							</div>
+						</div>
+
+						<div id="show-input-unixapp-basic">
+							<label  for="source-hostname" class="modal-label control-label">Script File Name</label>
+							<a href=<%= @unixapp_link %> id = "input-setup-inputs-details-unixapp-script-content" style="display:inline" target="_blank"><em>Show Script</em></a>
+							<div class="form-group">
+							 <%= text_field_tag 'scriptname','' ,id: 'input-setup-inputs-details-unixapp-scriptname', :class => 'modal-long-input', disabled: true %>*
+							</div>
+						</div>
+
+						<div id="show-input-script-unixapp-common">
+							<label  for="source-hostname" class="modal-label control-label">Interval</label>
+							<div class="form-group">
+							 <%= text_field_tag 'interval','' ,id: 'input-setup-inputs-details-interval', :class => 'modal-long-input' , disabled: true %>*
+							</div>
+						</div>
+
+						<label  for="source-hostname" class="modal-label control-label">Data Retention Period</label>
+						<div class="form-group">
+							 <%= text_field_tag 'data_retention_period','' ,id: 'select-setup-inputs-details-log-retention-period', :class => 'modal-long-input', disabled: true %>*
+						</div>
+
+
+						<div class="form-group" id = "show-input-script-basic-div">
+							<label  for="source-hostname" class="modal-label control-label">Script File Name</label>
+							<a href="" id = "input-setup-inputs-details-script-content" style="display:inline" target="_blank"><em>Show Script</em></a>
+							<div class="form-group">
+							 <%= text_field_tag 'scriptname','' ,id: 'input-setup-inputs-details-scriptname', :class => 'modal-long-input', disabled: true %>*
+							</div>
+							<label  for="source-hostname" class="modal-label control-label">Script Runs On</label>
+							<div class="form-group">
+							 <%= text_field_tag 'os','' ,id: 'input-setup-inputs-details-os', :class => 'modal-long-input' , disabled: true %>*
+							</div>
+						</div>
+
+						<div class="form-group" id = "show-input-log-advanced-div">
+							<label  for="source-hostname" class="modal-label control-label">crcSalt</label>
+							<div class="form-group">
+								 <%= text_field_tag 'crcsalt','' ,id: 'select-setup-inputs-details-crcsalt', :class => 'modal-long-input' , disabled: true %>
+							</div>
+
+							<label  for="input-blacklist" class="modal-label control-label">BlackList Files</label>
+							<div class="form-group">
+								 <%= text_area_tag 'blacklist_files', '' , id: 'input-setup-inputs-details-blacklist-files', :rows => '1', :class => 'modal-long-input', disabled: true %>
+							</div>
+						</div>
+
+						<div class="form-group" id = "show-input-script-advanced-div">
+							<label  for="source-hostname" class="modal-label control-label">Option</label>
+							<div class="form-group">
+								<%= text_field_tag 'option','' ,id: 'input-setup-inputs-details-option', :class => 'modal-long-input' , disabled: true %>
+							</div>
+						</div>
+
+						<label  for="source-hostname" class="modal-label control-label">Other Specifications</label>
+						<div class="form-group">
+							 <%= text_area_tag 'memo','' ,id: 'input-setup-inputs-details-memo', :rows => '3', :class => 'modal-long-input' , disabled: true %>
+						</div>
+
+						<input type="hidden" name="env" id="hidden-text-env" value=<%= @env%>> </input>
+						<input type="hidden" id="input-inputs-details-log-number" name="log_number"></input>
+						<input type="hidden" id="input-inputs-details-log" name="log"></input>
+					<% end -%>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal" >Close</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Modal to Add Forwarder From Deployment Server -->
+<div class="modal fade" id="modal-forwarder-add-from-deployment-server" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display:none;">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title" id="forwarder-add-from-deployment-server-label">Add Forwarder</h4>
+			</div>
+			<div class="modal-body" id="modal-body-forwarder-add-from-deployment-server">
+				<div class="textbox">
+					<div class="alert alert-danger" id="notice-forwarder-add-from-deployment-server" style="display:none;"></div>
+					<label class="modal-label">List of Forwarders</label>
+
+					<input type="text" id="input-forwarder-add-from-deployment-server-filter" class="search-field textbox" placeholder = "Search Filter" onkeyup="doSearch(this, 'modal-forwarder-add-from-deployment-server-table', '')"></input>
+					<table class="table-bordered table-hover table" id="modal-forwarder-add-from-deployment-server-table" data-click-to-select="true">
+					</table>
+					<input type="hidden" name="forwarder-env" id="input-forwarder-add-from-deployment-server-forwarder-env"></input>
+					<input type="hidden" name="forwarder-names" id="input-forwarder-add-from-deployment-server-forwarder-names"></input>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal" >Cancel</button>
+				<button id="button-forwarder-add-from-deployment-server" onclick="addForwardersFromDeploymentServerList()" class="btn btn-primary pull-right">Submit</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Modal to Show Server Class -->
+<div class="modal fade" id="modal-server-class-show" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display:none;">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title" id="server-class-show-label">Show Server Class</h4>
+			</div>
+			<div class="modal-body" id="modal-body-server-class-show">
+				<div class="textbox">
+					<label class="control-label">Server Class Name</label>
+					<div class="form-group">
+						<input name="class" class="form-control" id="input-server-class-show-name" disabled></input>
+					</div>
+
+					<div class="modal-server-class-table" id="modal-div-users-server-class-show-table">
+					 <table class="table-bordered table-hover table" id="modal-user-server-class-show-table">
+					 </table>
+					</div>
+				<input type="hidden" name="server-class-env" id="input-server-class-show-env"></input>
+				<input type="hidden" name="server-class" id="input-server-class-show"></input>
+				<input type="hidden" name="forwarder-names" id="input-server-class-show-forwarder-names"></input>
+			</div>
+		</div>
+		<div class="modal-footer">
+			<button type="button" class="btn btn-default" data-dismiss="modal" >Cancel</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<!-- Modal to Add Server Class -->
+<div class="modal fade" id="modal-server-class-add" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display:none;">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title" id="server-class-add-label">Add Server Class</h4>
+			</div>
+			<div class="modal-body" id="modal-body-server-class-add">
+				<div class="textbox">
+					<div class="alert alert-danger" id="notice-server-class-add" style="display:none;"></div>
+					<p class="control-label msg-info"><i class="fa fa-info-circle" aria-hidden="true"></i>Server Class Name CANNOT contain "[" or "]"</p>
+					<label class="control-label">Server Class Name</label>
+					<input class="modal-input" type="text" name="class" placeholder="Server Class Name" id="input-server-class-add-name" data-toggle="popover" data-placement="right" data-content=""></input>
+					<input type="text" id="input-server-class-add-filter" class="search-field textbox" placeholder = "Search Filter" onkeyup="doSearch(this, 'modal-user-server-class-table', '')"></input>
+					<div class="modal-server-class-table" id="modal-div-users-server-class-table">
+						<table class="table-bordered table-hover table" id="modal-user-server-class-table">
+						</table>
+					</div>
+					<input type="hidden" name="server-class-env" id="input-server-class-add-env"></input>
+					<input type="hidden" name="forwarder-names" id="input-server-class-add-forwarder-names"></input>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal" >Cancel</button>
+				<button id="button-server-class-add" onclick="addServerClass()" class="btn btn-primary pull-right">Submit</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Modal to Edit Server Class -->
+<div class="modal fade" id="modal-server-class-edit" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display:none;">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title" id="server-class-edit-label">Edit Server Class</h4>
+			</div>
+			<div class="modal-body" id="modal-body-server-class-edit">
+				<div class="textbox">
+					<div class="alert alert-danger" id="notice-server-class-edit" style="display:none;"></div>
+					<p class="control-label msg-info"><i class="fa fa-info-circle" aria-hidden="true"></i>Server Class Name CANNOT contain "[" or "]"</p>
+					<label class="control-label">Server Class Name</label>
+					<input class="modal-input" type="text" name="server-class-class-name" id="input-server-class-edit-class-name"></input>
+					<input type="text" id="input-server-class-edit-filter" class="search-field textbox" placeholder = "Search Filter" onkeyup="doSearch(this,'modal-user-server-class-edit-table', '')"></input>
+					<div class="modal-server-class-table" id="modal-div-users-server-class-edit-table">
+					<table class="table-bordered table-hover table" id="modal-user-server-class-edit-table" style="">
+					</table>
+				 </div>
+				 <input type="hidden" name="server-class-env" id="input-server-class-edit-env"></input>
+				 <input type="hidden" name="server-class" id="input-server-class-edit"></input>
+				 <input type="hidden" name="forwarder-names" id="input-server-class-edit-client-names"></input>
+				</div>
+			</div>
+		 	<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal" >Cancel</button>
+				<button id="button-server-class-edit" onclick="editServerClass()" class="btn btn-primary pull-right">Submit</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Modal to Delete Server Class -->
+<div class="modal fade" id="modal-server-class-delete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display:none;">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title" id="server-class-delete-label">Delete Server Class</h4>
+			</div>
+			<div class="modal-body" id="modal-body-server-class-delete">
+				<div class="textbox">
+					<label class="control-label">Server Class Name</label>
+					<div class="form-group">
+						<input name="class" class="form-control" id="input-server-class-delete-name" disabled></input>
+					</div>
+					<!-- <textarea name="serverclass" class="form-control" id="input-server-class-delete-name" disabled></textarea> -->
+					<input type="hidden" name="server-class" id="input-server-class-delete-server-class"></input>
+					<input type="hidden" name="server-class-number" id="input-server-class-delete-server-class-number"></input>
+				</div>
+			</div> 
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal" >Cancel</button>
+				<button id="button-server-class-delete" onclick="ajaxCall('user_server_class_delete')" class="btn btn-primary pull-right">Submit</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Modal to Add Apps -->
+<div class="modal fade large-modal-dialog" id="modal-apps-add" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display:none;">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title" id="apps-add-label">Add App</h4>
+			</div>
+			<div class="modal-body" id="modal-body-apps-add">
+				<div class="textbox">
+					<div class="alert alert-danger" id="notice-apps-add" style="display:none;"></div>
+					<p class="msg-info"><i class="fa fa-info-circle" aria-hidden="true"></i>Please select one type of App to add</p>
+					<label class="control-label">App Name</label>
+					<div class="form-group">
+						<input name="class" class="form-control" placeholder="App Name" id="input-apps-add-name" data-toggle="popover" data-placement="right" data-content=""></input>
+					</div>
+
+					<ul class="nav nav-tabs nav-justified" role="tablist">
+						<li id="a-tab-toggle-non-unixapp" class="active"><a href="#tab-non-unixapp" data-toggle="tab" ><i class="fa fa-files-o" aria-hidden="true"></i>App</a></li>
+						<li id="a-tab-toggle-unixapp"><a href="#tab-unixapp" data-toggle="tab" ><i class="fa fa-linux" aria-hidden="true"></i>Unix App</a></li>
+					</ul>
+
+					<div class="tab-content" >
+						<div class="tab-pane active" id="tab-non-unixapp">
+							<form class="input-radio-form-inline" name="radioform">
+								<label class="radio-inline">
+									<input type="radio" name="InputRadio" id="add-app-show-input-log-radio" onchange="addAppShowInputSwitchButton()" > <i class="fa fa-file-o no-margin-icon" aria-hidden="true"></i>Show Log File Input
+								</label>
+								<label class="radio-inline">
+									<input type="radio" name="InputRadio" id="add-app-show-input-script-radio" onchange="addAppShowInputSwitchButton()" > <i class="fa fa-code no-margin-icon" aria-hidden="true"></i>Show Script Input
+								</label>
+								<label class="radio-inline">
+									<input type="radio" name="InputRadio" id="add-app-show-input-both-radio" onchange="addAppShowInputSwitchButton()"><i class="fa fa-list no-margin-icon" aria-hidden="true"></i>Show Both
+								</label>
+							</form>
+
+							<input type="text" id="input-apps-add-filter" class="search-field textbox" placeholder = "Search Filter" onkeyup="doSearch(this, 'modal-user-apps-add-table', 'modal-user-apps-add-script-table')"></input>
+							<div class="modal-apps-table" id="modal-div-users-apps-table">
+								<table class="table-bordered table-hover table" id="modal-user-apps-add-table">
+								</table>
+								<br>
+								<table class="table-bordered table-hover table" id="modal-user-apps-add-script-table">
+								</table>
+							</div>
+						</div>
+
+						<div class="tab-pane" id="tab-unixapp">
+							See dashboard example of Unix App from <a class="fixe-link" target="_blank" tabindex="-1" href=<%= @unixapp_dashboard_link%> >HERE</a>
+							<input type="text" id="input-apps-add-filter" class="search-field textbox" placeholder = "Search Filter" onkeyup="doSearch(this, 'modal-user-apps-add-unixapp-table')"></input>
+							<div class="modal-apps-table">
+								<table class="table-bordered table-hover table" id="modal-user-apps-add-unixapp-table">
+								</table>
+							</div>
+						</div>
+					</div>
+
+				 <input type="hidden" name="apps-env" id="input-apps-add-env"></input>
+				 <input type="hidden" name="apps-inputs" id="input-apps-add-inputs"></input>
+				 <input type="hidden" name="apps-unixapp" id="hidden-text-unixapp"></input>
+				</div>
+			</div>
+		 	<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal" >Cancel</button>
+				<button id="button-apps-add" onclick="addApp()" class="btn btn-primary pull-right">Submit</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Modal to Edit Apps -->
+<div class="modal fade large-modal-dialog" id="modal-apps-edit" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display:none;">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title" id="apps-edit-label">Edit App</h4>
+			</div>
+			<div class="modal-body" id="modal-body-apps-edit">
+				<div class="textbox">
+					<div class="alert alert-danger" id="notice-apps-edit" style="display:none;"></div>
+					<label class="control-label">App Name</label>
+					<div class="form-group">
+						<input name="class" class="form-control" placeholder="App Name" id="input-apps-edit-name" data-toggle="popover" data-placement="right" data-content=""></input>
+					</div>
+
+					<div id="edit-app-div">
+						<form class="input-radio-form-inline" name="radioform">
+							<label class="radio-inline">
+								<input type="radio" name="InputRadio"id = "edit-app-show-input-log-radio" onchange="editAppShowInputSwitchButton()" > <i class="fa fa-file-o no-margin-icon" aria-hidden="true"></i>Show Log File Input
+							</label>
+							<label class="radio-inline">
+								<input type="radio" name="InputRadio" id = "edit-app-show-input-script-radio" onchange="editAppShowInputSwitchButton()" > <i class="fa fa-code no-margin-icon" aria-hidden="true"></i>Show Script Input
+							</label>
+							<label class="radio-inline">
+								<input type="radio" name="InputRadio" id = "edit-app-show-input-both-radio"  onchange="editAppShowInputSwitchButton()" > <i class="fa fa-list no-margin-icon" aria-hidden="true"></i>Show Both
+							</label>
+						</form>
+
+						<input type="text" id="input-apps-edit-filter" class="search-field textbox" placeholder = "Search Filter" onkeyup="doSearch(this, 'modal-user-apps-edit-table', 'modal-user-apps-edit-script-table')"></input>
+
+						<div class="modal-apps-table" id="modal-div-users-apps-table">
+							<table class="table-bordered table-hover table" id="modal-user-apps-edit-table">
+							</table>
+							<br>
+							<table class="table-bordered table-hover table" id="modal-user-apps-edit-script-table">
+							</table>
+						</div>
+					</div>
+
+					<div id="edit-unixapp-div">
+						See dashboard example of Unix App from <a class="fixe-link" target="_blank" tabindex="-1" href=<%= @unixapp_dashboard_link%> >HERE</a>
+						<input type="text" id="input-apps-edit-filter" class="search-field textbox" placeholder = "Search Filter" onkeyup="doSearch(this, 'modal-user-apps-edit-unixapp-table')"></input>
+						<div class="modal-apps-table" id="modal-div-users-apps-table">
+							<table class="table-bordered table-hover table" id="modal-user-apps-edit-unixapp-table">
+							</table>
+						</div>
+					</div>
+					
+					<input type="hidden" name="app" id="input-apps-edit-app"></input>
+					<input type="hidden" name="app-number" id="input-apps-edit-app-number"></input>
+					<input type="hidden" name="apps-env" id="input-apps-edit-env"></input>
+					<input type="hidden" name="apps-inputs" id="input-apps-edit-inputs"></input>
+				</div>
+		 	</div>
+		 	<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal" >Cancel</button>
+				<button id="button-apps-edit" onclick="editApp()" class="btn btn-primary pull-right">Submit</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Modal to Delete Apps -->
+<div class="modal fade" id="modal-apps-delete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display:none;">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title" id="apps-delete-label">Delete App</h4>
+			</div>
+			<div class="modal-body" id="modal-body-apps-delete">
+				<div class="textbox">
+					<label>App Name</label>
+					<input name="app-name" class="form-control" id="input-apps-delete-name" disabled></input>
+					<input type="hidden" name="app" id="input-apps-delete-app"></input>
+					<input type="hidden" name="app-number" id="input-apps-delete-app-number"></input>
+					<input type="hidden" name="apps-env" id="input-apps-delete-env"></input>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal" >Cancel</button>
+				<button id="button-apps-delete" onclick="deleteApp()" class="btn btn-primary pull-right">Submit</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Modal to Show Apps -->
+<div class="modal fade large-modal-dialog" id="modal-apps-show" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display:none;">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title" id="apps-show-label">Show App</h4>
+			</div>
+			<div class="modal-body" id="modal-body-apps-show">
+				<div class="textbox">
+					<label class="control-label">App Name</label>
+					<div class="form-group">
+						<input name="class" class="form-control" id="input-apps-show-name" disabled = true></input>
+					</div>
+
+					<div id="show-app-div">
+						<form class="input-radio-form-inline" name="radioform">
+							<label class="radio-inline">
+								<input type="radio" name="InputRadio" id = "show-app-show-input-log-radio" onchange="showAppShowInputSwitchButton()" > <i class="fa fa-file-o no-margin-icon" aria-hidden="true"></i>Show Log File Input
+							</label>
+							<label class="radio-inline">
+								<input type="radio" name="InputRadio" id = "show-app-show-input-script-radio" onchange="showAppShowInputSwitchButton()" > <i class="fa fa-code no-margin-icon" aria-hidden="true"></i>Show Script Input
+							</label>
+							<label class="radio-inline">
+								<input type="radio" name="InputRadio" id = "show-app-show-input-both-radio" onchange="showAppShowInputSwitchButton()" > <i class="fa fa-list no-margin-icon" aria-hidden="true"></i>Show Both
+							</label>
+						</form>
+
+						<input type="text" id="input-apps-show-filter" class="search-field textbox" placeholder = "Search Filter" onkeyup="doSearch(this,'modal-user-apps-show-table','modal-user-apps-show-script-table')"></input>
+						<div class="modal-apps-table" id="modal-div-users-apps-table">
+							<table class="table-bordered table-hover table" id="modal-user-apps-show-table">
+							</table>
+							<br>
+							<table class="table-bordered table-hover table" id="modal-user-apps-show-script-table">
+							</table>
+						</div>
+					</div>
+
+					<div id="show-unixapp-div">
+						<input type="text" id="input-apps-show-filter" class="search-field textbox" placeholder = "Search Filter" onkeyup="doSearch(this,'modal-user-apps-show-unixapp-table')"></input>
+						<div class="modal-apps-table" id="modal-div-users-apps-table">
+							<table class="table-bordered table-hover table" id="modal-user-apps-show-unixapp-table">
+							</table>
+						</div>
+					</div>
+
+					<input type="hidden" name="app" id="input-apps-show-app"></input>
+					<input type="hidden" name="app-number" id="input-apps-show-app-number"></input>
+					<input type="hidden" name="apps-env" id="input-apps-show-env"></input>
+					<input type="hidden" name="apps-inputs" id="input-apps-show-inputs"></input>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal" >Close</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Modal to Apps Deploy Setting -->
+<div class="modal fade large-modal-dialog" id="modal-apps-deploy-setting" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display:none;">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title" id="apps-deploy-setting-label" >Deploy Config</h4>
+			</div>
+			<div class="modal-body" id="modal-body-apps-deploy-setting">
+				<div class="textbox">
+					<label class="strong-text">App name</label>
+					<input name="class" class="form-control" id="input-apps-deploy-setting-name" disabled></input>
+					<br>
+					<label class="strong-text">Details of input(s) in app:</label>
+
+					<div id="deploy-config-app-inputs-div">
+						<div class="modal-apps-table table-border" id="modal-div-users-apps-table">
+							<table class="table-bordered table-hover table" id="modal-user-apps-deploy-inputs-table">
+							</table>
+							<br>
+							<table class="table-bordered table-hover table" id="modal-user-apps-deploy-inputs-script-table">
+							</table>
+						</div> 
+					</div>
+
+					<div id="deploy-config-unixapp-inputs-div">
+						<div class="modal-apps-table table-border">
+							<table class="table-bordered table-hover table" id="modal-user-apps-deploy-inputs-unixapp-table">
+							</table>
+						</div> 
+					</div>
+
+				<br>
+				<div style="margin-left:15%; float:left">
+					<strong class="strong-text">Deploy</strong>
+				</div>
+				<div style="float:left" class="arrow-down">
+				</div>
+
+				<div>
+					<label class="strong-text">(Please select server class(es) below to which the app will be deployed)</label>
+					<input type="text" id="input-apps-deploy-setting-filter" class="search-field textbox" placeholder = "Search Filter" onkeyup="doSearch(this,'modal-user-apps-deploy-setting-table', '')"></input><br><br>
+				</div>
+
+				<div class="alert alert-danger" id="notice-apps-deploy-setting" style="display:none;"></div>
+				<div class="modal-apps-table table-border" id="modal-div-users-apps-table">
+					<table class="table-bordered table-hover table" id="modal-user-apps-deploy-setting-table">
+					</table>
+				</div>
+					<input type="hidden" name="app" id="input-apps-deploy-setting-app"></input>
+					<input type="hidden" name="app-number" id="input-apps-deploy-setting-app-number"></input>
+					<input type="hidden" name="apps-env" id="input-apps-deploy-setting-env"></input>
+					<input type="hidden" name="apps-server-classes" id="input-apps-deploy-setting-server-classes"></input>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal" >Cancel</button>
+				<button id="button-apps-deploy-setting" onclick="appDeploySetting()" class="btn btn-primary pull-right">Submit</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Modal to Apps Deploy Setting Send Request -->
+<div class="modal fade" id="modal-apps-deploy-setting-request-send" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display:none;">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title" id="apps-deploy-setting-request-send-label">Send Configuraton Request</h4>
+			</div>
+			<div class="modal-body" id="modal-body-apps-deploy-setting-request-send">
+				<div class="textbox">
+					This action will send an email to the admins, requesting them to apply the current configuraton on Splunk servers.<br>
+                  	<p class="msg-info"><i class="fa fa-info-circle" aria-hidden="true"></i>Do send the request only when you have confirmed all the values and steps, You will receive an email when admins approve your request.</p>
+					<input type="hidden" name="app" id="input-apps-deploy-setting-request-send-app"></input>
+					<input type="hidden" name="app-number" id="input-apps-deploy-setting-request-send-app-number"></input>
+				</div> 
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal" >Cancel</button>
+				<button id="button-apps-deploy-setting-request-send" onclick="sendAppDeploySettingRequest()" class="btn btn-primary pull-right">Submit</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Modal to Apps Deploy Setting Stop Forwarding -->
+<div class="modal fade" id="modal-apps-deploy-setting-stop-forwarding" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display:none;">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title" id="apps-deploy-setting-stop-forwarding-label">Remove app configuraton on Splunk</h4>
+			</div>
+			<div class="modal-body" id="modal-body-apps-deploy-setting-stop-forwarding">
+				<div class="textbox">
+                  	<p class="msg-wrn"><i class="fa fa-info-circle" aria-hidden="true"></i>This action will remove the app configuration on Splunk and the logs will not be forwarded after this action. Do perform only when you have confirmed all the values and steps. </p>
+                  	<p class="msg-info"><i class="fa fa-info-circle" aria-hidden="true"></i>You can still establish the configuration by sending request again.</p>
+					<input type="hidden" name="app" id="input-apps-deploy-setting-stop-forwarding-send-app"></input>
+					<input type="hidden" name="app-number" id="input-apps-deploy-setting-stop-forwarding-send-app-number"></input>
+				</div>
+			</div> 
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal" >Cancel</button>
+				<button id="button-apps-deploy-setting-stop-forwarding" onclick="sendStopForwardingRequest()" class="btn btn-primary pull-right">Submit</button>
+			</div>
+		</div>
+	</div>
+</div>

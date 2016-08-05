@@ -1,0 +1,14 @@
+Hello Admin,<br>
+<br>
+A new account has been approved and is created on dotconf-assist.<br>
+Account Details are as follows,<br>
+User Name: <%= @user.splunk_user_name %>,<br>
+Group Name: <%= @user.group_name %>,<br>
+App Team Name: <%= @user.app_team_name %>,<br>
+Service ID: <%= @user.serviceid %>,<br>
+Email For Emergency: <%= @user.email_for_emergency %>,<br>
+Email: <%= @user.email %><br>
+<br>
+You can Access the Account Information from <a href="http://<%= @dotconf_assist_domain%>/admin/display_request_account/<%= @user.id %>">HERE</a><br>
+Regards,<br>
+Splunk as a Service Team.

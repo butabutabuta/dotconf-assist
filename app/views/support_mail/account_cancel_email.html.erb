@@ -1,0 +1,17 @@
+Hello <%= @user.splunk_user_name %>,<br>
+<br>
+We are sorry to inform you that your request has been rejected by the Admin and your account is not yet created on dotconf-assist.<br>
+Please contact the Admins or Provide Feedback From dotconf-assist Site.<br>
+Account Details are as follows,<br>
+User Name: <%= @user.splunk_user_name %>,<br>
+Group Name: <%= @user.group_name %>,<br>
+App Team Name: <%= @user.app_team_name %>,<br>
+Service ID: <%= @user.serviceid %>,<br>
+Email For Emergency: <%= @user.email_for_emergency %>,<br>
+Email: <%= @user.email %><br>
+<br>
+You can re-Sign-Up on the <a href="http://<%= @dotconf_assist_domain%>/authentications/sign_up">dotconf-assist</a>.<br>
+Also, you can reply to this email directly to contact admin or provide feedback, if you face any issues.<br>
+<br>
+Regards,<br>
+Splunk as a Service Support Team.

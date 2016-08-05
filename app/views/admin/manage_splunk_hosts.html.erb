@@ -1,0 +1,102 @@
+<script>
+   var list_name =[];
+   var list_id = [];
+   var list_status = [];
+   var list_account =[];
+   var listNotMatchingNames = [];
+   var targetTableRow="admin-hosts-table-row-";
+   var searchTermLengthPrevious=0;
+
+   function openModalSplunkHostAdd(){
+     $("#modal-splunk-host-add").modal('toggle');
+   }
+
+   function getAllSplunkHostsList()
+   {
+     list_name = [];
+     var records=$("#admin-hosts-table td[id$='-name']");
+     jQuery.each(records, function(index, value) {
+       list_name.push($(value).html());
+     });
+     list_status = [];
+     var records=$("#admin-hosts-table td[id$='-env']");
+     jQuery.each(records, function(index, value) {
+       list_status.push($(value).html());
+     });
+     list_account = [];
+     var records=$("#admin-hosts-table td[id$='-role']");
+     jQuery.each(records, function(index, value) {
+       list_account.push($(value).html());
+     });
+   }
+
+   function openModalSplunkHostEdit(hostNumber,host)
+   {
+     name=$("#admin-host-"+hostNumber+"-name").html();
+     role=$("#admin-host-"+hostNumber+"-role").html();
+     env=$("#admin-host-"+hostNumber+"-env").html();
+     $("#modal-body-splunk-host-edit #input-splunk-host-edit-name").val(name);
+     $("#modal-body-splunk-host-edit #select-splunk-host-edit-role").val(role);
+     $("#modal-body-splunk-host-edit #select-splunk-host-edit-env").val(env);
+     $("#modal-splunk-host-edit").modal('toggle');
+     $("#modal-body-splunk-host-edit #input-splunk-host-edit-host").val(host);
+     $("#modal-body-splunk-host-edit #input-splunk-host-edit-host-number").val(hostNumber);
+   }
+   function openModalSplunkHostDelete(hostNumber,host)
+   {
+     name=$("#admin-host-"+hostNumber+"-name").html();
+     role=$("#admin-host-"+hostNumber+"-role").html();
+     env=$("#admin-host-"+hostNumber+"-env").html();
+     $("#modal-body-splunk-host-delete #input-splunk-host-delete-name").val(name);
+     $("#modal-body-splunk-host-delete #select-splunk-host-delete-role").val(role);
+     $("#modal-body-splunk-host-delete #select-splunk-host-delete-env").val(env);
+     $("#modal-splunk-host-delete").modal('toggle');
+     $("#modal-body-splunk-host-delete #input-splunk-host-delete-host").val(host);
+     $("#modal-body-splunk-host-delete #input-splunk-host-delete-host-number").val(hostNumber);
+   }
+   $(document).ready(function() {
+      ajaxCall("splunk_host_get");
+      ajaxCall("splunk_host_statistics_get");
+    $('#modal-splunk-host-add').on('show.bs.modal', function () {
+      $('#input-splunk-host-add-name').focus();
+    });
+    $('#modal-splunk-host-add').on('hide.bs.modal', function () {
+      $('#input-splunk-host-add-name').val('');
+      $('#select-splunk-host-add-role').val('');
+      $('#select-splunk-host-add-env').val('');
+    });
+    $('#modal-splunk-host-edit').on('show.bs.modal', function () {
+      $('#input-splunk-host-edit-name').focus();
+    });
+    $('#modal-splunk-host-edit').on('hide.bs.modal', function () {
+      $('#input-splunk-host-edit-name').val('');
+      $('#select-splunk-host-edit-role').val('');
+      $('#select-splunk-host-edit-env').val('');
+    });
+    $('#modal-splunk-host-delete').on('show.bs.modal', function () {
+    });
+    $('#modal-splunk-host-delete').on('hide.bs.modal', function () {
+      $('#input-splunk-host-delete-name').val('');
+      $('#select-splunk-host-delete-role').val('');
+      $('#select-splunk-host-delete-env').val('');
+    });
+      pageSpecificSearchBox = "admin-manage-splunk-hosts-search";
+   });
+</script>
+<div class="page-header">
+  <h1>List of Splunk Hosts</h1>
+</div>
+<div class="alert alert-info" id="notice-manage-splunk-hosts" style="display:none"></div>
+       <div class="inner-addon left-addon">
+          <input type="text" class="textbox pull-right" id="admin-manage-splunk-hosts-search" role="search" onkeyup="doSearch(this,'admin-hosts-table','')"/>
+       </div>
+  <div class="hosts-table">
+       <table class="table table-bordered table-hover" id="admin-hosts-table" style="">
+       </table>
+  </div> <!-- close class accounts table-->
+<br>
+<button type="button" onclick="location.href='/admin/home'" class="btn btn-primary" >Back</button>
+<button type="button" onclick="openModalSplunkHostAdd()" class="btn btn-primary" >Add Host</button>
+<!-- <button type="button" data-target="#modal-password-change" data-toggle="modal" class="btn btn-primary" >Edit Host</button>
+<button type="button" data-target="#modal-password-change" data-toggle="modal" class="btn btn-primary" >Delete Host</button> //-->
+

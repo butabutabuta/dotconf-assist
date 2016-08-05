@@ -1,0 +1,103 @@
+<script>
+	var targetRetentionType="";
+	var totalLogSize = 0;
+	var totalStorageSize = 0;
+	var serviceUnitPrice = <%= @service_unit_price %>;
+	var storageUnitPrice = <%= @storage_unit_price %>;
+
+	function searchLogSizeAndStorage(){
+		$("#size-loading-id").show();
+		removeThisElementChildren("#user-input-log-size-table");
+		removeThisElementChildren("#user-input-log-storage-table");
+		removeThisElementChildren("#user-input-log-cost-table");
+		ajaxCall("user_log_size");
+
+		month = $("#month-opt option:selected").attr("id");
+		if (month == "2016-05" || month == "2016-06") {
+			return;
+		}
+
+		setTimeout( function() { //make sure user_log_storage completes after ajaxCall("user_log_size");
+			ajaxCall("user_log_storage");
+		}, 3000 );
+		$("#storage-loading-id").show();
+		$("#cost-loading-id").show();
+	}
+
+	$(document).ready(function() {
+		$($("#a-tab-toggle-"+$("#hidden-text-env").val()).parent()).addClass("active");
+		targetRetentionType = "";
+		$("#size-loading-id").hide();
+		$("#storage-loading-id").hide();
+		$("#cost-loading-id").hide();
+		$(".retention-tab").click(function (event) {
+			targetRetentionType = event.target.id;
+		});
+	});
+</script>
+
+<div class="content-div">
+	<!-- the ul below is used to adjust the width of the content body -->
+	<ul style="visibility: hidden;" class="nav nav-tabs nav-justified" role="tablist">
+		<li><a href="" data-toggle="tab" id="">Hidden</a></li>
+	</ul>
+
+	<div class="content-container container deployment-div">
+		<p class="control-label msg-info"><i class="fa fa-info-circle" aria-hidden="true"></i>The month presents the usage and cost for 16th of last month ~ 15th of selected month. e.g. 2016-06 is for usage and cost of 2016-05-16 ~ 2016-06-15</p>
+
+		<div class="timerange-form row">
+			<div class="col-md-4">
+				<label>Month:</label>
+				<select id="month-opt" class="form-control">
+					<% @month_ranges.each do |month_ranges| %>
+						<option id=<%= month_ranges %>><%= month_ranges %></option>
+					<% end %>
+				</select>
+			</div>
+			<div class="col-md-4">
+				<button onclick="searchLogSizeAndStorage()" class="timerange-form-btn btn btn-primary">Submit</button>
+			</div>
+		</div>
+
+		<div class="page-header" >
+			<h3 class="content-title">Log Size</h3>
+		</div>
+		
+
+		<center><i class='page-loading fa fa-spinner fa-spin' id="size-loading-id"></i></center>
+		<div class="content-table">
+			<table class="table table-bordered table-hover" id="user-input-log-size-table">
+			</table>
+		</div>
+
+		<br>
+		<div class="page-header" >
+			<h3 class="content-title">Storage</h3>
+		</div>
+		<p class="info-of-search control-label msg-info"><i class="fa fa-info-circle" aria-hidden="true"></i>Storage search is only available for 2016-07 or later</p>
+
+		<center><i class='page-loading fa fa-spinner fa-spin' id="storage-loading-id"></i></center>
+		<div class="content-table">
+			<table class="table table-bordered table-hover" id="user-input-log-storage-table">
+			</table>
+		</div>
+
+		<br>
+		<div class="page-header" >
+			<h3 class="content-title">Cost Estimation</h3>
+		</div>
+
+		<p class="info-of-search control-label msg-info"><i class="fa fa-info-circle" aria-hidden="true"></i>Cost estimation is only available for 2016-07 or later</p>
+		<p class="info-of-search control-label msg-info"><i class="fa fa-info-circle" aria-hidden="true"></i>This is an approximate estimation, the actual cost may be different from this estimation</p>
+		<p class="info-of-search control-label msg-info"><i class="fa fa-info-circle" aria-hidden="true"></i>Cost = Total Log Size (MB) / 1024 * <%= @service_unit_price %> yen + Total Storage Size (MB) / 1024 * <%= @storage_unit_price %> yen</p>
+
+		<center><i class='page-loading fa fa-spinner fa-spin' id="cost-loading-id"></i></center>
+		<div class="content-table">
+			<table class="table table-bordered table-hover" id="user-input-log-cost-table">
+			</table>
+		</div> 
+
+	</div>
+</div>
+
+<input type="hidden" name="env" id="hidden-text-env" value=<%= @env%>> </input>

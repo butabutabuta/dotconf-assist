@@ -1,0 +1,15 @@
+Hello Admin,<br>
+<br>
+The Following account is added to the Splunk System<br>
+User Name: <%= @user.splunk_user_name %>,<br>
+Group Name: <%= @user.group_name %>,<br>
+App Team Name: <%= @user.app_team_name %>,<br>
+Service ID: <%= @user.serviceid %>,<br>
+Environment: <%= @env%>,<br>
+Splunk Host: <%= @splunk_host%>,<br>
+Rpaas User Name: <%= @rpaas_user_name%>,<br>
+Memo: <%= @memo%>,<br>
+<br>
+You can refer <a href="http://<%= @dotconf_assist_domain%>/admin/report_splunk_account/<%= @splunk_account %>">SPLUNK Account Details </a>, for further actions/information if required.<br>
+Regards,<br>
+Splunk as a Service Team.

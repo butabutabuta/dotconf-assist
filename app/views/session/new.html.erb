@@ -1,0 +1,51 @@
+<script>
+$(document).ready(function() {
+	ajaxCall("anonymous_announcements_get");
+	$('#log-in-username').popover({trigger: 'focus'});
+	$('#log-in-password').popover({trigger: 'focus'});
+	$('#log-in-username').focus();
+	$( "#log-in-username" ).keyup(function() {
+		if (($(this).val().length > 0) && ($(this).val().substr(0,5) != 'user_') || ($(this).val() == '')) {
+			$(this).val('user_');
+		}
+		$('#log-in-username').popover({
+			trigger: 'manual',
+			placement: 'right',
+		});
+		$('#log-in-username').popover("show");
+	});
+});
+
+</script>
+<%= stylesheet_link_tag "session" %>
+
+<a class="login-cyanlink" target="_blank" href=<%= @start_guide_link %> >► Start Guide</a><br>
+<a class="login-cyanlink" href=<%= @faq_link %> target="_blank">FAQ</a><br>
+
+<div class="page-header login-header">
+	<h1 class="center-title">Welcome</h1>
+</div>
+
+<% if flash[:notice]=="Invalid Username Or Password" %>
+	<div class="alert alert-danger login-msg" id="notice-session-new"><%= flash[:notice] %></div>
+<% elsif flash[:notice] %>
+	<div class="alert alert-success login-msg" id="notice-session-new"><%= flash[:notice] %></div>
+<% end %>
+
+<div class="log-in-container">
+	<div class="log-in-content">
+		<%= form_for(resource, as: resource_name, :html => {:class => 'form-signin', :role => 'form', :style => "background-color:#F8F8F8;", :id=>"login-div"}, url: session_path(resource_name)) do |f|  %>
+		<br><br>
+		<%= f.text_field :splunk_user_name, autofocus: true, :class =>"form-control login-text-field", :id => "log-in-username", :placeholder => "Username" ,'data-toggle' => "popover", :value => "user_", :onfocus => "this.value = this.value;" %>
+
+		<%= f.password_field :password, autocomplete: "off",:class =>"form-control login-text-field", :id => "log-in-password", :placeholder => "Password" , 'data-toggle' => "popover" %>
+		<br>
+		<%= f.submit "Sign In",:class => "btn btn-lg btn-success", :id => "log-in-button" %>
+
+		<br><br>
+		<%= link_to "Sign up now", new_registration_path(resource_name), :class => "signup-link"%><br />
+		<%= link_to "Forgot password?", '/register/forgotPassword', :class => "forgot-pwd-link" %><br />
+		<br>
+		<% end %>
+	</div>
+</div>

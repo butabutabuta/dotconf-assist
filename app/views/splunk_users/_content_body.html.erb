@@ -1,0 +1,17 @@
+<script type="text/javascript">
+	function openIllustrationModal(){
+		$('#modal-illustration').modal('toggle');
+	}
+</script>
+
+<div class="col-sm-9 col-sm-offset-3 col-md-9 col-md-offset-3 main">
+	<% if action_name == "manage_forwarders" || action_name == "listinputs" || action_name == "manage_deploy_requests"  %>
+		<div class="hint">
+			<h4 class="hint-title"><i class="fa fa-lightbulb-o no-margin-icon" aria-hidden="true"></i> <%= yield(:step_title) %></h4>
+			<p class="hint-text"> <%= yield(:step_1) %></p>
+			<p class="hint-text"> <%= yield(:step_2) %></p>
+			<a class="hint-link" onclick="openIllustrationModal()"><i class="fa fa-link no-margin-icon" aria-hidden="true"></i>Illustration</a>
+		</div>
+	<% end %>
+	<%= yield %>
+</div>

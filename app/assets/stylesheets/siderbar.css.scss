@@ -1,0 +1,28 @@
+$color-lightwhite: rgb(200,200,200);
+$color-darkgrey: rgb(50,50,50);
+$color-lightblue: rgb(59,92,121);
+$color-splunkgreen: rgb(87,177,50);
+$color-blue: rgb(66,139,202);
+.sidebar{
+	margin-top: -0.1em;
+	min-width: 17.5em;
+	background-color: $color-darkgrey;
+	border-right: none;
+}
+
+.nav>li>a{
+	color: $color-lightwhite;
+}
+.sidenav-link:hover{
+	color: white;
+	background-color: $color-lightblue;
+}
+
+.nav-sidebar > li{
+	line-height: 3em;
+}
+
+.nav>li>a:hover, .nav>li>a:focus{
+	color: white;
+	background-color: $color-lightblue;
+}

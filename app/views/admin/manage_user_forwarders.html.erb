@@ -1,0 +1,34 @@
+<script>
+	function openModalForwardersSuggest(forwarderNumber,forwarder)
+	{
+	var forwarderName=$("#admin-forwarders-"+forwarderNumber+"-name").html();
+	$("#modal-forwarder-suggest-change").modal('toggle');
+	$("#input-forwarder-suggest-change-old-name").val(forwarderName);
+	$("#input-forwarder-suggest-change-forwarder").val(forwarder);
+	}
+	function userForwardersSuggestChange()
+	{
+	ajaxCall('admin_user_forwarders_suggest_change');
+	}
+	$(document).ready(function() {
+		ajaxCall("admin_user_forwarders_get");
+		$('#modal-forwarder-suggest-change').on('hide.bs.modal', function () {
+		$('#input-forwarder-suggest-change-new-name').val('');
+		});
+	});
+</script>
+
+<div class="page-header">
+	<h1>List of User Forwarders</h1>
+</div>
+
+<div class="alert alert-info" id="notice-manage-user-forwarders" style="display:none"></div>
+<input type="text" class="textbox pull-right" id="admin-show-forwarders" role="search" placeholder = "Search Filter" onkeyup="doSearch(this,'admin-forwarders-table','')"/>
+<div class="forwarders-table">
+	<table class="table table-bordered table-hover" id="admin-forwarders-table" style="">
+	</table>
+</div>
+<br>
+<button type="button" onclick="location.href='/admin/home'" class="btn btn-primary" >Back</button>
+
+

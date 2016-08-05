@@ -1,0 +1,44 @@
+<script>
+   function openModalPriceAdd(){
+     $("#modal-price-add").modal('toggle');
+   }
+
+   function openModalPriceEdit(priceNumber, priceID)
+   { 
+      $("#modal-price-edit").modal('toggle');
+      service_unit_price=$("#admin-price-"+priceNumber+"-service_unit_price").html();
+      storage_unit_price=$("#admin-price-"+priceNumber+"-storage_unit_price").html();
+      $("#input-price-edit-price_id").val(priceID);
+      $("#input-price-edit-service_unit_price").val(service_unit_price);
+      $("#input-price-edit-storage_unit_price").val(storage_unit_price);
+   }
+   function openModalPriceDelete(priceNumber, priceID)
+   {
+     $("#modal-price-delete").modal('toggle');
+     service_unit_price=$("#admin-price-"+priceNumber+"-service_unit_price").html();
+     storage_unit_price=$("#admin-price-"+priceNumber+"-storage_unit_price").html();
+     $("#input-price-delete-price_id").val(priceID);
+     $("#input-price-delete-service_unit_price").val(service_unit_price);
+     $("#input-price-delete-storage_unit_price").val(storage_unit_price);
+   }
+   $(document).ready(function() {
+      ajaxCall("price_get");
+      $('#modal-price-add').on('show.bs.modal', function () {
+        $('#input-price-add-service_unit_price').focus();
+      });
+   });
+
+</script>
+<div class="page-header">
+  <h1>List of Prices</h1>
+</div>
+<div class="alert alert-info" id="notice-manage-prices" style="display:none"></div>
+       <div class="inner-addon left-addon">
+          <input type="text" class="textbox pull-right" id="admin-manage-prices-search" role="search" onkeyup="doSearch(this,'admin-prices-table','')"/>
+       </div>
+  <div class="prices-table">
+       <table class="table table-bordered table-hover" id="admin-prices-table" style="">
+       </table>
+  </div> <!-- close class accounts table-->
+<br>
+<button type="button" onclick="openModalPriceAdd()" class="btn btn-primary" >Add Price</button>

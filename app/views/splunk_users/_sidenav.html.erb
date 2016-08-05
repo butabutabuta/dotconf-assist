@@ -1,0 +1,43 @@
+<input type="hidden" name="env" id="hidden-text-env" value=<%= @env %>></input>
+
+<div class="container-fluid">
+	<div class="row">
+		<div id="side-navbar-id" class="col-sm-3 col-md-2 sidebar navbar-collapse collapse">
+			<ul class="nav nav-sidebar">
+				<% if action_name=="index" || action_name == "new" %>
+					<li class="active"><%= link_to '<i class="fa fa-home"></i>Home'.html_safe, {:controller => "splunk_users", :action => "index", :env => @env}, {:class=>"sidenav-link"} %></li>
+				<% else %>
+					<li><%= link_to '<i class="fa fa-home"></i>Home'.html_safe, {:controller => "splunk_users", :action => "index", :env => @env }, {:class=>"sidenav-link"} %></li>
+				<% end %>
+
+				<% if ((@env=="prod" && @prod!=0) || (@env=="stg" && @stg!=0) || (@env=="dev" && @dev!=0)) && action_name != "new" %>
+					<% if action_name=="manage_forwarders"  %>
+						<li class="active"><%= link_to '<i class="fa fa-th"></i>Configure Server Classes'.html_safe, {:controller => "splunk_users", :action => "manage_forwarders", :env => @env }, {:class=>"sidenav-link"} %></li>
+					<% else %>
+						<li ><%= link_to '<i class="fa fa-th"></i>Configure Server Classes'.html_safe, {:controller => "splunk_users", :action => "manage_forwarders", :env => @env }, {:class=>"sidenav-link"} %></li>
+					<% end %>
+
+					<% if action_name=="listinputs"  %>
+						<li class="active"><%= link_to '<i class="fa fa-files-o"></i>Configure Apps'.html_safe, {:controller => "splunk_users", :action => "listinputs", :env => @env }, {:class=>"sidenav-link"} %></li>
+					<% else %>
+						<li ><%= link_to '<i class="fa fa-files-o"></i>Configure Apps'.html_safe, {:controller => "splunk_users", :action => "listinputs", :env => @env }, {:class=>"sidenav-link"} %></li>
+					<% end %>
+
+					<% if action_name=="manage_deploy_requests" %>
+						<li class="active"><%= link_to '<i class="fa fa-cogs"></i>Deploy Apps'.html_safe, {:controller => "splunk_users", :action => "manage_deploy_requests", :env => @env }, {:class=>"sidenav-link"} %></li>
+					<% else %>
+						<li ><%= link_to '<i class="fa fa-cogs"></i>Deploy Apps'.html_safe, {:controller => "splunk_users", :action => "manage_deploy_requests", :env => @env }, {:class=>"sidenav-link"} %></li>
+					<% end %>
+
+					<% if @env=="prod" && @enable_size_cost_estimation_page %>
+						<% if action_name=="get_size_and_storage" %>
+							<li class="active"><%= link_to '<i class="fa fa-database"></i>Log Size and Storage'.html_safe, {:controller => "splunk_users", :action => "get_size_and_storage", :env => @env }, {:class=>"sidenav-link"} %></li>
+						<% else %>
+							<li ><%= link_to '<i class="fa fa-database"></i>Log Size and Storage'.html_safe, {:controller => "splunk_users", :action => "get_size_and_storage", :env => @env }, {:class=>"sidenav-link"} %></li>
+						<% end %>
+					<% end %>
+				<% end %>
+			</ul>
+		</div>
+	</div>
+</div>

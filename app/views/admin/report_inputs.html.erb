@@ -1,0 +1,210 @@
+<script>
+  function adminUsersInputsSuggestChange(id)
+  {
+    $("#modal-inputs-suggest-change").modal('toggle');
+    $("#select-setup-inputs-suggest-change-old-source-hostname").val($("#input-report-inputs-source-hostname").val());
+    $("#input-setup-inputs-suggest-change-old-log-file-path").val($("#input-report-inputs-log-file-path").val());
+    $("#input-setup-inputs-suggest-change-old-source-type").val($("#input-report-inputs-source-type").val());
+    $("#select-setup-inputs-suggest-change-old-log-file-size").val($("#input-report-inputs-log-file-size").val());
+    $("#select-setup-inputs-suggest-change-old-log-retention-period").val($("#input-report-inputs-data-retention-period").val());
+    $("#input-setup-inputs-suggest-change-old-memo").val($("#input-report-inputs-memo").val());
+    var $options = $("#select-setup-inputs-suggest-change-old-source-hostname > option").clone();
+    $('#select-setup-inputs-suggest-change-new-source-hostname').append($options);
+    $("#input-setup-inputs-suggest-change-new-log-file-path").val($("#input-setup-inputs-suggest-change-old-log-file-path").val());
+    $("#input-setup-inputs-suggest-change-new-source-type").val($("#input-setup-inputs-suggest-change-old-source-type").val());
+    $("#select-setup-inputs-suggest-change-new-log-file-size").val($("#select-setup-inputs-suggest-change-old-log-file-size").val());
+    $("#select-setup-inputs-suggest-change-new-log-retention-period").val($("#select-setup-inputs-suggest-change-old-log-retention-period").val());
+    $("#input-setup-inputs-suggest-change-new-memo").val($("#input-setup-inputs-suggest-change-old-memo").val());
+  }
+  function suggestChangeValidate()
+  {
+    ajaxCall('admin_user_inputs_suggest_change');
+  }
+
+  //$("#admin-inputs-"+targetLogAction+"-script-content").attr("href", "/admin/showscriptcontent/" + value);
+
+
+  $(document).ready(function() {
+     <% if @log_file_path != nil%> //for log input
+      $('#log-input-details-basic-div').show();
+      $('#log-script-input-details-common-div').show();
+      $('#log-input-details-advanced-div').show();
+      $('#script-input-details-basic-div').hide();
+      $('#unixapp-input-details-basic-div').hide();
+      $('#script-unixapp-input-details-common-div').hide();
+      $('#script-input-details-advanced-div').hide();
+     <% elsif @os != nil%> //for script input
+      $('#log-input-details-basic-div').hide();
+      $('#log-input-details-advanced-div').hide();
+      $('#unixapp-input-details-basic-div').hide();
+      $('#log-script-input-details-common-div').show();
+      $('#script-input-details-basic-div').show();
+      $('#script-unixapp-input-details-common-div').show();
+      $('#script-input-details-advanced-div').show();
+    <% elsif @scriptname != nil%> //unix input
+      $('#log-input-details-basic-div').hide();
+      $('#log-input-details-advanced-div').hide();
+      $('#script-input-details-basic-div').hide();
+      $('#script-input-details-advanced-div').hide();
+      $('#log-script-input-details-common-div').hide();
+      $('#unixapp-input-details-basic-div').show();
+      $('#script-unixapp-input-details-common-div').show();
+     <% end %>
+
+     document.getElementById("generatedinputconf").style.display = "none";
+     <% if @status==1%>
+         $('#inputs-account-approve').css("display","block");
+     <% elsif @status==9 %>
+         $('#inputs-account-cancel').css("display","block");
+     <% end %>
+    targetSplunkForwarders="select-setup-inputs-suggest-change-old-source-hostname";
+    ajaxCall('admin_user_forwarders_list');
+    displayMessages('logfilepath','input-setup-inputs-suggest-change-new-log-file-path','data-content',0)
+    displayMessages('sourcetype','input-setup-inputs-suggest-change-new-source-type','data-content',0);
+    displayMessages('memo','input-setup-inputs-suggest-change-new-memo','data-content',0);
+    $('#select-setup-inputs-suggest-change-new-source-hostname').popover({trigger: 'focus'});
+    $('#input-setup-inputs-suggest-change-new-log-file-path').popover({trigger: 'focus'});
+    $('#input-setup-inputs-suggest-change-new-source-type').popover({trigger: 'focus'});
+    $('#input-setup-inputs-suggest-change-new-memo').popover({trigger: 'focus'});
+    $( "#input-setup-inputs-suggest-change-new-log-file-path" ).keyup(function() {
+         $('#input-setup-inputs-suggest-change-new-log-file-path').popover({
+              trigger: 'manual',
+              placement: 'right',
+         });
+         result=validate($('#input-setup-inputs-suggest-change-new-log-file-path').val(),'string','logfilepath');
+         displayMessages('logfilepath','input-setup-inputs-suggest-change-new-log-file-path','data-content',result);
+         $('#input-setup-inputs-suggest-change-new-log-file-path').popover("show");
+    });
+    $( "#input-setup-inputs-suggest-change-new-source-type" ).keyup(function() {
+         $('#input-setup-inputs-suggest-change-new-source-type').popover({
+              trigger: 'manual',
+              placement: 'right',
+         });
+         result=validate($('#input-setup-inputs-suggest-change-new-source-type').val(),'string','sourcetype');
+         displayMessages('sourcetype','input-setup-inputs-suggest-change-new-source-type','data-content',result);
+         $('#input-setup-inputs-suggest-change-new-source-type').popover("show");
+    });
+    $( "#input-setup-inputs-suggest-change-new-memo" ).keyup(function() {
+         $('#input-setup-inputs-suggest-change-new-memo').popover({
+              trigger: 'manual',
+              placement: 'right',
+         });
+         result=validate($('#input-setup-inputs-suggest-change-new-memo').val(),'string','memo');
+         displayMessages('memo','input-setup-inputs-suggest-change-new-memo','data-content',result);
+         $('#input-setup-inputs-suggest-change-new-memo').popover("show");
+    });
+  });
+</script>
+   <div class="page-header">
+     <h2>Details of <%= @account_name %>'s Input Configs</h2>
+   </div>
+<!-- <div class="alert alert-warning" id="inputs-account-wait" style="width: 20%;display: none;">Please Wait API is called...</div> -->
+<div class="alert alert-success" id="inputs-account-approve" style="width: 30%;display: none;">Input is Approved Successfully !!!</div>
+<div class="alert alert-danger" id="inputs-account-cancel" style="width: 30%;display: none;">Input is Rejected !!! </div>
+<div class="alert alert-danger" id="inputs-account-fail" style="width: 30%;display: none;">Sorry The Splunk Server is Down !!</div>
+<div class="well pull-right" id="generatedinputconf"></div>
+<%= form_tag '', :class => 'form-horizontal', :role => "form"  do -%>
+  
+  <div id="log-input-details-basic-div">
+    <label  for="source-hostname" class="col-sm-2 control-label" style="text-align:left;">Log File Path</label>
+    <div class="form-group">
+     <%= text_area_tag 'log_file_path', @log_file_path ,:style => 'height: 20%; width:50%', disabled: true , id: "input-report-inputs-log-file-path", :rows => "4" %>*
+    </div>
+    <br>
+  </div>
+  
+  <div id="log-script-input-details-common-div">
+     <label  for="source-hostname" class="col-sm-2 control-label" style="text-align:left;">Source Type</label>
+    <div class="form-group">
+     <%= text_field_tag 'sourcetype', @sourcetype,   :style => 'width:50%',disabled: true, id: "input-report-inputs-source-type"  %>*
+     </div>
+     <br>
+
+     <label  for="source-hostname" class="col-sm-2 control-label" style="text-align:left;">Log File Size Per Day</label>
+    <div class="form-group">
+      <%= text_field_tag 'log_file_size', @log_file_size, :style => 'width:50%', disabled: true, id: "input-report-inputs-log-file-size" %>
+     </div>
+     <br>
+  </div>
+
+ <label  for="source-hostname" class="col-sm-2 control-label" style="text-align:left;">Data Retention Period</label>
+ <div class="form-group">
+   <%= text_field_tag 'data_retention_period', @data_retention_period, :style => 'width:50%', disabled: true, id: "input-report-inputs-data-retention-period"  %>
+  </div>
+  <br>
+
+  <div id="log-input-details-advanced-div">
+    <label  for="source-hostname" class="col-sm-2 control-label" style="text-align:left;">crcSalt</label>
+    <div class="form-group">
+     <%= text_area_tag 'crcsalt', @crcsalt ,:style => 'width:50%', disabled: true , id: "input-report-inputs-crcsalt", :rows => "1" %>
+    </div>
+    <br>
+
+    <label  for="blacklist" class="col-sm-2 control-label" style="text-align:left;">Blacklist</label>
+   <div class="form-group">
+    <%= text_area_tag 'blacklist', @blacklist ,:style => 'width:50%', disabled: true , id: "input-report-inputs-blacklist", :rows =>"2" %>
+    </div>
+    <br>
+  </div>
+
+
+  <div id="script-unixapp-input-details-common-div">
+     <label  for="source-hostname" class="col-sm-2 control-label" style="text-align:left;">Interval</label>
+    <div class="form-group">
+     <%= text_area_tag 'interval', @interval ,:style => 'width:50%', disabled: true , id: "input-report-inputs-interval", :rows => "1" %>
+    </div>
+    <br>
+  </div>
+
+  <div id="unixapp-input-details-basic-div">
+    <label  for="source-hostname" class="col-sm-2 control-label" style="text-align:left;">Script File Name</label>
+    <a href=<%= @unixapp_link %> id = "admin-inputs-details-unixapp-content" style="display:inline" target="_blank"><em>Show Script</em></a>
+    <div class="form-group">
+     <%= text_area_tag 'scriptname', @scriptname ,:style => 'width:50%', disabled: true , id: "input-report-inputs-scriptname", :rows => "1" %>
+    </div>
+    <br>
+  </div>
+
+  <div id="script-input-details-basic-div">
+    <label  for="source-hostname" class="col-sm-2 control-label" style="text-align:left;">Script File Name</label>
+    <a href="/admin/showscriptcontent/<%= @input.id %>" id = "admin-inputs-details-script-content" style="display:inline" target="_blank"><em>Show Script</em></a>
+    <div class="form-group">
+     <%= text_area_tag 'scriptname', @scriptname ,:style => 'width:50%', disabled: true , id: "input-report-inputs-scriptname", :rows => "1" %>
+    </div>
+    <br>
+
+     <label  for="source-hostname" class="col-sm-2 control-label" style="text-align:left;">Script Runs ON</label>
+    <div class="form-group">
+     <%= text_area_tag 'os', @os ,:style => 'width:50%', disabled: true , id: "input-report-inputs-os", :rows => "1" %>
+    </div>
+    <br>
+  </div>
+
+  <div id="script-input-details-advanced-div">
+    <label  for="source-hostname" class="col-sm-2 control-label" style="text-align:left;">Option</label>
+    <div class="form-group">
+     <%= text_area_tag 'option', @option ,:style => 'width:50%', disabled: true , id: "input-report-inputs-option", :rows => "1" %>
+    </div>
+    <br>
+  </div>
+
+  <label  for="source-hostname" class="col-sm-2 control-label" style="text-align:left;">Other Specifications</label>
+  <div class="form-group">
+   <%= text_area_tag 'memo', @memo ,:style => 'width:50%', disabled: true , id: "input-report-inputs-memo", :rows => "3" %>
+  </div>
+  <br>
+
+  <label  for="env" class="col-sm-2 control-label" style="text-align:left;">Environment</label>
+ <div class="form-group">
+  <%= text_field_tag 'env', @env ,:style => 'width:50%', disabled: true , id: "input-report-inputs-env" %>
+  </div>
+  <br>
+  <input type="hidden" id="input-report-inputs" value="<%= @input.id %>"></input>
+<% end %>
+<button  value="<%= @input.splunk_users_id%>" class="btn btn-primary" id="adminusersinputsback" onclick="location.href='/admin/inputlist'">Back</button>
+<% if ( @status ==0)  %>
+<button value="<%= @input.id%>" class="btn btn-primary" id="adminusersinputscancel" onclick="adminUsersInputsCancel()">Cancel</button>
+<button value="<%= @input.id%>" class="btn btn-primary" id="adminusersinputsapprove" onclick="adminUsersInputsApprove()">Approve</button>
+<% end %>
+<button value="<%= @input.id%>" class="btn btn-primary" id="adminusersinputsgenerate" onclick="adminUsersInputsGenerateConf()">Generate Inputs.conf</button>
+<button class="btn btn-info" id="button-admin-inputs-suggest-change" onclick="adminUsersInputsSuggestChange(<%= @input.id%>)">Suggest Change</button>

@@ -1,0 +1,1013 @@
+<script>
+	var targetSplunkForwarders="";
+	var targetLogAction="";
+	var list_name =[];
+	var list_id = [];
+	var list_status = [];
+	var list_account = [];
+	var listNotMatchingNames = [];
+	var targetTableRow="";
+	var searchTermLengthPrevious=0;
+	var getInputs = false;
+	var inputType = "log"; //used in editing input
+	var rightAfterModalOpened = false;
+	
+	function validateInputs(inputIDs){
+		for (var i = 0; i < inputIDs.length; i++) {
+			var value = $("#"+inputIDs[i]).val();
+			if (value == "") {
+				$("#"+inputIDs[i]).focus();
+				return "This field cannot be empty";
+			}
+		}
+		return "";
+	}
+
+	function resetUnixAppInput(){
+		var scripts = ["cpu","df","vmstat","iostat","interfaces","common","hardware","lastlog","lsof","netstat","netstat2","openPorts","openPortsEnhanced","package","passwd","protocol","ps","rlog","selinuxChecker","service","setup","sshdChecker","time","top","update","uptime","usersWithLoginPrivs","version","vsftpdChecker","who"];
+		for(var i = 0; i < scripts.length; i++){
+			$("#input-setup-inputs-add-"+scripts[i]).prop('checked',false);
+			$("#input-setup-inputs-add-" + scripts[i] + "-interval").val("");
+		}
+	}
+
+	function setRecommendedUnixAppInput(){
+		var recommended = ["cpu","df","vmstat","iostat","interfaces"];
+		var recommendedInterval = [30, 300, 60, 60, 60];
+		for(var i = 0; i < recommended.length; i++){
+			$("#input-setup-inputs-add-"+recommended[i]).prop('checked',true);
+			$("#input-setup-inputs-add-" + recommended[i] + "-interval").val(recommendedInterval[i]);
+		}
+	}
+
+	function scrollTop0(modalID, modalBodyID){
+		$('#'+modalID).on('shown.bs.modal', function () {
+			if (rightAfterModalOpened) {
+				$('#'+modalBodyID).scrollTop(0);
+				rightAfterModalOpened = false;
+			}
+		});
+	}
+	function getAllInputsList() //call this function when click inputs tab, list_name is used for searching
+	{
+		list_name = [];
+		var records=$("#user-inputs-table td[id$='hostname']");
+		jQuery.each(records, function(index, value) {
+			list_name.push($(value).html());
+		});
+		list_status = [];
+		list_account = [];
+	}
+
+	function getAllAddAppInputsList()
+	{
+		list_name = [];
+		var records=$("#modal-user-apps-add-table td[id$='app-input']");
+		jQuery.each(records, function(index, value) {
+			list_name.push($(value).html());
+		});
+		list_status = [];
+		list_account = [];
+	}
+	function getAllEditAppInputsList()
+	{
+		list_name = [];
+		var records=$("#modal-user-apps-edit-table td[id$='app-input']");
+		jQuery.each(records, function(index, value) {
+			list_name.push($(value).html());
+		});
+		list_status = [];
+		list_account = [];
+	}
+	function getAllAppsList()
+	{
+		list_name = [];
+		var records=$("#user-apps-table td[id$='name']");
+		jQuery.each(records, function(index, value) {
+			 list_name.push($(value).html());
+		});
+		list_status = [];
+		list_account = [];
+	}
+	function searchTheseRecordsApp(elem) {
+		if(targetTableRow!="user-apps-table-row-") {
+			targetTableRow= "user-apps-table-row-";
+			getAllAppsList();
+		}
+		searchTheseRecords(elem);
+	}
+
+	function openModalInputsDetails(log,logNumber,type)
+	{  
+		rightAfterModalOpened = true;
+		$('#modal-inputs-details').modal('toggle');
+		if (type == 0) { //file log input
+			$('#show-input-non-unixapp-common').show();
+			$('#show-input-log-basic-div').show();
+			$('#show-input-log-advanced-div').show();
+			$('#show-input-script-basic-div').hide();
+			$('#show-input-script-advanced-div').hide();
+			$('#show-input-unixapp-basic').hide();
+			$('#show-input-script-unixapp-common').hide();
+		}
+		else if (type == 1){ //script input
+			$('#show-input-log-basic-div').hide();
+			$('#show-input-log-advanced-div').hide();
+			$('#show-input-non-unixapp-common').show();
+			$('#show-input-script-basic-div').show();
+			$('#show-input-script-advanced-div').show();
+			$('#show-input-unixapp-basic').hide();
+			$('#show-input-script-unixapp-common').show();
+		}
+		else if (type == 2){ //unix app input
+			$('#show-input-log-basic-div').hide();
+			$('#show-input-log-advanced-div').hide();
+			$('#show-input-script-basic-div').hide();
+			$('#show-input-script-advanced-div').hide();
+			$('#show-input-non-unixapp-common').hide();
+			$('#show-input-unixapp-basic').show();
+			$('#show-input-script-unixapp-common').show();
+		}
+
+		$('#modal-body-inputs-details #input-inputs-details-log').val(log);
+		$('#modal-body-inputs-details #input-inputs-details-log-number').val(logNumber);
+		targetLogAction="details";
+		ajaxCall('user_inputs_fetch_record');
+	}
+
+	//add input dialog
+	function openModalInputsAdd()
+	{
+		rightAfterModalOpened = true;
+		pageSpecificSearchBox = "";
+		$("#alert-modal-setup-inputs-add-confirm").hide();
+		$('#modal-inputs-add').modal('toggle');
+		$("#input-setup-inputs-add-log-file-path").val("");
+		$("#input-setup-inputs-add-source-type").val("");
+		$("#input-setup-inputs-add-memo").val("");
+		$("#select-setup-inputs-add-log-file-size").val($("#select-setup-inputs-add-log-file-size option:first").val());
+		$("#select-setup-inputs-add-log-retention-period").val($("#select-setup-inputs-add-log-retention-period option:first").val());
+		$('#add-input-blacklist-checkbox').show();
+		$('#add-input-blacklist-customize').hide();
+		$('#add-input-blacklist-switch-button').html('Click to write your blacklist regex');
+		$('#add-input-log-radio').prop('checked', true);
+		$('#add-input-script-radio').prop('checked', false);
+		addInputSwithButton();
+		resetUnixAppInput();
+		ajaxCall("forwarders_count_get");
+	}
+
+	function setupNewInput(form)
+	{  
+		highlightAddedRow = true;
+		getInputs = true; //used in splunk_user.js else if(whom=="user_inputs_add"), to ensure ajaxcall("listinputs") be called only once each time
+		log = $("#add-input-log-radio").is(":checked");
+		script = $("#add-input-script-radio").is(":checked");
+		unix = $("#add-input-unixapp-radio").is(":checked");
+
+		if (log) {
+			var inputIDs = ["input-setup-inputs-add-log-file-path", "input-setup-inputs-add-source-type"];
+			var msg = validateInputs(inputIDs);
+			if (msg != "") {
+				$('#alert-modal-setup-inputs-add-confirm').css("display","block");
+				updateElementHtmlData('alert-modal-setup-inputs-add-confirm',msg);
+			}else{
+				ajaxCall('user_inputs_add');
+			}
+		}
+		else if(script){ //script input
+			var inputIDs = ["input-setup-inputs-script-add-interval", "input-setup-inputs-add-source-type"];
+			var msg = validateInputs(inputIDs);
+			if (msg != "") {
+				$('#alert-modal-setup-inputs-add-confirm').css("display","block");
+				updateElementHtmlData('alert-modal-setup-inputs-add-confirm',msg);
+			}else{
+				filename="";
+				if ($('#input-setup-inputs-script-add-script').prop("files").length != 0) { //file uploaded
+					filename = $('#input-setup-inputs-script-add-script').prop("files")[0]['name'];
+				}
+				if(filename == ""){
+					$('#alert-modal-setup-inputs-add-confirm').css("display","block");
+					updateElementHtmlData('alert-modal-setup-inputs-add-confirm',"Please upload a script file");
+				}
+				else{
+					ajaxCallScriptInput('user_inputs_add', form);
+				}
+			}
+		}
+		else { //unix input
+			if ($("#add-input-unix-basic-div input:checked").length == 0){
+				with_this=getDisplayMessages('unixapp',-1);
+				$('#alert-modal-setup-inputs-add-confirm').css("display","block");
+				updateElementHtmlData('alert-modal-setup-inputs-add-confirm',with_this);
+				alertNoticesTimeoutVar = clearAlertNotices();
+			}else{
+				var names = [];
+				var intervalValues = [];
+				var periodValues = [];
+  				var env = $("#hidden-text-env").val();
+  				var memo = $("#input-setup-inputs-add-memo").val();
+  				var validationPass = true;
+				$('#add-input-unix-basic-div input:checked').each( function() {
+					var name = $(this).attr('value');
+					var intervalID = "#input-setup-inputs-add-" + name +"-interval";
+					var intervalValue = $(intervalID).val();
+					var text1=validate(intervalValue,'string','interval');
+					if (text1 != 1) {
+						$('#alert-modal-setup-inputs-add-confirm').css("display","block");
+						with_this=getDisplayMessages('interval',text1);
+						updateElementHtmlData('alert-modal-setup-inputs-add-confirm',with_this);
+						alertNoticesTimeoutVar = clearAlertNotices();
+						$(intervalID).focus();
+						validationPass = false;
+					}
+					var periodID = "#select-setup-inputs-add-" + name + "-retention-period";
+					var periodValue = $(periodID).val();
+					names.push(name);
+					intervalValues.push(intervalValue);
+					periodValues.push(periodValue);
+				});
+				if(validationPass){
+					for(var i = 0; i < names.length; i++){
+						removeThisElementChildren("#modal-user-apps-add-table");
+						removeThisElementChildren("#modal-user-apps-add-script-table");
+						removeThisElementChildren("#modal-user-apps-add-unixapp-table");
+						ajaxCallUnixAppInputForm('user_inputs_add', env, names[i] + ".sh", intervalValues[i], periodValues[i], memo);
+					}
+				}
+			}
+		}
+	}
+
+	function openModalInputsEdit(log,logNumber,type)
+	{
+		rightAfterModalOpened = true;
+		$("#alert-modal-setup-inputs-edit-confirm").hide();
+		$('#modal-inputs-edit').modal('toggle');
+			if (type == 0) { //file log input
+			inputType = "log";
+			$('#edit-input-non-unixapp-common-div').show();
+			$('#edit-input-log-basic-div').show();
+			$('#edit-input-log-advanced-div').show();
+			$('#edit-input-script-basic-div').hide();
+			$('#edit-input-script-advanced-div').hide();
+			$('#edit-input-unixapp-basic-div').hide();
+			$('#edit-input-script-unixapp-common-div').hide();
+		}
+		else if (type == 1){ //script input
+			inputType = "script";
+			$('#edit-input-log-basic-div').hide();
+			$('#edit-input-log-advanced-div').hide();
+			$('#edit-input-non-unixapp-common-div').show();
+			$('#edit-input-script-unixapp-common-div').show();
+			$('#edit-input-script-basic-div').show();
+			$('#edit-input-script-advanced-div').show();
+			$('#edit-input-unixapp-basic-div').hide();
+		}
+		else if (type == 2){ //script input
+			inputType = "unixapp";
+			$('#edit-input-log-basic-div').hide();
+			$('#edit-input-log-advanced-div').hide();
+			$('#edit-input-script-basic-div').hide();
+			$('#edit-input-script-advanced-div').hide();
+			$('#edit-input-non-unixapp-common-div').hide();
+			$('#edit-input-unixapp-basic-div').show();
+			$('#edit-input-script-unixapp-common-div').show();
+		}
+
+		removeThisElementChildren("#select-setup-inputs-edit-splunk-forwarders");
+		$('#modal-body-inputs-edit #input-inputs-edit-log').val(log);
+		$('#modal-body-inputs-edit #input-inputs-edit-log-number').val(logNumber);
+		targetSplunkForwarders="select-setup-inputs-edit-splunk-forwarders";
+		ajaxCall("forwarders_count_get");
+		ajaxCall('user_forwarders_list');
+		targetLogAction="edit";
+		ajaxCall('user_inputs_fetch_record');
+	}
+	
+	function setupEditInput(form)
+	{  
+		highlightEditedRow = true;
+		if (inputType == "log") {
+			var inputIDs = ["input-setup-inputs-edit-log-file-path", "input-setup-inputs-edit-source-type"];
+			var msg = validateInputs(inputIDs);
+			if (msg != "") {
+				$('#alert-modal-setup-inputs-edit-confirm').css("display","block");
+				updateElementHtmlData('alert-modal-setup-inputs-edit-confirm',msg);
+			}else{
+				ajaxCall('user_inputs_edit');
+			}
+		}
+		else if (inputType == "script"){ //script input
+			var inputIDs = ["input-setup-inputs-edit-interval", "input-setup-inputs-edit-source-type", "input-setup-inputs-edit-scriptname"];
+			if ($('#input-setup-inputs-edit-script').prop("files").length != 0) { //file uploaded, ignore scriptname text field
+				inputIDs = ["input-setup-inputs-edit-interval", "input-setup-inputs-edit-source-type"];
+			}
+			var msg = validateInputs(inputIDs);
+			if (msg != "") {
+				$('#alert-modal-setup-inputs-edit-confirm').css("display","block");
+				updateElementHtmlData('alert-modal-setup-inputs-edit-confirm',msg);
+			}else{
+				ajaxCallScriptInput('user_inputs_edit', form);
+			}
+		}
+		else{
+			var inputIDs = ["input-setup-inputs-edit-interval"];
+			var msg = validateInputs(inputIDs);
+			if (msg != "") {
+				$('#alert-modal-setup-inputs-edit-confirm').css("display","block");
+				updateElementHtmlData('alert-modal-setup-inputs-edit-confirm',msg);
+			}else{
+				var env = $("#hidden-text-env").val();
+				var unixappScriptname = $('#input-setup-inputs-edit-unixapp-scriptname').val();
+				var memo = $("#input-setup-inputs-edit-memo").val();
+				var periodID = "#select-setup-inputs-edit-log-retention-period";
+				var intervalID = "#input-setup-inputs-edit-interval";
+				var periodValue = $(periodID).val();
+				var intervalValue = $(intervalID).val();
+				ajaxCallUnixAppInputForm('user_inputs_edit', env, unixappScriptname, intervalValue, periodValue, memo);
+			}
+		}
+	}
+
+	function openModalInputsDelete(log,logNumber)
+	{
+		$('#modal-inputs-delete').modal('toggle');
+		$('#modal-body-inputs-delete #input-inputs-delete-log').val(log);
+		$('#modal-body-inputs-delete #input-inputs-delete-log-number').val(logNumber);
+	}
+
+	function submitDeleteInput()
+	{
+		ajaxCall('user_inputs_delete');
+	}
+
+	function showScriptContent()
+	{
+		ajaxCall('user_inputs_show_script_content');
+	}
+
+	function showInputSwithButton()
+	{
+		log = $("#show-input-log-radio").is(":checked")
+		script = $("#show-input-script-radio").is(":checked")
+		unixapp = $("#show-input-unixapp-radio").is(":checked")
+		all = $("#show-input-all-radio").is(":checked")
+	
+		if (log) {
+			$("#user-inputs-table").show();
+			$("#user-inputs-script-table").hide();
+			$("#user-inputs-unixapp-table").hide();
+		}
+		else if (script){
+			$("#user-inputs-table").hide();
+			$("#user-inputs-script-table").show();
+			$("#user-inputs-unixapp-table").hide();
+		}
+		else if (unixapp){
+			$("#user-inputs-table").hide();
+			$("#user-inputs-script-table").hide();
+			$("#user-inputs-unixapp-table").show();
+		}
+		else if (all){
+			$("#user-inputs-table").show();
+			$("#user-inputs-script-table").show();
+			$("#user-inputs-unixapp-table").show();
+		}
+	}
+
+	function addAppShowInputSwitchButton()
+	{
+		log = $("#add-app-show-input-log-radio").is(":checked");
+		script = $("#add-app-show-input-script-radio").is(":checked");
+		both = $("#add-app-show-input-both-radio").is(":checked");
+		if (log == true) {
+			$("#modal-user-apps-add-table").show();
+			$("#modal-user-apps-add-script-table").hide();
+		}
+		else if (script == true){
+			$("#modal-user-apps-add-table").hide();
+			$("#modal-user-apps-add-script-table").show();
+		}
+		else if (both == true){
+			$("#modal-user-apps-add-table").show();
+			$("#modal-user-apps-add-script-table").show();
+		}
+	}
+
+	function showAppShowInputSwitchButton()
+	{
+		 log = $("#show-app-show-input-log-radio").is(":checked");
+		 script = $("#show-app-show-input-script-radio").is(":checked");
+		 both = $("#show-app-show-input-both-radio").is(":checked");
+			if (log == true) {
+			$("#modal-user-apps-show-table").show();
+			$("#modal-user-apps-show-script-table").hide();
+		}
+		else if (script == true){
+			$("#modal-user-apps-show-table").hide();
+			$("#modal-user-apps-show-script-table").show();
+		}
+		else if (both == true){
+			$("#modal-user-apps-show-table").show();
+			$("#modal-user-apps-show-script-table").show();
+		}
+	}
+
+	function editAppShowInputSwitchButton()
+	{
+		 log = $("#edit-app-show-input-log-radio").is(":checked");
+		 script = $("#edit-app-show-input-script-radio").is(":checked");
+		 both = $("#edit-app-show-input-both-radio").is(":checked");
+			if (log == true) {
+			$("#modal-user-apps-edit-table").show();
+			$("#modal-user-apps-edit-script-table").hide();
+		}
+		else if (script == true){
+			$("#modal-user-apps-edit-table").hide();
+			$("#modal-user-apps-edit-script-table").show();
+		}
+		else if (both == true){
+			$("#modal-user-apps-edit-table").show();
+			$("#modal-user-apps-edit-script-table").show();
+		}
+	}
+
+	function addInputSwithButton()
+	{
+		log = $("#add-input-log-radio").is(":checked");
+		script = $("#add-input-script-radio").is(":checked");
+		unix = $("#add-input-unixapp-radio").is(":checked");
+	 
+		if (log) {
+			inputType = "log";
+			$("#add-input-log-basic-div").show();
+			$("#add-input-log-advanced-div").show();
+			$("#add-input-script-basic-div").hide();
+			$("#add-input-script-advanced-div").hide();
+			$("#add-input-unix-basic-div").hide();
+			$("#add-input-non-app-common").show();
+		}
+		else if (script){
+			inputType = "script";
+			$("#add-input-script-basic-div").show();
+			$("#add-input-script-advanced-div").show();
+			$("#add-input-nix-radio").prop('checked', true);
+			$("#add-input-win-radio").prop('checked', false);
+			$("#add-input-log-basic-div").hide();
+			$("#add-input-log-advanced-div").hide();
+			$("#add-input-unix-basic-div").hide();
+			$("#add-input-non-app-common").show();
+		}
+		else if (unix){
+			inputType = "unixapp";
+			$("#add-input-log-basic-div").hide();
+			$("#add-input-log-advanced-div").hide();
+			$("#add-input-script-basic-div").hide();
+			$("#add-input-script-advanced-div").hide();
+			$("#add-input-unix-basic-div").show();
+			$("#add-input-non-app-common").hide();
+		}
+	}
+
+	function addInputBlacklistSwithButton() 
+	{
+		flag=0;
+		$('#add-input-blacklist-switch-button').blur();
+		$('#add-input-blacklist-checkbox').toggle();
+		$('#add-input-blacklist-customize').toggle();
+		if ($('#add-input-blacklist-checkbox').is(":visible")) 
+		{
+			$('#add-input-blacklist-switch-button').html('Click to write your blacklist regex');
+		}
+		else
+		{
+			$('#add-input-blacklist-switch-button').html('Click to select from predefined files');
+			$("#input-setup-inputs-add-blacklist-files").focus();
+		}
+	}
+
+	function editInputBlacklistSwithButton() 
+	{
+		flag=0;
+		$('#edit-input-blacklist-switch-button').blur();
+		$('#edit-input-blacklist-checkbox').toggle();
+		$('#edit-input-blacklist-customize').toggle();
+		if ($('#edit-input-blacklist-checkbox').is(":visible")) 
+		{
+			$('#edit-input-blacklist-switch-button').html('Click to write your blacklist regex');
+		}
+		else
+		{
+			$('#edit-input-blacklist-switch-button').html('Click to select from predefined files');
+			$("#input-setup-inputs-edit-blacklist-files").focus();
+		}
+	}
+
+	function openModalAppsAdd()
+	{
+		$("#notice-apps-add").hide();
+		rightAfterModalOpened = true;
+		removeThisElementChildren("#modal-user-apps-add-table");
+		removeThisElementChildren("#modal-user-apps-add-script-table");
+		removeThisElementChildren("#modal-user-apps-add-unixapp-table");
+		$("#add-app-show-input-both-radio").prop("checked", true);
+		addAppShowInputSwitchButton();
+		$('#modal-apps-add').modal('toggle');
+		$("#input-apps-add-name").val('');
+		$("#input-apps-add-name").popover({trigger: 'focus'});
+		ajaxCall("user_inputs_get");
+	}
+
+	function openModalAppEdit(appNumber, app, type)
+	{
+		$("#notice-apps-edit").hide();
+		rightAfterModalOpened = true;
+		if (type == 0) { //log/script
+			$("#edit-app-div").show();
+			$("#edit-unixapp-div").hide();
+		}else if(type == 1){ //unixapp
+			$("#edit-app-div").hide();
+			$("#edit-unixapp-div").show();
+		}
+
+		removeThisElementChildren("#modal-user-apps-edit-table");
+		removeThisElementChildren("#modal-user-apps-edit-script-table");
+		removeThisElementChildren("#modal-user-apps-edit-unixapp-table");
+		$("#edit-app-show-input-both-radio").prop("checked", true);
+		editAppShowInputSwitchButton();
+		appName = $("#user-apps-table-"+appNumber+"-name").html();
+		$("#input-apps-edit-name").popover({trigger: 'focus'});
+		$('#modal-body-apps-edit #input-apps-edit-app').val(app);
+		$('#modal-body-apps-edit #input-apps-edit-name').val(appName);
+		$('#modal-body-apps-edit #input-apps-edit-app-number').val(appNumber);
+		ajaxCall("user_app_edit_inputs_get");
+		$('#modal-apps-edit').modal('toggle');
+	}
+	function openModalAppShow(appNumber, app, type)
+	{	
+		rightAfterModalOpened = true;
+		if (type == 0) { //log/script
+			$("#show-app-div").show();
+			$("#show-unixapp-div").hide();
+		}else if(type == 1){ //unixapp
+			$("#show-app-div").hide();
+			$("#show-unixapp-div").show();
+		}
+		removeThisElementChildren("#modal-user-apps-show-table");
+		removeThisElementChildren("#modal-user-apps-show-script-table");
+		removeThisElementChildren("#modal-user-apps-show-unixapp-table");
+		$("#show-app-show-input-both-radio").prop("checked", true);
+		showAppShowInputSwitchButton();
+		appName = $("#user-apps-table-"+appNumber+"-name").html();
+		$('#modal-body-apps-show #input-apps-show-app').val(app);
+		$('#modal-body-apps-show #input-apps-show-name').val(appName);
+		ajaxCall("user_app_get");
+		$('#modal-apps-show').modal('toggle');
+	}
+	function openModalAppDelete(appNumber, app)
+	{  
+		appName = $("#user-apps-table-"+appNumber+"-name").html();
+		$('#modal-body-apps-delete #input-apps-delete-app').val(app);
+		$('#modal-body-apps-delete #input-apps-delete-name').val(appName);
+		$('#modal-body-apps-delete #input-apps-delete-app-number').val(appNumber);
+		$('#modal-apps-delete').modal('toggle');
+	}
+	function openModalAppDeploySetting(appNumber, app)
+	{
+		removeThisElementChildren("#modal-user-apps-deploy-setting-table");
+		appName = $("#user-apps-table-"+appNumber+"-name").html();
+		$('#modal-body-apps-deploy-setting #input-apps-deploy-setting-app').val(app);
+		$('#modal-body-apps-deploy-setting #input-apps-deploy-setting-name').val(appName);
+		ajaxCall("user_app_server_class_get");
+		$('#modal-apps-deploy-setting').modal('toggle');
+	}
+	function addApp()
+	{  
+		non_unixapp = false;
+		unixapp = false;
+		if ($("#a-tab-toggle-non-unixapp").attr('class') == "active") {
+			non_unixapp = true;
+		}
+		if ($("#a-tab-toggle-unixapp").attr('class') == "active") {
+			unixapp = true;
+		}
+
+		result=validate($('#input-apps-add-name').val(),'string','deployappname');
+		if(result == 1) {
+			$("#input-apps-add-inputs").val("");
+			inputs = "";
+			inputs_script = "";
+			inputs_unixapp_script = "";
+			$("#modal-user-apps-add-table").find(':checkbox:checked').each(function(index,elem){
+				inputs = inputs + $(elem).attr('value')+ "|";
+			});
+			$("#modal-user-apps-add-script-table").find(':checkbox:checked').each(function(index,elem){
+				inputs_script = inputs_script + $(elem).attr('value')+ "|";
+			});
+
+			$("#modal-user-apps-add-unixapp-table").find(':checkbox:checked').each(function(index,elem){
+				 inputs_unixapp_script = inputs_unixapp_script + $(elem).attr('value')+ "|";
+			});
+
+			if ( inputs.length > 0 ) {
+				if($("#modal-ua-table-check-all").prop('checked')==true) {
+					inputs = inputs.substr(inputs.indexOf("|")+1);
+				}
+			}
+
+			if ( inputs_script.length > 0 ) {
+				if($("#modal-ua-table-script-check-all").prop('checked')==true) {
+					inputs_script = inputs_script.substr(inputs_script.indexOf("|")+1);
+				}
+			}
+
+			if ( inputs_unixapp_script.length > 0 ) {
+				 if($("#modal-ua-table-unixapp-check-all").prop('checked')==true) {
+					inputs_unixapp_script = inputs_unixapp_script.substr(inputs_unixapp_script.indexOf("|")+1);
+				 }
+			}
+
+			total_inputs = "";
+			if (non_unixapp) 
+			{	
+				$("#hidden-text-unixapp").val(false); //used in splunk_users.js
+				if (inputs.length > 0 || inputs_script.length > 0) {
+					total_inputs = inputs + inputs_script;
+					$("#input-apps-add-inputs").val(total_inputs);
+					ajaxCall("user_apps_add");
+					highlightAddedRow = true;
+				}
+			}
+			else if (unixapp){
+				$("#hidden-text-unixapp").val(true); //used in splunk_users.js
+				if (inputs_unixapp_script.length > 0) {
+					total_inputs = inputs_unixapp_script;
+					$("#input-apps-add-inputs").val(total_inputs);
+					ajaxCall("user_apps_add");
+					highlightAddedRow = true;
+				}
+			}
+			if(total_inputs == ""){
+				updateElementHtmlData("notice-apps-add","Please select at least 1 input to add.");
+				alertNoticesTimeoutVar = clearAlertNotices();
+				$("#notice-apps-add").css("display","block");
+			}
+		}
+		else {
+			displayMessages("deployappname","input-apps-add-name","data-content",result);
+			$('#input-apps-add-name').focus();
+		}
+	}
+
+	 function editApp()
+	 {
+		result=validate($('#input-apps-edit-name').val(),'string','deployappname');
+		$("#input-apps-edit-inputs").val("");
+		inputs = "";
+		inputs_script = "";
+		inputs_unixapp_script = "";
+		if ( result == 1) {
+			$("#modal-user-apps-edit-table").find(':checkbox:checked').each(function(index,elem){
+				inputs = inputs + $(elem).attr('value')+ "|";
+			});
+
+			$("#modal-user-apps-edit-script-table").find(':checkbox:checked').each(function(index,elem){
+				inputs_script = inputs_script + $(elem).attr('value')+ "|";
+			});
+
+			$("#modal-user-apps-edit-unixapp-table").find(':checkbox:checked').each(function(index,elem){
+				 inputs_unixapp_script = inputs_unixapp_script + $(elem).attr('value')+ "|";
+			});
+
+			if ( inputs.length > 0 ) {
+				if($("#modal-uae-table-check-all").prop('checked')==true) {
+					inputs = inputs.substr(inputs.indexOf("|")+1);
+				}
+			}
+
+			if ( inputs_script.length > 0 ) {
+				if($("#modal-uae-table-script-check-all").prop('checked')==true) {
+					inputs_script = inputs_script.substr(inputs_script.indexOf("|")+1);
+				}
+			}
+
+			 if ( inputs_unixapp_script.length > 0 ) {
+				if($("#modal-uae-table-unixapp-check-all").prop('checked')==true) {
+					inputs_unixapp_script = inputs_unixapp_script.substr(inputs_script.indexOf("|")+1);
+				}
+			}
+
+			if (inputs.length > 0 || inputs_script.length > 0 || inputs_unixapp_script.length > 0) {
+				total_inputs = inputs + inputs_script + inputs_unixapp_script;
+				$("#input-apps-edit-inputs").val(total_inputs);
+				ajaxCall("user_apps_edit");
+				highlightEditedRow = true;
+			}
+			else {
+				updateElementHtmlData("notice-apps-edit","Please Select At Least 1 Input to Add.");
+				alertNoticesTimeoutVar = clearAlertNotices();
+				$("#notice-apps-edit").css("display","block");
+			}
+		}
+		else {
+			displayMessages("deployappname","input-apps-edit-name","data-content",result);
+			$("#input-apps-edit-filter").focus();
+			$('#input-apps-edit-name').focus();
+		}
+	}
+
+	function deleteApp()
+	{
+		ajaxCall("user_apps_delete");
+	}
+
+	$(document).ready(function() {
+		scrollTop0("modal-inputs-add", "modal-body-inputs-add");
+		scrollTop0("modal-inputs-edit", "modal-body-inputs-edit");
+		scrollTop0("modal-inputs-details", "modal-body-inputs-details");
+
+		scrollTop0("modal-apps-add", "modal-body-apps-add");
+		scrollTop0("modal-apps-edit", "modal-body-apps-edit");
+		scrollTop0("modal-apps-show", "modal-body-apps-show");
+
+		$($("#a-tab-toggle-"+$("#hidden-text-env").val()).parent()).addClass("active");
+		displayMessages('logfilepath','input-setup-inputs-add-log-file-path','data-content',0)
+		displayMessages('sourcetype','input-setup-inputs-add-source-type','data-content',0);
+		displayMessages('memo','input-setup-inputs-add-memo','data-content',0);
+		displayMessages('logfilepath','input-setup-inputs-edit-log-file-path','data-content',0)
+		displayMessages('sourcetype','input-setup-inputs-edit-source-type','data-content',0);
+		displayMessages('memo','input-setup-inputs-edit-memo','data-content',0);
+		displayMessages('blacklist','input-setup-inputs-edit-blacklist-files','data-content',0);
+		displayMessages('blacklist','input-setup-inputs-add-blacklist-files','data-content',0);
+		displayMessages('interval','input-setup-inputs-script-add-interval','data-content',0)
+		displayMessages('interval','input-setup-inputs-edit-interval','data-content',0)
+		displayMessages('scriptname','input-setup-inputs-edit-scriptname','data-content',0)
+		displayMessages('option','input-setup-inputs-script-add-option','data-content',0)
+		displayMessages('option','input-setup-inputs-edit-option','data-content',0)
+		$('#modal-inputs-add').on('shown.bs.modal', function () {
+			targetSplunkForwarders="select-setup-inputs-add-splunk-forwarders";
+			$('#input-setup-inputs-add-log-source-type').popover({trigger: 'focus'});
+			$('#select-setup-inputs-add-splunk-forwarders').popover({trigger: 'focus'});
+			$('#input-setup-inputs-add-log-file-path').popover({trigger: 'focus'});
+			$('#input-setup-inputs-add-source-type').popover({trigger: 'focus'});
+			$('#input-setup-inputs-add-memo').popover({trigger: 'focus'});
+			$('#input-setup-inputs-add-blacklist-files').popover({trigger: 'focus'});
+			$('#input-setup-inputs-script-add-interval').popover({trigger: 'focus'});
+			$('#input-setup-inputs-script-add-option').popover({trigger: 'focus'});
+		});
+
+		$('#modal-inputs-edit').on('shown.bs.modal', function () {
+			$('#select-setup-inputs-edit-splunk-forwarders').popover({trigger: 'focus'});
+			$('#input-setup-inputs-edit-log-file-path').popover({trigger: 'focus'});
+			$('#input-setup-inputs-edit-source-type').popover({trigger: 'focus'});
+			$('#input-setup-inputs-edit-memo').popover({trigger: 'focus'});
+			$('#input-setup-inputs-edit-blacklist-files').popover({trigger: 'focus'});
+			$('#input-setup-inputs-edit-interval').popover({trigger: 'focus'});
+			$('#input-setup-inputs-edit-scriptname').popover({trigger: 'focus'});
+			$('#input-setup-inputs-edit-option').popover({trigger: 'focus'});
+		});
+		
+		$( "#input-setup-inputs-add-log-file-path" ).keyup(function() {
+			$('#input-setup-inputs-add-log-file-path').popover({
+				trigger: 'manual',
+				placement: 'right',
+			});
+			result=validate($('#input-setup-inputs-add-log-file-path').val(),'string','logfilepath');
+			displayMessages('logfilepath','input-setup-inputs-add-log-file-path','data-content',result);
+			$('#input-setup-inputs-add-log-file-path').popover("show");
+		});
+		$( "#input-setup-inputs-add-source-type" ).keyup(function() {
+			$('#input-setup-inputs-add-source-type').popover({
+				trigger: 'manual',
+				placement: 'right',
+			});
+			result=validate($('#input-setup-inputs-add-source-type').val(),'string','sourcetype');
+			displayMessages('sourcetype','input-setup-inputs-add-source-type','data-content',result);
+			$('#input-setup-inputs-add-source-type').popover("show");
+		});
+		$( "#input-setup-inputs-add-memo" ).keyup(function() {
+			$('#input-setup-inputs-add-memo').popover({
+				trigger: 'manual',
+				placement: 'right',
+			});
+			result=validate($('#input-setup-inputs-add-memo').val(),'string','memo');
+			displayMessages('memo','input-setup-inputs-add-memo','data-content',result);
+			$('#input-setup-inputs-add-memo').popover("show");
+		});
+
+		$( "#input-setup-inputs-script-add-interval" ).keyup(function() {
+			$('#input-setup-inputs-script-add-interval').popover({
+				trigger: 'manual',
+				placement: 'right',
+			});
+			result=validate($('#input-setup-inputs-script-add-interval').val(),'string','interval');
+			displayMessages('interval','input-setup-inputs-script-add-interval','data-content',result);
+			$('#input-setup-inputs-script-add-interval').popover("show");
+		});
+
+		$( "#input-setup-inputs-script-add-option" ).keyup(function() {
+			$('#input-setup-inputs-script-add-option').popover({
+				trigger: 'manual',
+				placement: 'right',
+			});
+			result=validate($('#input-setup-inputs-script-add-option').val(),'string','option');
+			displayMessages('option','input-setup-inputs-script-add-option','data-content',result);
+			$('#input-setup-inputs-script-add-option').popover("show");
+		});
+
+		$( "#input-setup-inputs-edit-log-file-path" ).keyup(function() {
+			$('#input-setup-inputs-edit-log-file-path').popover({
+				trigger: 'manual',
+				placement: 'right',
+			});
+			result=validate($('#input-setup-inputs-edit-log-file-path').val(),'string','logfilepath');
+			displayMessages('logfilepath','input-setup-inputs-edit-log-file-path','data-content',result);
+			$('#input-setup-inputs-edit-log-file-path').popover("show");
+		});
+		$( "#input-setup-inputs-edit-source-type" ).keyup(function() {
+			$('#input-setup-inputs-edit-source-type').popover({
+				trigger: 'manual',
+				placement: 'right',
+			});
+			result=validate($('#input-setup-inputs-edit-source-type').val(),'string','sourcetype');
+			displayMessages('sourcetype','input-setup-inputs-edit-source-type','data-content',result);
+			$('#input-setup-inputs-edit-source-type').popover("show");
+		});
+		$( "#input-setup-inputs-edit-memo" ).keyup(function() {
+			$('#input-setup-inputs-edit-memo').popover({
+				trigger: 'manual',
+				placement: 'right',
+			});
+			result=validate($('#input-setup-inputs-edit-memo').val(),'string','memo');
+			displayMessages('memo','input-setup-inputs-edit-memo','data-content',result);
+			$('#input-setup-inputs-edit-memo').popover("show");
+		});
+
+		$( "#input-setup-inputs-edit-blacklist-files" ).keyup(function() {
+			$('#input-setup-inputs-edit-blacklist-files').popover({
+				trigger: 'manual',
+				placement: 'right',
+			});
+			result=validate($('#input-setup-inputs-edit-blacklist-files').val(),'string','blacklist');
+			displayMessages('blacklist','input-setup-inputs-edit-blacklist-files','data-content',result);
+			$('#input-setup-inputs-edit-blacklist-files').popover("show");
+		});
+
+		$( "#input-setup-inputs-edit-interval" ).keyup(function() {
+			$('#input-setup-inputs-edit-interval').popover({
+				trigger: 'manual',
+				placement: 'right',
+			});
+			result=validate($('#input-setup-inputs-edit-interval').val(),'string','interval');
+			displayMessages('interval','input-setup-inputs-edit-interval','data-content',result);
+			$('#input-setup-inputs-edit-interval').popover("show");
+		});
+
+		$( "#input-setup-inputs-edit-scriptname" ).keyup(function() {
+			$('#input-setup-inputs-edit-scriptname').popover({
+				trigger: 'manual',
+				placement: 'right',
+			});
+			result=validate($('#input-setup-inputs-edit-scriptname').val(),'string','scriptname');
+			displayMessages('scriptname','input-setup-inputs-edit-scriptname','data-content',result);
+			$('#input-setup-inputs-edit-scriptname').popover("show");
+		});
+
+		$( "#input-setup-inputs-edit-option" ).keyup(function() {
+			$('#input-setup-inputs-edit-option').popover({
+				trigger: 'manual',
+				placement: 'right',
+			});
+			result=validate($('#input-setup-inputs-edit-option').val(),'string','option');
+			displayMessages('option','input-setup-inputs-edit-option','data-content',result);
+			$('#input-setup-inputs-edit-option').popover("show");
+		});
+
+		$('#show-input-all-radio').prop('checked', true);
+
+		$("#a-tab-toggle-inputs").click(function () {
+			removeThisElementChildren("#user-inputs-table");
+			removeThisElementChildren("#user-inputs-script-table");
+			removeThisElementChildren("#user-inputs-unixapp-table");
+     		removeThisElementChildren("#modal-add-unixapp-input-table");
+			removeThisElementChildren("#select-setup-inputs-add-splunk-forwarders");
+			ajaxCall("userinputs");
+			targetSplunkForwarders="select-setup-inputs-add-splunk-forwarders";
+			ajaxCall('user_forwarders_list');
+			localStorage.setItem("lastTab","inputs");
+			pageSpecificSearchBox = "user-inputs-search";
+		});
+		$("#a-tab-toggle-apps").click(function () {
+			removeThisElementChildren("#user-apps-table");
+			ajaxCall("user_apps_get");
+			localStorage.setItem("lastTab","apps");
+			pageSpecificSearchBox = "user-apps-search";
+		});
+		restoreTab = localStorage.getItem("lastTab");
+		if (restoreTab) {
+			if ( restoreTab == "apps") {
+				$($("#a-tab-toggle-inputs").parent()).removeClass("active");
+				$("#tab-inputs").removeClass("active");
+				$("#tab-apps").addClass("active");
+				$($("#a-tab-toggle-apps").parent()).addClass("active");
+				removeThisElementChildren("#user-apps-table");
+				ajaxCall("user_apps_get");
+				localStorage.setItem("lastTab","apps");
+				pageSpecificSearchBox = "user-apps-search";
+			}
+			else if ( restoreTab == "inputs") {
+				$($("#a-tab-toggle-apps").parent()).removeClass("active");
+				$("#tab-apps").removeClass("active");
+				$($("#a-tab-toggle-inputs").parent()).addClass("active");
+
+				$("#tab-inputs").addClass("active");
+				removeThisElementChildren("#user-inputs-table");
+				removeThisElementChildren("#user-inputs-script-table");
+				removeThisElementChildren("#user-inputs-unixapp-table");
+     			removeThisElementChildren("#modal-add-unixapp-input-table");
+				removeThisElementChildren("#select-setup-inputs-add-splunk-forwarders");
+				ajaxCall("userinputs");
+				targetSplunkForwarders="select-setup-inputs-add-splunk-forwarders";
+				ajaxCall('user_forwarders_list');
+				localStorage.setItem("lastTab","inputs");
+				pageSpecificSearchBox = "user-inputs-search";
+			}
+			else {
+				removeThisElementChildren("#user-inputs-table");
+				ajaxCall("userinputs");
+				localStorage.setItem("lastTab","inputs");
+				pageSpecificSearchBox = "user-inputs-search";
+			}
+		}
+		else {
+			removeThisElementChildren("#user-inputs-table");
+			ajaxCall("userinputs");
+			localStorage.setItem("lastTab","inputs");
+			pageSpecificSearchBox = "user-inputs-search";
+		}
+	});
+</script>
+
+<% provide(:img_title, 'App?') %>
+<% provide(:img_body, 'An app is the collection of inputs. An input is the configuration of a source which generates the logs, the example is shown below. The App here is different from the App located at the top bar in Splunk Host, the latter one is the working environment for current user, basically you will never need to switch that App in Splunk Host.') %>
+<% provide(:img, 'app.png') %>
+<% provide(:step_title, 'Steps') %>
+<% provide(:step_1, "1. Add Input") %>
+<% provide(:step_2, "2. Add App") %>
+
+<div class="content-div">
+	<ul class="nav nav-tabs nav-justified" role="tablist">
+		<li class="active"><a href="#tab-inputs" data-toggle="tab" id="a-tab-toggle-inputs"><i class="fa fa-file-o" aria-hidden="true"></i>Inputs</a></li>
+		<li><a href="#tab-apps" data-toggle="tab" id="a-tab-toggle-apps"><i class="fa fa-files-o" aria-hidden="true"></i>Apps</a></li>
+	</ul>
+
+	<div class="content-container container">
+		<div class="tab-content" id="tab-content-manage-apps" >
+			<div class="tab-pane active" id="tab-inputs">
+				 <div class="page-header" >
+					<button type="button" onclick="openModalInputsAdd()" class="btn btn-primary"><i class="fa fa-plus" aria-hidden="true"></i>Add Input</button>
+					<input type="text" id="user-inputs-search" class="search-field textbox" placeholder = "Search Filter" onkeyup="doSearch(this, 'user-inputs-table', 'user-inputs-script-table', 'user-inputs-unixapp-table')" />
+					<form class="input-radio-form" name="radioform">
+						<label class="radio-inline" >
+							<input type="radio" name="InputRadio" id="show-input-log-radio" onchange="showInputSwithButton()" ><i class="fa fa-file-o no-margin-icon" aria-hidden="true"></i>Show Log File Input
+						</label>
+						<label class="radio-inline">
+							<input type="radio" name="InputRadio" id="show-input-script-radio" onchange="showInputSwithButton()" ><i class="fa fa-code no-margin-icon" aria-hidden="true"></i>Show Script Input
+						</label>
+						<label class="radio-inline">
+							<input type="radio" name="InputRadio" id="show-input-unixapp-radio" onchange="showInputSwithButton()" ><i class="fa fa-linux no-margin-icon" aria-hidden="true"></i>Show Unix App Input
+						</label>
+						<label class="radio-inline">
+							<input type="radio" name="InputRadio" id="show-input-all-radio" onchange="showInputSwithButton()" ><i class="fa fa-list no-margin-icon" aria-hidden="true"></i>Show All Inputs
+						</label>
+					</form>
+				</div>
+
+				<div class="alert alert-info" id="notice-manage-inputs" style="display:none"></div>
+				<div class="content-table class-inputs-table">
+					<table class="table table-bordered table-hover" id="user-inputs-table">
+					</table>
+					<table class="table table-bordered table-hover" id="user-inputs-script-table">
+					</table>
+					<table class="table table-bordered table-hover" id="user-inputs-unixapp-table">
+					</table>
+				</div>
+			</div>
+
+			<div class="tab-pane" id="tab-apps">
+				<div class="page-header">
+					<button type="button" onclick="openModalAppsAdd()" class="btn btn-primary" ><i class="fa fa-plus" aria-hidden="true"></i>Add App</button>
+					<input type="text" class="search-field textbox" id="user-apps-search" role="search" placeholder = "Search Filter" onkeyup="doSearch(this, 'user-apps-table', '')"></input>
+				</div>
+
+				<div class="alert alert-info" id="notice-manage-apps" style="display:none"></div>
+				<div class="content-table class-apps-table">
+					<table class="table table-bordered table-hover" id="user-apps-table">
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<input type="hidden" name="env" id="hidden-text-env" value=<%= @env%>> </input>

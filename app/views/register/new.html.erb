@@ -1,0 +1,217 @@
+<!--register/new register new account-->
+<script>
+	var totalValidText = 8;
+	var resultcount = 1;
+	var text1=0;
+	var text2=0;
+	var text3=0;
+	var text4=0;
+	var text5=0;
+	var text6=0;
+	var text7=0;
+	var text8=1;
+	var targetDisplayId="user-name";
+	var targetDisplayType="username";
+	var targetActionId="requestaccount";
+	function validateuser()
+	{
+		 ajaxCall("setupinputvalidateuser");
+	}
+	function validates(result,text)
+	{
+		 if (result==1)
+		 {
+			 if(text==1)
+			 {
+			 }
+			 else
+			 {
+				 text=1;
+				 resultcount+=1;
+			 }
+			 if(resultcount == totalValidText)
+			 {
+					validateuser();
+					$('#requestaccount').attr("disabled", false);
+					if(resultcount == (totalValidText-1))
+					{
+						$('#requestaccount').attr("disabled", true);
+					}
+			 }
+		 }
+		 else
+		 {
+			 if(text==1)
+			 {
+				 text=0;
+				 if(resultcount == totalValidText)
+				 {
+					 $('#requestaccount').attr("disabled", true);
+				 }
+				 resultcount-=1;
+			 }
+		 }
+		 return(text);
+	}
+	$(document).ready(function() {
+			$('#user-name').popover({trigger: 'focus'});
+			$('#password').popover({trigger: 'focus'});
+			$('#password-confirm').popover({trigger: 'focus'});
+			$('#email').popover({trigger: 'focus'});
+			$('#email-emergency').popover({trigger: 'focus'});
+			$('#requestaccount').attr("disabled", true);
+			$('#group-name').popover({trigger: 'focus'});
+			$('#app-team-name').popover({trigger: 'focus'});
+			$('#serviceid').popover({trigger: 'focus'});
+			displayMessages('username','user-name','data-content',0);
+			displayMessages("groupname","group-name","data-content",0);
+			displayMessages("appteamname","app-team-name","data-content",0);
+			displayMessages("serviceid","serviceid","data-content",0);
+			displayMessages('password','password','data-content',-1);
+			displayMessages('passwordconfirm','password-confirm','data-content',-1)
+			displayMessages('email','email','data-content',0);
+			$('#user-name').focus();
+			$( "#user-name" ).keyup(function() {
+					 if (($(this).val().length > 0) && ($(this).val().substr(0,5) != 'user_') || ($(this).val() == '')) {
+								 $(this).val('user_');
+					 }
+					 $('#user-name').popover({
+								trigger: 'manual',
+								placement: 'right',
+					 });
+					 result=validate($('#user-name').val(),'string','username');
+					 text1=validates(result,text1);
+					 displayMessages('username','user-name','data-content',result);
+					 $('#user-name').popover("show");
+			});
+			$( "#group-name" ).keyup(function() {
+					 $('#group-name').popover({
+								trigger: 'manual',
+								placement: 'right',
+					 });
+					 result=validate($('#group-name').val(),'string','groupname');
+					 text2=validates(result,text2);
+					 displayMessages('groupname','group-name','data-content',result);
+					 $('#group-name').popover("show");
+			});
+			$( "#app-team-name" ).keyup(function() {
+					 $('#app-team-name').popover({
+								trigger: 'manual',
+								placement: 'right',
+					 });
+					 result=validate($('#app-team-name').val(),'string','appteamname');
+					 text3=validates(result,text3);
+					 displayMessages('appteamname','app-team-name','data-content',result);
+					 $('#app-team-name').popover("show");
+			});
+			$( "#serviceid" ).keyup(function() {
+					 $('#serviceid').popover({
+								trigger: 'manual',
+								placement: 'right',
+					 });
+					 result=validate($('#serviceid').val(),'integer','serviceid');
+					 text4=validates(result,text4);
+					 displayMessages('serviceid','serviceid','data-content',result);
+					 $('#serviceid').popover("show");
+			});
+			$( "#password" ).keyup(function() {
+					 $('#password').popover({
+								trigger: 'manual',
+								placement: 'right',
+					 });
+					 result=validate($('#password').val(),'string','password');
+					 text5=validates(result,text5);
+					 displayMessages('password','password','data-content',result);
+					 $('#password').popover("show");
+			});
+			$( "#password-confirm" ).keyup(function() {
+					 $('#password-confirm').popover({
+								trigger: 'manual',
+								placement: 'right',
+					 });
+					 result=validate($('#password-confirm').val(),'string','passwordconfirm');
+					 text6=validates(result,text6);
+					 displayMessages('passwordconfirm','password-confirm','data-content',result);
+					 $('#password-confirm').popover("show");
+			});
+			$( "#email" ).keyup(function() {
+					 $('#email').popover({
+								trigger: 'manual',
+								placement: 'right',
+					 });
+					 result=validate($('#email').val(),'string','email');
+					 text7=validates(result,text7);
+					 displayMessages('email','email','data-content',result);
+					 $('#email').popover("show");
+			});
+			$( "#email-emergency" ).keyup(function() {
+					 $('#email-emergency').popover({
+								trigger: 'manual',
+								placement: 'right',
+					 });
+					 result=validate($('#email-emergency').val(),'string','emailemergency');
+					 text8=validates(result,text8);
+					 displayMessages('email','email-emergency','data-content',result);
+					 $('#email-emergency').popover("show");
+			});
+	});
+</script>
+
+
+<div class="page-header login-header">
+	<h1 class="center-title">Please request an account, we will approve it soon</h1>
+</div>
+
+<div class="regi-container">
+	<%= form_tag '/admin/requestaccount', :class => 'center-form form-horizontal', :role => 'form' do -%>
+		<label class="regi-label control-label">User Name</label>
+		<div class="form-group">
+			<%= text_field_tag 'splunk_user_name','' ,id: 'user-name', placeholder: 'User Name', data: { toggle: 'popover', trigger: 'hover', content: '' }, :autocomplete => :off, :value => "user_", :onfocus => "this.value = this.value;", :class => "regi-text" %>
+			<p class="regi-asterisk">*</p>
+		</div>
+
+		<label class="regi-label control-label">Group Name</label>
+		<div class="form-group">
+			<%= text_field_tag 'group_name','', id: "group-name", placeholder: "Group Name" ,data: { toggle: 'popover', trigger: 'hover', content: '' }, :autocomplete => :off, :class => "regi-text"%>
+			<p class="regi-asterisk">*</p>
+		</div>
+
+		<label class="regi-label control-label" >App Team Name<a target="_blank" tabindex="-1" href=<%= @appteam_link %> >?</a></label>
+		<div class="form-group">
+			<%= text_field_tag 'app_team_name','', id: "app-team-name", placeholder: "App Team Name" ,data: { toggle: 'popover', trigger: 'hover', content: '' }, :autocomplete => :off, :class => "regi-text"%>
+			<p class="regi-asterisk">*</p>
+		</div>
+
+		<label class="regi-label control-label" >Service Id <a target="_blank" tabindex="-1" href=<%= @serviceid_link %> >?</a></label>
+		<div class="form-group">
+			<%= text_field_tag 'serviceid','', id: "serviceid", placeholder: "Service ID" ,data: { toggle: 'popover', trigger: 'hover', content: '' }, :autocomplete => :off, :class => "regi-text" %>
+			<p class="regi-asterisk">*</p>
+		</div>
+
+		<label class="regi-label control-label" >Email for Information</label>
+		<div class="form-group">
+			<%= text_field_tag 'email','' ,id: 'email', placeholder: 'Email', data: { toggle: 'popover', trigger: 'hover', content: '' }, :autocomplete => :off, :class => "regi-text"%>
+			<p class="regi-asterisk">*</p>
+		</div>
+
+		<label class="regi-label control-label" >Email For Emergency</label>
+		<div class="form-group">
+			<%= text_field_tag 'email_emergency','' ,id: 'email-emergency', placeholder: 'Email', data: { toggle: 'popover', trigger: 'hover', content: 'It will be used for emergency (e.g. down splunk, down forwarders)' }, :autocomplete => :off, :class => "regi-text"%>
+		</div>
+
+		<label class="regi-label control-label" >Password</label>
+		<div class="form-group">
+			<%= password_field_tag 'password','' ,id: 'password', placeholder: 'Password', data: { toggle: 'popover', trigger: 'hover', content: '' }, :autocomplete => :off, :class => "regi-text" %>
+			<p class="regi-asterisk" >*</p>
+		 </div>
+
+		<label class="regi-label control-label" >Password Confirmation</label>
+		<div class="form-group">
+			<%= password_field_tag 'password-confirm','' ,id: 'password-confirm', placeholder: 'Confirm Password', data: { toggle: 'popover', trigger: 'hover', content: '' }, :autocomplete => :off, :class => "regi-text"%>
+			<p class="regi-asterisk" >*</p>
+		</div>
+
+		<button type="button" onclick ="location.href='/'" class ="btn btn-default regi-button">Cancel</button>
+		<%= submit_tag 'Request Account', :class => "btn btn-primary", :id => "requestaccount" , :onsubmit => "alert('soon');"%>
+ 	<% end %>
+</div>

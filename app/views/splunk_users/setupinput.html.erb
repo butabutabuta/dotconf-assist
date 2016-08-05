@@ -1,0 +1,152 @@
+<script>
+  var resultcount=2;
+  var text1=1;
+  var text2=1;
+  var text3=0;
+  var text4=0;
+  var text5=1;
+  var targetDisplayId="account-name";
+  var targetDisplayType="username";
+  var targetActionId="saveform";
+  function validateuser()
+  {
+     ajaxCall("setupinputvalidateuser");
+  }
+  function validates(result,text)
+  {
+     if (result==1)
+     {
+       if(text==1)
+       {
+       }
+       else
+       {
+         text=1;
+         resultcount+=1;
+       }
+       if(resultcount==4)
+       {
+         //validateuser();
+         $('#saveform').attr("disabled", false);
+         if(resultcount==3)
+         {
+           $('#saveform').attr("disabled", true);
+         }
+       }
+     }
+     else
+     {
+       if(text==1)
+       {
+         text=0;
+         if(resultcount==4)
+         {
+           $('#saveform').attr("disabled", true);
+         }
+         resultcount-=1;
+       }
+     }
+     return(text);
+  }
+  $(document).ready(function() {
+      ajaxCall("forwarders_count_get");
+      $('#source-hostname').popover({trigger: 'focus'});
+      $('#log-file-path').popover({trigger: 'focus'});
+      $('#sourcetype').popover({trigger: 'focus'});
+      $('#memo').popover({trigger: 'focus'});
+      $('#account-name').focus();
+      $('#saveform').attr("disabled", true);
+      displayMessages("sourcehostname","source-hostname","data-content",0);
+      displayMessages("logfilepath","log-file-path","data-content",0);
+      displayMessages("sourcetype","sourcetype","data-content",0);
+      displayMessages("memo","memo","data-content",0);
+      $( "#source-hostname" ).keyup(function() {
+           $('#source-hostname').popover({
+                trigger: 'manual',
+                placement: 'right',
+           });
+           result=validate($('#source-hostname').val(),'string','sourcehostname');
+           text2=validates(result,text2);
+           displayMessages('sourcehostname','source-hostname','data-content',result);
+           $('#source-hostname').popover("show");
+      });
+      $( "#log-file-path" ).keyup(function() {
+           $('#log-file-path').popover({
+                trigger: 'manual',
+                placement: 'right',
+           });
+           result=validate($('#log-file-path').val(),'string','logfilepath');
+           text3=validates(result,text3);
+           displayMessages('logfilepath','log-file-path','data-content',result);
+           $('#log-file-path').popover("show");
+      });
+      $( "#sourcetype" ).keyup(function() {
+           $('#sourcetype').popover({
+                trigger: 'manual',
+                placement: 'right',
+           });
+           result=validate($('#sourcetype').val(),'string','sourcetype');
+           text4=validates(result,text4);
+           displayMessages('sourcetype','sourcetype','data-content',result);
+           $('#sourcetype').popover("show");
+      });
+      $( "#memo" ).keyup(function() {
+           $('#memo').popover({
+                trigger: 'manual',
+                placement: 'right',
+           });
+           result=validate($('#memo').val(),'string','memo');
+           text5=validates(result,text5);
+           displayMessages('memo','memo','data-content',result);
+           $('#memo').popover("show");
+      });
+  });
+</script>
+<div class="page-header">
+  <h1>Create a new Input.conf Request</h1>
+</div>
+<div>
+ <%= form_tag '/splunk_users/setupinputconfirm', :class => 'form-horizontal', :role => "form" do -%>
+  <label for="source-hostname" class="col-sm-2 control-label" style="text-align:left;">Source HostName</label>
+  <div class="form-group">
+     <%= select_tag(:splunk_forwarder, options_for_select(@forwarders, selected: :option ), :style => '') %>*
+  </div>
+  <br>
+  <br>
+  <label  for="source-hostname" class="col-sm-2 control-label" style="text-align:left;">Log File Path</label>
+ <div class="form-group">
+<%= text_field_tag 'log_file_path','' ,id: 'log-file-path', placeholder: 'Log File Path', data: { toggle: 'popover', trigger: 'hover', content: '' }, :autocomplete => :off , :style => '' %>*
+  </div>
+  <br>
+  <br>
+  <label  for="source-hostname" class="col-sm-2 control-label" style="text-align:left;">Source Type</label>
+ <div class="form-group">
+  <%= text_field_tag 'sourcetype','' ,id: 'sourcetype', placeholder: 'Sourcetype', data: { toggle: 'popover', trigger: 'hover', content: '' }, :autocomplete => :off, :style => "" %>*
+  </div>
+  <br>
+  <br>
+  <label  for="source-hostname" class="col-sm-2 control-label" style="text-align:left;">Log File Size Per Day</label>
+ <div class="form-group">
+ <%= select_tag(:log_file_size, options_for_select([['< 100 MB', 1], ['< 500 MB', 2], ['< 1000 MB', 3], ['>1000 MB', 4]], selected: :option ), :style => '') %>*
+  </div>
+  <br>
+  <br>
+  <label  for="source-hostname" class="col-sm-2 control-label" style="text-align:left;">Data Retention Period</label>
+ <div class="form-group">
+<%= select_tag(:data_retention_period, options_for_select([['1 Day', 1], ['2 Day', 2], ['3 Day', 3], ['1 Week', 4], ['2 Week', 5], ['3 Week', 6], ['1 Month', 7], ['3 Month', 8],  ['6 Month', 9], ['1 Year', 10], ['3 Year', 11], ['6 Year', 12]], selected: :option ), :style => '') %>*
+  </div>
+  <br>
+  <br>
+  <label  for="source-hostname" class="col-sm-2 control-label" style="text-align:left;">Memo</label>
+ <div class="form-group">
+  <%= text_area_tag 'memo','' ,id: 'memo', placeholder: 'Memo', data: { toggle: 'popover', trigger: 'hover', content: '' } , :autocomplete => :off, :style => '' %>
+  </div>
+  <br>
+  <br>
+<input type="hidden" name="env" id="hidden-text-env" value=<%= @env%>> </input>
+  <div style="position:relative;">
+      <%= link_to "Cancel", {:controller => "splunk_users", :action => "index", :env => @env }, {:class=>"btn btn-primary", :style=>'color:#FFFFFF;'}  %>
+      <%= submit_tag 'Confirm This Settings', :class => "btn btn-primary", :id => "saveform" , :style => 'position:absolute;left:10%;' %>
+  </div>
+<% end -%>
+</div>

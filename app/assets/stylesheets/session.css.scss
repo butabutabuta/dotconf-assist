@@ -1,0 +1,144 @@
+$color-grey: rgb(117,117,117); //600
+$color-cyan: rgb(0,255,255);
+$color-lightwhite: rgb(200,200,200);
+$color-crimson: rgb(195,0,0);
+
+html { 
+	-webkit-background-size: cover;
+	-moz-background-size: cover;
+	-o-background-size: cover;
+	background-size: cover;
+}
+
+body.login {
+	background: url("background.jpg") no-repeat center center fixed; 
+	margin-top: 50px;
+	height: auto;
+}
+
+footer {
+	margin-top: 15px;
+	padding-top: 5px;
+	border-top: 1px solid grey;
+	color: grey;
+	text-align: center;
+}
+
+
+col {
+	width:200px;
+}
+
+.login-cyanlink{
+	float: right;
+	color: $color-cyan !important;
+}
+
+.login-header{
+	color: white;
+	border:hidden;
+}
+
+.center-title{
+	text-align:center;
+}
+
+.login-msg{
+	margin: auto;
+	max-width: 30em;
+}
+
+#login-div {
+ -webkit-border-radius: 10px 10px 10px 10px;
+  -moz-border-radius: 10px 10px 10px 10px;
+  border-radius: 10px 10px 10px 10px;
+  -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.15);
+  -moz-box-shadow: 0 1px 2px rgba(0,0,0,.15);
+  box-shadow: 0 1px 2px rgba(0,0,0,.15);
+}
+
+.log-in-container, .regi-container {
+	margin: auto;
+	margin-top: 1em;
+}
+
+.center-form{
+	margin-left: 25%;
+}
+.regi-label{
+	width: 15em!important;
+	margin-right: 1em;
+	color: $color-lightwhite;
+}
+
+.regi-asterisk{
+	position: relative;
+    top: -1.6em;
+    left: 40.5em;
+	color: $color-cyan;
+}
+.regi-text{
+	width: 20em;
+}
+
+.regi-button{
+	margin-left: 20em;
+}
+
+.findpwd-button{
+	margin-left: 16em;
+}
+
+.form-signin {
+	max-width: 330px;
+	margin: 0 auto;
+}
+
+.signup-link{
+	float: right;
+	margin-right: 1.5em;
+}
+
+.forgot-pwd-link{
+	float: right;
+	color: $color-grey !important; 
+	margin-right: 1.5em;
+}
+
+.form-signin .form-signin-heading,
+.form-signin .checkbox {
+	margin-bottom: 10px;
+}
+
+.form-signin .checkbox {
+	font-weight: normal;
+}
+.form-signin .form-control {
+	position: relative;
+	height: auto;
+	-webkit-box-sizing: border-box;
+	   -moz-box-sizing: border-box;
+	        box-sizing: border-box;
+	padding: 10px;
+	font-size: 16px;
+}
+
+.form-signin .form-control:focus {
+	z-index: 2;
+}
+
+.login-text-field{
+	width:90%;
+	margin-left:5%;
+}
+
+#log-in-button {
+  text-shadow: 0px 2px 0px rgba(0, 0, 0, 0.3);
+  font-size: 20px;
+  overflow: auto;
+  text-align: center;
+  margin-top:1.4%;
+  width:90%; 
+  height:38px; 
+  margin-left:5%;
+}

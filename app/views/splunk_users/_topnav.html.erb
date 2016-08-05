@@ -1,0 +1,56 @@
+<nav class="navbar navbar-inverse navbar-fixed-top">
+	<div class="container-fluid navi-header">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#side-navbar-id" aria-expanded="false" aria-controls="navbar">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+		</div>
+
+		<div>
+			<a class="brand" href="/">
+				<p class="web-title-first">d</p>
+				<p class="web-title">otconf-</p>
+				<p class="web-title-green">a</p>
+				<p class="web-title">ssist</p>
+			</a>
+			<ul class="nav navbar-nav navbar-text">
+				<% if @env=="prod"  %>
+					<li class="active" id="navbar-ul-li-prod"><%= link_to "PROD", {:controller => "splunk_users", :action => "index", :env => "prod" }, {:class=>"nav-link", :id => "a-tab-toggle-prod"} %></li>
+				<%else%>
+					<li id="navbar-ul-li-prod"><%= link_to "PROD", {:controller => "splunk_users", :action => "index", :env => "prod" }, {:class=>"nav-link", :id => "a-tab-toggle-prod"} %></li>
+				<%end%>
+
+				<% if @env=="stg"  %>
+					<li class="active" id="navbar-ul-li-stg"><%= link_to "STG", {:controller => "splunk_users", :action => "index", :env => "stg" }, {:class=>"nav-link", :id => "a-tab-toggle-stg"} %></li>
+				<%else%>
+					<li id="navbar-ul-li-stg"><%= link_to "STG", {:controller => "splunk_users", :action => "index", :env => "stg" }, {:class=>"nav-link", :id => "a-tab-toggle-stg"} %></li>
+				<%end%>
+
+				<% if @env=="dev"  %>
+					<li class="active" id="navbar-ul-li-dev"><%= link_to "DEV", {:controller => "splunk_users", :action => "index", :env => "dev" }, {:class=>"nav-link", :id => "a-tab-toggle-dev"} %></li>
+				<%else%>
+					<li id="navbar-ul-li-dev"><%= link_to "DEV", {:controller => "splunk_users", :action => "index", :env => "dev" }, {:class=>"nav-link", :id => "a-tab-toggle-dev"} %></li>
+				<%end%>
+			</ul>
+			
+			<ul class="nav nav-username" id="tutorial-settings">
+				<li class="dropdown">
+					<a class="dropdown-toggle username" data-toggle="dropdown"><i class="fa fa-user" aria-hidden="true"></i><%= current_authentication.splunk_user_name %> 
+						<span class="badge" id="badge-navbar-user-name-announce-count"></span> 
+						<b class="caret"></b>
+					</a>
+					<ul class="dropdown-menu user-dropdown-menu pull-right" role="submenu"  id="ul-navbar-dropdown-menu">
+						<li><a href=<%= @about_link %> target="_blank"><i class="fa fa-info-circle" aria-hidden="true"></i>About</a></li>
+						<li><a href=<%= @faq_link %> target="_blank"><i class="fa fa-question-circle" aria-hidden="true"></i>FAQ</a></li>
+						<li><a href=<%= @reference_link %> id="i-need-help" target="_blank"><i class="fa fa-link" aria-hidden="true"></i>Reference</a></li>
+						<li class="divider"></li>
+						<li><%= link_to('<i class="fa fa-sign-out"></i>Log out'.html_safe, destroy_authentication_session_path, :method => :delete) %></li>
+					</ul>
+				</li>
+			</ul>
+		</div>
+	</div>
+</nav>

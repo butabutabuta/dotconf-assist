@@ -1,0 +1,2 @@
+module InputLogsHelper
+end

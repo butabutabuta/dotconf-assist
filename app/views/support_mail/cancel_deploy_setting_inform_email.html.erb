@@ -1,0 +1,13 @@
+Hello <%= @user %>,<br>
+<br>
+<%= @app %> Application has been Cancelled. You might need to change some settings as Admin has suggested.<br>
+<% if @reason != nil %>
+  Changes Suggested by Admin are as follows:<br>
+  <%= @reason %><br>
+<% end %>
+Thank you for the patience.<br>
+You can access dotconf-assist from <a href="http://<%= @dotconf_assist_domain%>/">HERE</a>.<br>
+Also, you can reply to this email directly to contact admin or provide feedback, if you face any issues.<br>
+<br>
+Regards,<br>
+Splunk as a Service Support Team.

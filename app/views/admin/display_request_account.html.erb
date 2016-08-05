@@ -1,0 +1,63 @@
+<div class="page-header">
+  <h1><%= @user.splunk_user_name%>'s details</h1>
+</div>
+<div style="width: 90%;">
+  <% if @user.status==1 %>
+   <div class="alert alert-success" id="request-account-approve">Account is Approved Successfully !!!</div>
+  <%end%>
+  <% if @user.status==9 %>
+   <div class="alert alert-danger" id="request-account-cancel">Account is Rejected !!! </div>
+  <%end%>
+  <% if @user.status==0 %>
+    <div class="alert alert-success" id="request-account-approve" style="display: none">Account is Approved Successfully !!!</div>
+    <div class="alert alert-danger" id="request-account-cancel" style="display: none">Account is Rejected !!! </div>
+  <%end%>
+  <br>
+  <br>
+  <br>
+  <br>
+  <form class="form-horizontal" role ="form">
+    <label for="splunk-user-name" class="col-sm-2 control-label" style="text-align:left;">User Name</label>
+    <div class="form-group">
+       <%= text_field_tag 'splunk_user_name',@user.splunk_user_name ,id: 'splunk-user-name', :style => 'width:50%', disabled: true %>
+       <!-- <p id="splunk-user-name" style="padding-top: 4px" > <strong><%= @user.splunk_user_name%></strong></p> -->
+    </div>
+    <label for="group-name" class="col-sm-2 control-label" style="text-align:left;">Group Name</label>
+    <div class="form-group">
+       <%= text_field_tag 'group_name',@user.group_name ,id: 'group-name', :style => 'width:50%', disabled: true %>
+    </div>
+    <label for="app-team-name" class="col-sm-2 control-label" style="text-align:left;">App Team Name</label>
+    <div class="form-group">
+       <%= text_field_tag 'app_team_name',@user.app_team_name ,id: 'app_team_name', :style => 'width:50%', disabled: true %>
+    </div>
+    <label for="service-id" class="col-sm-2 control-label" style="text-align:left;">Service Id</label>
+    <div class="form-group">
+       <%= text_field_tag 'service_id',@user.serviceid ,id: 'service-id', :style => 'width:50%', disabled: true %>
+    </div>
+    <label for="email-for-emergency" class="col-sm-2 control-label" style="text-align:left;">Email For Emergency</label>
+    <div class="form-group">
+        <% if @user.email_for_emergency %>
+          <%= text_field_tag 'email_for_emergency',@user.email_for_emergency ,id: 'email-for-emergency', :style => 'width:50%', disabled: true %>
+        <% else %>
+          <%= text_field_tag 'email_for_emergency', "Not Provided", id: 'email-for-emergency', :style => 'width:50%', disabled: true %>
+        <% end %>
+    </div>
+    <label for="Email" class="col-sm-2 control-label" style="text-align:left;">Email</label>
+    <div class="form-group">
+        <% if @user.email %>
+          <%= text_field_tag 'email',@user.email ,id: 'email', placeholder: 'Email', data: { toggle: 'popover', trigger: 'hover', content: '' }, :autocomplete => :off, :style => 'width:50%', disabled: true %>
+        <% else %>
+          <%= text_field_tag 'email','Not Provided' ,id: 'email', placeholder: 'Email', data: { toggle: 'popover', trigger: 'hover', content: '' }, :autocomplete => :off, :style => 'width:50%', disabled: true %>
+        <% end %>
+    </div>
+    <input type="hidden" id="splunk-user-id" value="<%= @user.id %>"></input>
+    <div>
+         <button type="button" onclick ="location.href='/admin/show_request_accounts'" class ="btn btn-primary">Back</button>
+    <% if @user.status==0 %>
+     <button type="button" onclick="ajaxCall('cancel_request_accounts')" class ="btn btn-primary" id="cancel-request-accounts-button"  name="cancel">Cancel</button>
+     <button type="button" onclick="ajaxCall('approve_request_accounts')" class ="btn btn-primary" id="approve-request-accounts-button" name="approve">Create</button>
+    </div>
+    <% end %>
+  </form>
+</div>
+</div>

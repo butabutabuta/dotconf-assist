@@ -1,0 +1,162 @@
+<script>
+	var list_name =[];
+	var list_status =[];
+	var list_account = [];
+	var list_id = [];
+	var listNotMatchingNames = [];
+	var targetTableRow="user-deploy-requests-apps-table-row-";
+	var searchTermLengthPrevious=0;
+	var rightAfterModalOpened = false;
+
+	function scrollTop0(modalID, modalBodyID){
+		$('#'+modalID).on('shown.bs.modal', function () {
+			if (rightAfterModalOpened) {
+				$('#'+modalBodyID).scrollTop(0);
+				rightAfterModalOpened = false;
+			}
+		});
+	}
+
+	function getAllAppsList()
+	{
+		list_name = [];
+		var records=$("#user-deploy-requests-apps-table td[id$='name']");
+		jQuery.each(records, function(index, value) {
+			 list_name.push($(value).html());
+		});
+		list_status = [];
+		var records=$("#user-deploy-requests-apps-table td[id$='status']");
+		jQuery.each(records, function(index, value) {
+			 list_status.push($(value).html());
+		});
+		list_account = [];
+	}
+	function getAllAppServerClassesList()
+	{
+		list_name = [];
+		var records=$("#modal-user-apps-deploy-setting-table td[id$='name']");
+		jQuery.each(records, function(index, value) {
+			 list_name.push($(value).html());
+		});
+		list_status = [];
+		list_account = [];
+	}
+	function searchTheseRecordsApp(elem) {
+		 if(targetTableRow!="user-deploy-requests-apps-table-row-") {
+			 targetTableRow="user-deploy-requests-apps-table-row-";
+			 getAllAppsList();
+		 }
+		 searchTheseRecords(elem);
+	}
+
+	function openModalAppDeploySetting(appNumber, app, type)
+	{	
+		rightAfterModalOpened = true;
+		if(type == 0){
+			$("#deploy-config-app-inputs-div").show();
+			$("#deploy-config-unixapp-inputs-div").hide();
+		}
+		else if(type == 1){
+			$("#deploy-config-app-inputs-div").hide();
+			$("#deploy-config-unixapp-inputs-div").show();
+		}
+
+		removeThisElementChildren("#modal-user-apps-deploy-setting-table");
+		removeThisElementChildren("#modal-user-apps-deploy-inputs-table");
+		removeThisElementChildren("#modal-user-apps-deploy-inputs-script-table");
+		removeThisElementChildren("#modal-user-apps-deploy-inputs-unixapp-table");
+		appName = $("#user-deploy-requests-apps-table-"+appNumber+"-name").html();
+		$('#modal-body-apps-deploy-setting #input-apps-deploy-setting-app').val(app);
+		$('#modal-body-apps-deploy-setting #input-apps-deploy-setting-name').val(appName);
+		ajaxCall("user_app_server_class_get");
+		$('#modal-apps-deploy-setting').modal('toggle');
+	}
+	function openModalAppsDeploySettingRequestSend(appNumber, app)
+	{
+		$('#modal-body-apps-deploy-setting-request-send #input-apps-deploy-setting-request-send-app').val(app);
+		$('#modal-body-apps-deploy-setting-request-send #input-apps-deploy-setting-request-send-app-number').val(appNumber);
+		$("#hidden-text-app").val(app)
+		ajaxCall("user_validate_request_deploy_settings");
+	}
+	function openModalAppsDeploySettingStopForwarding(appNumber, app)
+	{
+		$('#modal-apps-deploy-setting-stop-forwarding #input-apps-apps-deploy-setting-stop-forwarding-send-app').val(app);
+		$('#modal-apps-deploy-setting-stop-forwarding #input-apps-deploy-setting-stop-forwarding-send-app-number').val(appNumber);
+		$("#hidden-text-app").val(app)
+		$('#modal-apps-deploy-setting-stop-forwarding').modal('toggle');
+	}
+
+	function appDeploySetting()
+	{
+		$("#input-apps-deploy-setting-server-classes").val("");
+		appServerClasses = "";
+		$("#modal-user-apps-deploy-setting-table").find(':checkbox:checked').each(function(index,elem){
+			appServerClasses = appServerClasses + $(elem).attr('value')+ "|";
+			$("#input-apps-deploy-setting-server-classes").val($("#input-apps-deploy-setting-server-classes").val() + $(elem).attr('value')+ "|");
+		});
+		if( appServerClasses.length > 0 ) {
+			if($("#modal-uads-table-check-all").prop("checked") == true) {
+				 appServerClasses = appServerClasses.substr(appServerClasses.indexOf("|")+1);
+			}
+			$("#input-apps-deploy-setting-server-classes").val(appServerClasses);
+			ajaxCall("user_apps_add_deploy_setting");
+			highlightEditedRow = true;
+
+			removeThisElementChildren("#user-deploy-requests-apps-table"); //remove old table
+			ajaxCall("user_deploy_requests_apps_get"); //update table
+		}
+		else {
+			updateElementHtmlData("notice-apps-deploy-setting","Please select at least 1 Server Class.");
+			$("#notice-apps-deploy-setting").css("display","block");
+		}
+	}
+
+	function sendAppDeploySettingRequest()
+	{
+		$("#button-apps-deploy-setting-request-send").attr("disabled","true");
+		ajaxCall("user_request_deploy_settings");
+	}
+
+	function sendStopForwardingRequest()
+	{
+		$("#button-apps-deploy-setting-stop-forwarding").attr("disabled","true");
+		ajaxCall("user_request_stop_forwarding");
+	}
+
+	$(document).ready(function() {
+		$($("#a-tab-toggle-"+$("#hidden-text-env").val()).parent()).addClass("active");
+		ajaxCall("user_deploy_requests_apps_get");
+		pageSpecificSearchBox = "user-apps-search";
+
+		scrollTop0("modal-apps-deploy-setting", "modal-body-apps-deploy-setting");
+	});
+</script>
+
+<% provide(:img_title, 'Deploy?') %>
+<% provide(:img_body, 'The Apps containing configuration of Inputs will be deployed to your Server Class. You can set up it flexibly. Example:') %>
+<% provide(:img, 'deploy.png') %>
+<% provide(:step_title, 'Steps') %>
+<% provide(:step_1, "1. Deploy Config") %>
+<% provide(:step_2, "2. Send Request") %>
+
+<div class="content-div">
+	<!-- the ul below is used to adjust the width of the content body -->
+	<ul style="visibility: hidden;" class="nav nav-tabs nav-justified" role="tablist">
+		<li><a href="" data-toggle="tab" id="">Hidden</a></li>
+	</ul>
+	<div class="content-container container deployment-div">
+		<div class="page-header" >
+			<h3 class="content-title">Deploy Apps</h3>
+			<input type="text" class="search-field textbox" id="user-apps-search" role="search" placeholder="Search Filter" onkeyup="doSearch(this,'user-deploy-requests-apps-table','')"/>
+		</div>
+
+		<div class="alert alert-info" id="notice-manage-deploy-requests" style="display:none"></div>
+		<div class="content-table class-apps-table">
+			 <table class="table table-bordered table-hover" id="user-deploy-requests-apps-table">
+			 </table>
+		</div>
+	</div>
+</div>
+
+<input type="hidden" name="env" id="hidden-text-env" value=<%= @env%>> </input>
+<input type="hidden" name="app" id="hidden-text-app"></input>

@@ -1,0 +1,303 @@
+<script>
+	function setEnvironmentValueForAccountCreation()
+	{
+	$("#hidden-text-env-prod").val("prod");
+	$("#hidden-text-env-dev").val("dev");
+	$("#hidden-text-env-stg").val("stg");
+	}
+	function setEnvironmentValuesForAllFunctions(env)
+	{
+		$('#hidden-text-env').val($("#active-tab-by-parameter").val());
+		$("#hidden-text-" + env + "-account-create-env").val($("#active-tab-by-parameter").val());
+		$("#hidden-text-" + env + "-input-create-env").val($("#active-tab-by-parameter").val());
+		$("#hidden-text-" + env + "-input-list-env").val($("#active-tab-by-parameter").val());
+		$("#hidden-text-" + env + "-upload-create-env").val($("#active-tab-by-parameter").val());
+		$("#hidden-text-" + env + "-upload-list-env").val($("#active-tab-by-parameter").val());
+		$("#hidden-text-" + env + "-forwarder-manage-env").val($("#active-tab-by-parameter").val());
+		$("#hidden-text-" + env + "-deploy-requests-manage-env").val($("#active-tab-by-parameter").val());
+	}
+	function openModalEmailEdit()
+	{
+	  $('#modal-email-edit').modal('toggle');
+	  $('#input-text-email-edit-user-name').focus();
+	  $('#input-text-email-edit-user-name').val($('#tab-profile-user-name').html());
+	  $('#input-text-email-edit-group-name').val($('#tab-profile-group-name').html());
+	  $('#input-text-email-edit-app-team-name').val($('#tab-profile-app-team-name').html());
+	  $('#input-text-email-edit-service-id').val($('#tab-profile-service-id').html());
+	  if(($('#tab-profile-email-id').html())!="Not Specifed") {
+		$('#input-text-email-edit-email-id').val($('#tab-profile-email-id').html());
+	  }
+	  if (($('#tab-profile-email-for-emergency').html())!="Not Specifed") {
+		$('#input-text-email-edit-email-for-emergency').val($('#tab-profile-email-for-emergency').html());
+	  }
+	}
+
+	function openChangePasswordModal(){
+		$('#modal-password-change').modal('toggle');
+	}
+
+	function openFeedbackModal(){
+		$('#modal-feedback').modal('toggle');
+	}
+
+	function openAnnouncementsModal(){
+		$('#modal-announcements').modal('toggle');
+		// ajaxCall("anonymous_announcements_get");
+	}
+
+	$(document).ready(function() {
+	 ajaxCall("announcements_get");
+	 $('#input-text-email-edit-password').popover({trigger: 'focus'});
+	 $('#input-text-email-edit-password-confirm').popover({trigger: 'focus'});
+	 $('#input-text-email-edit-email-id').popover({trigger: 'focus'});
+	 $('#input-text-email-edit-email-for-emergency').popover({trigger: 'focus'});
+	 $('#input-text-email-edit-group-name').popover({trigger: 'focus'});
+	 $('#input-text-email-edit-app-team-name').popover({trigger: 'focus'});
+	 $('#input-text-email-edit-service-id').popover({trigger: 'focus'});
+	 displayMessages('groupname','input-text-email-edit-group-name','data-content',0);
+	 displayMessages('appteamname','input-text-email-edit-app-team-name','data-content',0);
+	 displayMessages('serviceid','input-text-email-edit-service-id','data-content',0);
+	 displayMessages('email','input-text-email-edit-email-id','data-content',0);
+	 displayMessages('email','input-text-email-edit-email-for-emergency','data-content',1);
+
+	 $('#a-tab-toggle-prod').click(function () {
+	  $("#active-tab-by-parameter").val("prod");
+	  setEnvironmentValuesForAllFunctions("prod");
+	  // ajaxCall("get_environment_profile"); //cause temp err
+	});
+	$('#a-tab-toggle-stg').click(function () {
+	  $("#active-tab-by-parameter").val("stg");
+	  setEnvironmentValuesForAllFunctions("stg");
+	  // ajaxCall("get_environment_profile");
+	});
+	$('#a-tab-toggle-dev').click(function () {
+	  $("#active-tab-by-parameter").val("dev");
+	  setEnvironmentValuesForAllFunctions("dev");
+	  // ajaxCall("get_environment_profile");
+	});
+
+	$('#a-tab-toggle-profile').click(function () {
+	  $("#h1-page-heading").html("Your Profile");
+	});
+	// Filling up tab data onLoad
+	  setEnvironmentValuesForAllFunctions($("#active-tab-by-parameter").val());
+	// ends
+	ajaxCall("get_profile");
+	ajaxCall("get_environment_profile");
+	$("#a-tab-toggle-"+$('#hidden-text-env').val()).tab('show');
+	<% if @tutorial==1 %>
+	  //testTutorial();
+	<% end %>
+	$('#button-dev-upload').attr("disabled",true);
+	$('#button-dev-upload-list').attr("disabled",true);
+	$('#button-stg-upload').attr("disabled",true);
+	$('#button-stg-upload-list').attr("disabled",true);
+	$('#button-prod-upload').attr("disabled",true);
+	$('#button-prod-upload-list').attr("disabled",true);
+	$('#modal-email-edit').on('show.bs.modal', function () {
+	});
+	$('#modal-email-edit').on('hide.bs.modal', function () {
+	});
+	$('#modal-password-change').on('hidden.bs.modal', function () {
+	  $('#input-text-password-change-old-password').val('');
+	  $('#input-text-password-change-new-password').val('');
+   });
+	$('#modal-announcements').on('show.bs.modal', function () {
+	  ajaxCall('announcements_get');
+   });
+	$('#modal-announcements').on('hide.bs.modal', function () {
+	  removeThisElementChildren("#splunk-users-announcements-table");
+   });
+   //ajaxCall("announcements_count_get");
+	  $( "#input-text-email-edit-group-name" ).keyup(function() {
+		   $('#input-text-email-edit-group-name').popover({
+				trigger: 'manual',
+				placement: 'right',
+		   });
+		   result=validate($('#input-text-email-edit-group-name').val(),'string','groupname');
+		   displayMessages('groupname','input-text-email-edit-group-name','data-content',result);
+		   $('#input-text-email-edit-group-name').popover("show");
+	  });
+	  $( "#input-text-email-edit-app-team-name" ).keyup(function() {
+		   $('#input-text-email-edit-app-team-name').popover({
+				trigger: 'manual',
+				placement: 'right',
+		   });
+		   result=validate($('#input-text-email-edit-app-team-name').val(),'string','appteamname');
+		   displayMessages('appteamname','input-text-email-edit-app-team-name','data-content',result);
+		   $('#input-text-email-edit-app-team-name').popover("show");
+	  });
+	  $( "#input-text-email-edit-service-id" ).keyup(function() {
+		   $('#input-text-email-edit-service-id').popover({
+				trigger: 'manual',
+				placement: 'right',
+		   });
+		   result=validate($('#input-text-email-edit-service-id').val(),'integer','serviceid');
+		   displayMessages('serviceid','input-text-email-edit-service-id','data-content',result);
+		   $('#input-text-email-edit-service-id').popover("show");
+	  });
+	  $( "#input-text-email-edit-email-id" ).keyup(function() {
+		   $('#input-text-email-edit-email-id').popover({
+				trigger: 'manual',
+				placement: 'right',
+		   });
+		   result=validate($('#input-text-email-edit-email-id').val(),'string','email');
+		   displayMessages('email','input-text-email-edit-email-id','data-content',result);
+		   $('#input-text-email-edit-email').popover("show");
+	  });
+	  $( "#input-text-email-edit-email-for-emergency" ).keyup(function() {
+		   $('#input-text-email-edit-email-for-emergency').popover({
+				trigger: 'manual',
+				placement: 'right',
+		   });
+		   result=validate($('#input-text-email-edit-email-for-emergency').val(),'string','emailemergency');
+		   displayMessages('email','input-text-email-edit-email-for-emergency','data-content',result);
+		   $('#input-text-email-edit-email-for-emergency').popover("show");
+	  });
+	});
+</script>
+
+<div class="index-div">
+	<div class="row">
+		<div class="col-xs-12 col-md-8">
+			<% if flash[:notice] %>
+				<div class="alert alert-info" id="notice-home"><%= flash[:notice] %></div>
+			<% else %>
+				<div class="alert alert-info" id="notice-home" style="display:none"></div>
+			<% end %>
+			
+			<div class="index-page-header page-header">
+				<h3 id="h1-page-heading"></h3>
+				<% if @env=="prod" %>
+					<h3><i class="fa fa-flag" aria-hidden="true"></i>PROD</h3>
+				<% end %>
+
+				<% if @env=="stg" %>
+					<h3><i class="fa fa-flag" aria-hidden="true"></i>STG</h3>
+				<% end %>
+
+				<% if @env=="dev" %>
+					<h3><i class="fa fa-flag" aria-hidden="true"></i>DEV</h3>
+				<% end %>
+			</div>
+
+			
+
+			<input type="hidden" id="active-tab-by-parameter" value=<%=@env%> />
+
+			<div class="index-container container">
+				<div class="tab-content" id="navtab">
+					<div class="index-env-info">
+						<%if @env=="prod" %>
+							<%if @prod==0 %>
+								<form action="/splunk_users/new" method="get">
+									<p class="strong-text">Please create your account for PROD</p>
+									<input type="hidden" name="env" id="hidden-text-prod-account-create-env"> </input>
+									<button type="submit" class= "btn btn-primary" id="button-prod-account-create"><i class="fa fa-plus" aria-hidden="true"></i>Create Account</button>
+								</form>
+							<%else%>
+								<h5>How to Start</h5>
+								<p class="guide-text">Step1: Add forwarder => Add server class</p>
+								<p class="guide-text">Step2: Add input => Add app </p>
+								<p class="guide-text">Step3: Configure deployment => Send deployment request</p>
+								<p class="guide-text">Step4: Access Splunk host to search the logs after receiving approval email</p>
+								<h5>Info</h5>
+								<div id="div-sidebar-extra"></div>
+							<% end %>
+						<% end %>
+					</div> <!-- closed the prod tab -->
+
+					<div class="index-env-info">
+						<%if @env=="stg" %>
+							<%if @stg==0 %>
+								<form action="/splunk_users/new" method="get">
+									<p class="strong-text">Please create your account for STG</p>
+									<input type="hidden" name="env" id="hidden-text-stg-account-create-env"> </input>
+									<button type="submit" class= "btn btn-primary" id="button-stg-account-create"><i class="fa fa-plus" aria-hidden="true"></i>Create Account</button>
+								</form>
+							<%else%>
+								<h5>How to Start</h5>
+								<p class="guide-text">Step1: Add forwarder => Add server class</p>
+								<p class="guide-text">Step2: Add input => Add app </p>
+								<p class="guide-text">Step3: Configure deployment => Send deployment request</p>
+								<p class="guide-text">Step4: Access Splunk host to search the logs after receiving approval email</p>
+								<h5>Info</h5>
+								<div id="div-sidebar-extra"></div>
+							<% end %>
+						<% end %>
+					</div>  <!-- closed the stg tab div -->
+
+					<div class="index-env-info"> 
+						<%if @env=="dev" %>
+							<%if @dev==0 %>
+								<form action="/splunk_users/new" method="get">
+									<p class="strong-text">Please create your account for DEV</p>
+									<input type="hidden" name="env" id="hidden-text-dev-account-create-env"> </input>
+									<button type="submit" class= "btn btn-primary" id="button-dev-account-create"><i class="fa fa-plus" aria-hidden="true"></i>Create Account</button>
+								</form>
+							<%else%>
+								<h5>How to Start</h5>
+								<p class="guide-text">Step1: Add forwarder => Add server class</p>
+								<p class="guide-text">Step2: Add input => Add app </p>
+								<p class="guide-text">Step3: Configure deployment => Send deployment request</p>
+								<p class="guide-text">Step4: Access Splunk host to search the logs after receiving approval email</p>
+								<h5>Info</h5>
+								<div id="div-sidebar-extra"></div>
+							<% end %>
+						<% end %>
+					</div>  <!-- closed the dev tab div -->
+				</div>  <!-- closed  tab-content div -->
+			</div>  <!-- closed main container div -->
+
+			<div class="index-page-header page-header">
+				<h3><i class="fa fa-user" aria-hidden="true"></i>Profile</h3>
+			</div>
+
+			<div id="tab-profile" class="index-container container">
+				<label class="profile-label">User Name</label>
+				<p class="profile-text" id="tab-profile-user-name"></p>
+
+				<label class="profile-label">Group Name</label>
+				<p class="profile-text" id="tab-profile-group-name"></p>
+
+				<label class="profile-label">App Team Name</label>
+				<p class="profile-text" id="tab-profile-app-team-name"></p>
+
+				<label class="profile-label">Service ID</label>
+				<p class="profile-text" id="tab-profile-service-id"></p>
+
+				<label class="profile-label">Email Address for Information</label>
+				<p class="profile-text" id="tab-profile-email-id"></p>
+
+				<label class="profile-label">Email Address for Emergency</label>
+				<p class="profile-text" id="tab-profile-email-for-emergency"></p>
+			</div>
+
+			<div class="index-page-header page-header">
+				<h3><i class="fa fa-wrench" aria-hidden="true"></i>Tools</h3>
+			</div>
+			<div class="index-container container">
+				<a class="btn btn-primary" id="button-tab-profile-edit-email" onclick="openModalEmailEdit()"><i class="fa fa-pencil" aria-hidden="true"></i>Update Profile</a>
+				<a class="btn btn-primary" onclick="openChangePasswordModal()"><i class="fa fa-key" aria-hidden="true"></i>Change Password</a>
+				<a class="btn btn-primary" onclick="openFeedbackModal()"><i class="fa fa-comment" aria-hidden="true"></i>Feedback</a>
+			</div>
+		</div>
+
+		<div class="col-xs-6 col-md-4 index-right-div">
+			<div class="index-page-header page-header">
+				<h3><i class="fa fa-list-alt" aria-hidden="true"></i>Announcements</h3>
+			</div>
+			<ul id="announcements-list" class="announcement-list">
+			</ul>
+
+			<div class="index-page-header page-header">
+				<h3><i class="fa fa-link" aria-hidden="true"></i>Links</h3>
+			</div>
+			<div class="index-container container ">
+				<a href=<%= @about_link %> target="_blank" class="links"><i class="fa fa-info-circle no-margin-icon" aria-hidden="true"></i>About</a>
+				<a href=<%= @faq_link %> target="_blank" class="links"><i class="fa fa-question-circle no-margin-icon" aria-hidden="true"></i>FAQ</a>
+				<a href=<%= @reference_link %> target="_blank" class="links"><i class="fa fa-external-link no-margin-icon" aria-hidden="true"></i>Reference</a>
+			</div>
+		</div>
+	</div>
+</div>

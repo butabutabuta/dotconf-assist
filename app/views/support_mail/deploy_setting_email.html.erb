@@ -1,0 +1,42 @@
+Hello <%= @user_name %>,<br>
+<br>You have Sent Request To Set up the Following App onto the Splunk Cluster.<br>
+Details<br>
+<b>Env: </b><%= @env_email  %><br><br>
+<b>App Name: </b><%= @app_name_email %><br><br>
+<b>Server Class(es):</b><br>
+      <ul>
+      <% list_flag = 2 %>
+      <% regex_flag = 1 %>
+      <% regex_count = 0 %>
+      <% @server_forwarder_email.each do |server_class| %>
+        <% if server_class == "starts" %>
+          <% list_flag = 1 %>
+        <% elsif server_class == "ends" %>
+          <% list_flag = 0 %>
+        <% end %>
+        <% if list_flag == 2 %>
+          <% if regex_flag == 1 %>
+            <li><%= server_class %>   ( <%= @white_list_regex[regex_count]%> )</li>
+            <% regex_count += 1 %>
+            <% regex_flag = 0 %>
+          <% else %>
+            <li><%= server_class %></li>
+          <% end %>
+        <% end %>
+        <% if list_flag == 1 %>
+          <ul>
+          <% list_flag = 2 %>
+        <% elsif list_flag == 0 %>
+          </ul>
+          <% regex_flag = 1 %>
+          <% list_flag = 2 %>
+        <% end %>
+      <% end %><br><br>
+      </ul><br>
+Our Admin will respond to your request as soon as possible.<br>
+<br>
+You can access dotconf-assist from <a href="http://<%= @dotconf_assist_domain%>/">HERE</a>.<br>
+Also, you can reply to this email directly to contact admin or provide feedback, if you face any issues.<br>
+<br>
+Regards,<br>
+Splunk as a Service Support Team.

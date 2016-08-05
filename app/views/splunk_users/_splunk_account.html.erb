@@ -1,0 +1,160 @@
+<script>
+  var resultcount=2;
+  var text1=0;
+  var text2=0;
+  var text3=0;
+  var text4=0;
+  var text5=1;
+  var text6=1;
+  function validates(result,text)
+  {
+     if (result==1)
+     {
+       if(text==1)
+       {
+       }
+       else
+       {
+         text=1;
+         resultcount+=1;
+       }
+       if(resultcount==6)
+       {
+         $('#saveform').attr("disabled", false);
+       }
+     }
+     else
+     {
+       if(text==1)
+       {
+         text=0;
+         if(resultcount==6)
+         {
+           $('#saveform').attr("disabled", true);
+         }
+         resultcount-=1;
+       }
+     }
+     return(text);
+  }
+  $(document).ready(function() {
+      $('#user-name').popover({trigger: 'focus'});
+      displayMessages("username","user-name","data-content",0);
+      $('#group-name').popover({trigger: 'focus'});
+      $('#app-team-name').popover({trigger: 'focus'});
+      $('#serviceid').popover({trigger: 'focus'});
+      $('#rpaas-user-name').popover({trigger: 'focus'});
+      $('#memo').popover({trigger: 'focus'});
+      $('#email').popover({trigger: 'focus'});
+      $('#user-name').focus();
+      displayMessages("groupname","group-name","data-content",0);
+      displayMessages("appteamname","app-team-name","data-content",0);
+      displayMessages("rpaasusername","rpaas-user-name","data-content",0);
+      displayMessages("memo","memo","data-content",0);
+      displayMessages("email","email","data-content",0);
+      $('#saveform').attr("disabled", true);
+      displayMessages("serviceid","serviceid","data-content",0);
+      $( "#user-name" ).keyup(function() {
+           if (($(this).val().length > 0) && ($(this).val().substr(0,5) != 'user_') || ($(this).val() == '')) {
+                 $(this).val('user_');
+           }
+           $('#user-name').popover({
+                trigger: 'manual',
+                placement: 'right',
+           });
+           result=validate($('#user-name').val(),'string','username');
+           text1=validates(result,text1);
+           displayMessages('username','user-name','data-content',result);
+           $('#user-name').popover("show");
+      });
+      $( "#group-name" ).keyup(function() {
+           $('#group-name').popover({
+                trigger: 'manual',
+                placement: 'right',
+           });
+           result=validate($('#group-name').val(),'string','groupname');
+           text2=validates(result,text2);
+           displayMessages('groupname','group-name','data-content',result);
+           $('#group-name').popover("show");
+      });
+      $( "#app-team-name" ).keyup(function() {
+           $('#app-team-name').popover({
+                trigger: 'manual',
+                placement: 'right',
+           });
+           result=validate($('#app-team-name').val(),'string','appteamname');
+           text3=validates(result,text3);
+           displayMessages('appteamname','app-team-name','data-content',result);
+           $('#app-team-name').popover("show");
+      });
+      $( "#serviceid" ).keyup(function() {
+           $('#serviceid').popover({
+                trigger: 'manual',
+                placement: 'right',
+           });
+           result=validate($('#serviceid').val(),'integer','serviceid');
+           text4=validates(result,text4);
+           displayMessages('serviceid','serviceid','data-content',result);
+           $('#serviceid').popover("show");
+      });
+      $( "#rpaas-user-name" ).keyup(function() {
+           $('#rpaas-user-name').popover({
+                trigger: 'manual',
+                placement: 'right',
+           });
+           result=validate($('#rpaas-user-name').val(),'string','rpaasusername');
+           text5=validates(result,text5);
+           displayMessages('rpaasusername','rpaas-user-name','data-content',result);
+           $('#rpaas-user-name').popover("show");
+      });
+      $( "#memo" ).keyup(function() {
+           $('#memo').popover({
+                trigger: 'manual',
+                placement: 'right',
+           });
+           result=validate($('#memo').val(),'string','memo');
+           text6=validates(result,text6);
+           displayMessages('memo','memo','data-content',result);
+           $('#memo').popover("show");
+      });
+      $( "#email" ).keyup(function() {
+           $('#email').popover({
+                trigger: 'manual',
+                placement: 'right',
+           });
+           result=validate($('#email').val(),'string','email');
+           //text6=validates(result,text6);
+           displayMessages('email','email','data-content',result);
+           $('#email').popover("show");
+      });
+  });
+</script>
+<div id="test">
+
+ <%= form_tag do -%>
+  <%= label_tag 'answer' do %>
+    User Name: <%= text_field_tag 'user_name','' ,id: 'user-name', placeholder: 'Username', data: { toggle: 'popover', trigger: 'hover', content: '' }, :autocomplete => :off, :style => 'margin-left: 5%;', :value => "user_", :onfocus => "this.value = this.value;"%>*
+  <% end %>
+  <%= label_tag 'answer' do %>
+    Group Name: <%= text_field_tag 'group_name','', id: "group-name", placeholder: "Group Name" ,data: { toggle: 'popover', trigger: 'hover', content: '' }, :autocomplete => :off, :style => 'margin-left: 4%;'%>*
+  <% end %>
+  <%= label_tag 'answer' do %>
+    App Team Name: <%= text_field_tag 'app_team_name','', id: "app-team-name", placeholder: "App Team Name" ,data: { toggle: 'popover', trigger: 'hover', content: '' }, :autocomplete => :off%>*
+  <% end %>
+  <%= label_tag 'answer' do %>
+    Service Id: <%= text_field_tag 'serviceid','', id: "serviceid", placeholder: "Service ID" ,data: { toggle: 'popover', trigger: 'hover', content: '' }, :autocomplete => :off %>*
+  <% end %>
+  <%= label_tag 'answer' do %>
+    RPaaS: <%= text_field_tag 'rpaas_user_name','', id: "rpaas-user-name", placeholder: "RPaas User Name" ,data: { toggle: 'popover', trigger: 'hover', content: '' } , :autocomplete => :off, :style => 'margin-left: 6.9%;'%>
+  <% end %>
+  <%= label_tag 'answer' do %>
+    Memo: <%= text_area_tag 'memo','', id: "memo", placeholder: "Memo" ,data: { toggle: 'popover', trigger: 'hover', content: '' } , :autocomplete => :off, :style => 'margin-left: 7%;'%>
+  <% end %>
+  <%= label_tag 'answer' do %>
+    Email: <%= text_area_tag 'email','', id: "email", placeholder: "Email Address For Notifications" ,data: { toggle: 'popover', trigger: 'hover', content: '' } , :autocomplete => :off, :style => 'margin-left: 7%;'%>
+  <% end %>
+  <div>
+   <%= button_tag "Cancel", :onclick=> "history.go(-1);return false;", :class => "btn btn-primary" %> <%= button_tag 'Confirm', :class => "btn btn-primary", :id => "saveform" , :style => 'margin-left: 5%;', :onclick => "showAccountConfirmTab()"%>
+  </div>
+</div>
+<% end -%>

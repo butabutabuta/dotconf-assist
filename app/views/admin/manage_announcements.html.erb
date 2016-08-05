@@ -1,0 +1,85 @@
+<script>
+   var list_name =[];
+   var list_id = [];
+   var list_status = [];
+   var list_account = [];
+   var listNotMatchingNames = [];
+   var targetTableRow="admin-announcements-table-row-";
+   var searchTermLengthPrevious=0;
+   function getAllAnnouncementsList()
+   {
+     list_name = [];
+     var records=$("#admin-announcements-table td[id$='-announce']");
+     jQuery.each(records, function(index, value) {
+       list_name.push($(value).html());
+     });
+     list_status = [];
+     var records=$("#admin-announcements-table td[id$='-status']");
+     jQuery.each(records, function(index, value) {
+       list_status.push($(value).html());
+     });
+     list_account = [];
+   }
+
+   function openModalAnnouncementAdd(){
+     $("#modal-announcement-add").modal('toggle');
+   }
+
+   function openModalAnnouncementEdit(announcementNumber,announcement)
+   {
+     announce=$("#admin-announcements-"+announcementNumber+"-announce").html();
+     status=$("#admin-announcements-"+announcementNumber+"-status").html();
+     $("#modal-body-announcement-edit #input-announcement-edit-announce").val(announce);
+     $("#modal-body-announcement-edit #select-announcement-edit-status").val(status);
+     $("#modal-announcement-edit").modal('toggle');
+     $("#modal-body-announcement-edit #input-announcement-edit-announcement").val(announcement);
+     $("#modal-body-announcement-edit #input-announcement-edit-announcement-number").val(announcementNumber);
+   }
+   function openModalAnnouncementDelete(announcementNumber,announcement)
+   {
+     announce=$("#admin-announcements-"+announcementNumber+"-announce").html();
+     status=$("#admin-announcements-"+announcementNumber+"-status").html();
+     $("#modal-body-announcement-delete #input-announcement-delete-announce").val(announce);
+     $("#modal-body-announcement-delete #select-announcement-delete-status").val(status);
+     $("#modal-announcement-delete").modal('toggle');
+     $("#modal-body-announcement-delete #input-announcement-delete-announcement").val(announcement);
+     $("#modal-body-announcement-delete #input-announcement-delete-announcement-number").val(announcementNumber);
+   }
+   $(document).ready(function() {
+      ajaxCall("admin_announcements_get");
+      pageSpecificSearchBox = "admin-announcements-search";
+    $('#modal-announcement-add').on('show.bs.modal', function () {
+      $('#input-announcement-add-announce').focus();
+    });
+    $('#modal-announcement-add').on('hide.bs.modal', function () {
+      $('#input-announcement-add-announce').val('');
+    });
+    $('#modal-splunk-host-edit').on('show.bs.modal', function () {
+      $('#input-announcement-edit-announce').focus();
+    });
+    $('#modal-splunk-host-edit').on('hide.bs.modal', function () {
+      $('#input-announcement-edit-announce').val('');
+    });
+    $('#modal-splunk-host-delete').on('show.bs.modal', function () {
+    });
+    $('#modal-splunk-host-delete').on('hide.bs.modal', function () {
+      $('#input-announcement-delete-announce').val('');
+    });
+   });
+</script>
+<div class="page-header">
+  <h1>List of Announcements</h1>
+</div>
+<div class="alert alert-info" id="notice-manage-announcements" style="display:none"></div>
+       <div class="inner-addon left-addon">
+          <input type="text" class="textbox pull-right" id="admin-announcements-search" role="search" onkeyup="doSearch(this,'admin-announcements-table','')"/>
+       </div>
+  <div class="announcements-table">
+       <table class="table table-bordered table-hover" id="admin-announcements-table" style="">
+       </table>
+  </div> <!-- close announcements table's parent-->
+<br>
+<button type="button" onclick="location.href='/admin/home'" class="btn btn-primary" >Back</button>
+<button type="button" onclick="openModalAnnouncementAdd()" class="btn btn-primary" >Add Announcement</button>
+<!-- <button type="button" data-target="#modal-password-change" data-toggle="modal" class="btn btn-primary" >Edit Host</button>
+<button type="button" data-target="#modal-password-change" data-toggle="modal" class="btn btn-primary" >Delete Host</button> //-->

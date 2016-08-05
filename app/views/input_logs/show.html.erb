@@ -1,0 +1,33 @@
+<%- model_class = InputLog -%>
+<div class="page-header">
+  <h1><%=t '.title', :default => model_class.model_name.human.titleize %></h1>
+</div>
+
+<dl class="dl-horizontal">
+  <dt><strong><%= model_class.human_attribute_name(:splunk_user_id) %>:</strong></dt>
+  <dd><%= @input_log.splunk_user_id %></dd>
+  <dt><strong><%= model_class.human_attribute_name(:source_hostname) %>:</strong></dt>
+  <dd><%= @input_log.source_hostname %></dd>
+  <dt><strong><%= model_class.human_attribute_name(:log_file_path) %>:</strong></dt>
+  <dd><%= @input_log.log_file_path %></dd>
+  <dt><strong><%= model_class.human_attribute_name(:sourcetype) %>:</strong></dt>
+  <dd><%= @input_log.sourcetype %></dd>
+  <dt><strong><%= model_class.human_attribute_name(:log_file_size) %>:</strong></dt>
+  <dd><%= @input_log.log_file_size %></dd>
+  <dt><strong><%= model_class.human_attribute_name(:data_retention_period) %>:</strong></dt>
+  <dd><%= @input_log.data_retention_period %></dd>
+  <dt><strong><%= model_class.human_attribute_name(:memo) %>:</strong></dt>
+  <dd><%= @input_log.memo %></dd>
+</dl>
+
+<div class="form-actions">
+  <%= link_to t('.back', :default => t("helpers.links.back")),
+              input_logs_path, :class => 'btn'  %>
+  <%= link_to t('.edit', :default => t("helpers.links.edit")),
+              edit_input_log_path(@input_log), :class => 'btn' %>
+  <%= link_to t('.destroy', :default => t("helpers.links.destroy")),
+              input_log_path(@input_log),
+              :method => 'delete',
+              :data => { :confirm => t('.confirm', :default => t("helpers.links.confirm", :default => 'Are you sure?')) },
+              :class => 'btn btn-danger' %>
+</div>

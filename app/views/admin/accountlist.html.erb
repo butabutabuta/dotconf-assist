@@ -1,0 +1,48 @@
+<script>
+	var list_name =[];
+	var list_status = [];
+	var list_account = [];
+	var list_id = [];
+	var listNotMatchingNames = [];
+	var targetTableRow="admin-accounts-table-row-";
+	var searchTermLengthPrevious=0;
+	function getAllSplunkAccountsList()
+	{
+		list_name = [];
+		var records=$("#admin-accounts-table td[id$='-splunk-account']");
+		jQuery.each(records, function(index, value) {
+			 list_name.push($(value).html());
+		});
+		list_status = [];
+		var records=$("#admin-accounts-table td[id$='-status']");
+		jQuery.each(records, function(index, value) {
+			 list_status.push($(value).html());
+		});
+		list_account = [];
+		var records=$("#admin-accounts-table td[id$='env']");
+		jQuery.each(records, function(index, value) {
+			 list_account.push($(value).html());
+		});
+	}
+
+	$(document).ready(function() {
+		ajaxCall("adminuseraccounts");
+		ajaxCall("splunk_user_statistics_get");
+		pageSpecificSearchBox = "admin-accounts-list-search";
+	});
+</script>
+
+<div class="page-header">
+	<h1>List of Splunk User Accounts</h1>
+</div>
+
+<div class="inner-addon left-addon">
+	<input type="text" class="textbox pull-right" id="admin-accounts-list-search" role="search" onkeyup="doSearch(this,'admin-accounts-table','')"/>
+</div>
+
+<div>
+	<table class="table table-bordered table-hover" id="admin-accounts-table">
+	</table>
+</div> <!-- close class accounts table-->
+<br>
+<button type="button" onclick="location.href='/admin/home'" class="btn btn-primary" >Back</button>

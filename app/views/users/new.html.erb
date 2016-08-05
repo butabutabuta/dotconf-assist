@@ -1,0 +1,5 @@
+<%= simple_form_for @user   ('users/confirm') do |f| -%>
+  <%= f.input :user_name %>
+  <%= f.input :app_name %>
+  <div><%= submit_tag 'Save' %></div>
+<% end -%>

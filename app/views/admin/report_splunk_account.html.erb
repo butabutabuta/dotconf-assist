@@ -1,0 +1,58 @@
+   <script>
+     $(document).ready(function() {
+       <% if @status==1%>
+           $('#user-account-approve').css("display","block");
+       <% elsif @status==9 %>
+           $('#user-account-cancel').css("display","block");
+       <% end %>
+     });
+   </script>
+   <div class="page-header">
+     <h1>Details of <%= @user_account.splunk_user_name %>'s Account</h1>
+   </div>
+   <!-- <div class="alert alert-warning" id="user-account-wait" style="width: 20%;display: none;">Please Wait API is called...</div> -->
+   <div class="alert alert-success" id="user-account-approve" style="width: 20%;display: none;">Account is Approved Successfully !!!</div>
+   <div class="alert alert-danger" id="user-account-cancel" style="width: 18%;display: none;">Account is Rejected !!! </div>
+   <div class="alert alert-danger" id="user-account-fail" style="width: 20%;display: none;">Sorry The Splunk Server is Down !!</div>
+   <%= form_tag '', :class => 'form-horizontal', :role => "form"  do -%>
+       <label class="col-sm-2 control-label" style="text-align:left;">User Name</label>
+       <div class="form-group">
+          <%= text_field_tag 'user_name', @user_account.splunk_user_name, :style => 'width:50%', disabled: true%>
+       </div>
+       <br>
+       <label class="col-sm-2 control-label" style="text-align:left;">Group Name</label>
+       <div class="form-group">
+       <%= text_field_tag 'group_name', @user_account.group_name, :style => 'width:50%', disabled: true %>
+       </div>
+       <br>
+       <label class="col-sm-2 control-label" style="text-align:left;">App Team Name </label>
+       <div class="form-group">
+         <%= text_field_tag 'app_team_name', @user_account.app_team_name, :style => 'width:50%', disabled: true%>
+       </div>
+       <br>
+       <label class="col-sm-2 control-label" style="text-align:left;"> Service Id </label>
+         <div class="form-group">
+           <%= text_field_tag 'serviceid', @user_account.serviceid, :style => 'width:50%', disabled: true%>
+         </div>
+       <br>
+       <label class="col-sm-2 control-label" style="text-align:left;"> Splunk Host </label>
+         <div class="form-group">
+           <%= text_field_tag 'splunk_host', @host_name.name, :style => 'width:50%', disabled: true%>
+         </div>
+       <br>
+       <label class="col-sm-2 control-label" style="text-align:left;"> RPaaS User Name </label>
+         <div class="form-group">
+           <%= text_field_tag 'splunk_account', @splunk_account.rpaas_user_name, :style => 'width:50%', disabled: true%>
+         </div>
+       <br>
+       <label class="col-sm-2 control-label" style="text-align:left;"> Memo </label>
+         <div class="form-group">
+           <%= text_area_tag 'memo', @splunk_account.memo, :style => 'width:50%', disabled: true%>
+         </div>
+       <br>
+   <%end%>
+   <button  value="<%= @user_account.id%>" class="btn btn-primary" id="adminusersaccountsback" onclick="location.href='/admin/accountlist'">Back</button>
+   <% if ( @status==0)  %>
+     <button value="<%= @user_account.id%>" class="btn btn-primary" id="adminusersaccountscancel" onclick="adminUsersAccountsCancel()">Cancel</button>
+     <button value="<%= @uaser_account.id%>" class="btn btn-primary" id="adminusersaccountsapprove" onclick="adminUsersAccountsApprove()">Approve</button>
+   <% end %>

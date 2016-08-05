@@ -1,0 +1,2 @@
+module SplunkUsersHelper
+end

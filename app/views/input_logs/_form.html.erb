@@ -1,0 +1,14 @@
+<%= simple_form_for @input_log, :html => { :class => 'form-horizontal' } do |f| %>
+  <%= f.input :splunk_user_id %>
+  <%= f.input :source_hostname %>
+  <%= f.input :log_file_path %>
+  <%= f.input :sourcetype %>
+  <%= f.input :log_file_size %>
+  <%= f.input :data_retention_period %>
+  <%= f.input :memo %>
+  <div class="form-actions">
+    <%= f.button :submit, :class => 'btn-primary' %>
+    <%= link_to t('.cancel', :default => t("helpers.links.cancel")),
+                input_logs_path, :class => 'btn' %>
+  </div>
+<% end %>
