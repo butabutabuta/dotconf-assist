@@ -101,57 +101,6 @@
 	</div>
 </div>
 
-<!-- Modal to Add Forwarder unused?-->
-<div class="modal fade" id="modal-forwarder-add" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display:none;">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<h4 class="modal-title" id="forwarder-add-label">Add Forwarder</h4>
-			</div><!-- close modal-header -->
-			<div class="modal-body" id="modal-body-forwarder-add">
-				<div class="textbox">
-					<label>Forwarder Name</label>
-					<input name="forwarder" class="form-control" placeholder="Forwarder Name" id="input-forwarder-add-name" data-toggle="popover" data-placement="right" data-content="Please input your forwarder's hostname which is displayed by 'hostname' command on the Server."></input>
-					<input type="hidden" name="forwarder-env" id="input-forwarder-add-forwarder-env"></input>
-					<br>
-					<br>
-				</div> <!-- close textbox class-->
-			</div> <!-- close modal-body -->
-			<div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal" >Cancel</button>
-				<button id="button-forwarder-add" onclick="ajaxCall('user_forwarder_add')" class="btn btn-primary pull-right">Add Forwarder</button>
-			</div><!-- close modal-footer-->
-		</div>  <!-- close modal-content-->
-	</div>  <!-- close modal-dialog-->
-</div> <!-- close modal-->
-
-
-<!-- Modal to Edit Forwarder unused?-->
-<div class="modal fade" id="modal-forwarder-edit" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display:none;">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<h4 class="modal-title" id="forwarder-edit-label">Edit Forwarder</h4>
-			</div><!-- close modal-header -->
-			<div class="modal-body" id="modal-body-forwarder-edit">
-				<div class="textbox">
-					<label>Forwarder</label>
-					<input name="forwarder" class="form-control" id="input-forwarder-edit-name" data-toggle="popover" data-placement="right" data-content="Please input your forwarder's hostname which is displayed by 'hostname' command on the Server."></input>
-					<br>
-					<br>
-					<input type="hidden" name="forwarder" id="input-forwarder-edit-forwarder"></input>
-					<input type="hidden" name="forwarder-number" id="input-forwarder-edit-forwarder-number"></input>
-				</div> <!-- close textbox class-->
-			</div> <!-- close modal-body -->
-			<div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal" >Cancel</button>
-				<button id="button-forwarder-edit" onclick="ajaxCall('user_forwarder_edit')" class="btn btn-primary pull-right">Update Forwarder</button>
-			</div><!-- close modal-footer-->
-		</div>  <!-- close modal-content-->
-	</div>  <!-- close modal-dialog-->
-</div> <!-- close modal-->
-
-
 <!-- Modal to Delete Forwarder unused?-->
 <div class="modal fade" id="modal-forwarder-delete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display:none;">
 	<div class="modal-dialog">
@@ -169,7 +118,7 @@
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-default" data-dismiss="modal" >Cancel</button>
-				<button id="button-forwarder-delete" onclick="ajaxCall('user_forwarder_delete')" class="btn btn-primary pull-right">Submit</button>
+				<button id="button-forwarder-delete" onclick="ajaxCall(deleteForwarder)" class="btn btn-primary pull-right">Submit</button>
 			</div>
 		</div>
 	</div>

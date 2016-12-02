@@ -1,3 +1,20 @@
+function _getRecords()
+{
+
+}
+
+function _getRecord(){
+	
+}
+
+function _updateRecord(){
+
+}
+
+function _deleteRecord(){
+
+}
+
 function clearNotices(ele) {
 	timeoutValue = setTimeout( function() {
 		 ele.className = "";
@@ -7,7 +24,6 @@ function clearNotices(ele) {
 
 //improved search bar, can search any column in the table. use table1 and table2 for 2types of inputs
 function doSearch(elem, table1, table2, table3) { 
-	console.log("in");
 	var searchText = $(elem).val();
 	var tables = new Array(table1,table2, table3);
 	for (var i = 0; i < tables.length; i++) {
@@ -312,3 +328,4 @@ function restoreRecordsDisplay()
 		$("#"+targetTableRow+value).css("display","table-row");
 	});
 }
+

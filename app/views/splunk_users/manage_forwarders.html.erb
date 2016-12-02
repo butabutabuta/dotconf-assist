@@ -67,7 +67,7 @@
 		$("#modal-body-server-class-show #input-server-class-show").val(serverClass);
 		serverClassName = $("#user-server-class-"+serverClassNumber+"-name").html();
 		$("#input-server-class-show-name").val(serverClassName);
-		ajaxCall("user_server_class_forwarders_get");     
+		ajaxCall(getForwardersFromServerClass);     
 	}
 
 	function openModalServerClassEdit(serverClassNumber, serverClass)
@@ -161,7 +161,7 @@
 		$("#input-forwarder-add-from-deployment-server-filter").val('');
 		$("#modal-body-forwarder-add-from-deployment-server #input-forwarder-add-from-deployment-server-forwarder-env").val($("#hidden-text-env").val());
 		$("#input-forwarder-add-from-deployment-server-name").popover({trigger: 'focus'});
-		ajaxCall("user_forwarders_from_deployment_server_get");
+		ajaxCall(getForwardersFromDeploymentServer);
 	}
 	function addForwardersFromDeploymentServerList()
 	{
@@ -175,7 +175,7 @@
 				 serverForwarderNames = serverForwarderNames.substr(serverForwarderNames.indexOf("|")+1);
 			}
 			$("#input-forwarder-add-from-deployment-server-forwarder-names").val(serverForwarderNames);
-			ajaxCall("user_forwarders_from_deployment_server_add");
+			ajaxCall(addForwarder);
 			highlightAddedRow = true;
 		}
 		else {
@@ -251,14 +251,14 @@
 			$('#input-forwarder-delete-name').val('');
 		});
 		$('#a-tab-toggle-forwarders').click(function () {
-			removeThisElementChildren("#user-forwarders-table");
-			ajaxCall("user_forwarders_get");
+			removeThisElementChildren("#" + forwardersTableID);
+			ajaxCall(getForwarders);
 			localStorage.setItem("lastTab","forwarders");
 			pageSpecificSearchBox = "user-forwarders-search";
 		});
 		$('#a-tab-toggle-classes').click(function () {
 			removeThisElementChildren("#user-server-class-table");
-			ajaxCall("user_server_class_get");
+			ajaxCall(getServerClasses);
 			localStorage.setItem("lastTab","classes");
 			pageSpecificSearchBox = "user-server-classes-search";
 		});
@@ -270,7 +270,7 @@
 				$("#tab-classes").addClass("active");
 				$($("#a-tab-toggle-classes").parent()).addClass("active");
 				removeThisElementChildren("#user-server-class-table");
-				ajaxCall("user_server_class_get");
+				ajaxCall(getServerClasses);
 				localStorage.setItem("lastTab","classes");
 				pageSpecificSearchBox = "user-server-classes-search";
 			}
@@ -279,21 +279,21 @@
 				$("#tab-classes").removeClass("active");
 				$($("#a-tab-toggle-forwarders").parent()).addClass("active");
 				$("#tab-forwarders").addClass("active");
-				removeThisElementChildren("#user-forwarders-table");
-				ajaxCall("user_forwarders_get");
+				removeThisElementChildren("#" + forwardersTableID);
+				ajaxCall(getForwarders);
 				localStorage.setItem("lastTab","forwarders");
 				pageSpecificSearchBox = "user-forwarders-search";
 			}
 			else {
-				removeThisElementChildren("#user-forwarders-table");
-				ajaxCall("user_forwarders_get");
+				removeThisElementChildren("#" + forwardersTableID);
+				ajaxCall(getForwarders);
 				localStorage.setItem("lastTab","forwarders");
 				pageSpecificSearchBox = "user-forwarders-search";
 			}
 		}
 		else {
-			removeThisElementChildren("#user-forwarders-table");
-			ajaxCall("user_forwarders_get");
+			removeThisElementChildren("#" + forwardersTableID);
+			ajaxCall(getForwarders);
 			localStorage.setItem("lastTab","forwarders");
 			pageSpecificSearchBox = "user-forwarders-search";
 		}
@@ -319,7 +319,7 @@
 			<div class="tab-pane active" id="tab-forwarders">
 				<div class="page-header">
 					<button type="button" onclick="openModalForwarderAddFromList()" class="btn btn-primary" ><i class="fa fa-plus" aria-hidden="true"></i>Add Forwarder</button>
-					<input type="text" class="search-field textbox" id="user-forwarders-search" role="search" placeholder="Search Filter" onkeyup="doSearch(this, 'user-forwarders-table', '')"/>
+					<input type="text" class="search-field textbox" id="user-forwarders-search" role="search" placeholder="Search Filter" onkeyup="doSearch(this, forwardersTableID, '')"/>
 				</div>
 
 				<div class="alert alert-info" id="notice-manage-forwarders" style="display:none"></div>

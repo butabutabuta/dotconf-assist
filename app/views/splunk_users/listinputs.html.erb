@@ -154,7 +154,7 @@
 		$('#add-input-script-radio').prop('checked', false);
 		addInputSwithButton();
 		resetUnixAppInput();
-		ajaxCall("forwarders_count_get");
+		ajaxCall(getForwarderCount);
 	}
 
 	function setupNewInput(form)
@@ -279,7 +279,7 @@
 		$('#modal-body-inputs-edit #input-inputs-edit-log').val(log);
 		$('#modal-body-inputs-edit #input-inputs-edit-log-number').val(logNumber);
 		targetSplunkForwarders="select-setup-inputs-edit-splunk-forwarders";
-		ajaxCall("forwarders_count_get");
+		ajaxCall(getForwarderCount);
 		ajaxCall('user_forwarders_list');
 		targetLogAction="edit";
 		ajaxCall('user_inputs_fetch_record');
